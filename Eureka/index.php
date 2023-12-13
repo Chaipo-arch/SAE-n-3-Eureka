@@ -8,7 +8,7 @@
 	//Quel duree ou l'on reste connecter ?
 	//
 
-
+	//connecteBD()
 
 	session_start();
 	$connecte=false; 			// Variable qui permettra de savoir si on a pu se connecter

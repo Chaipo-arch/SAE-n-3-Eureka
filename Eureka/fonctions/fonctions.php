@@ -1,6 +1,6 @@
 <?php 
 
-	function verifUtilisateur($leLogin, $lePassword, &$leMessage){
+	function verifUtilisateur($leLogin, $lePassword, & $leMessage){
 		// Fonction permettant de vérifier si le login et le PWD existent et sont OK
 		// Retourne true si OK sinon false
 		$nomficLogins="FichiersDonnees/Logins.csv" ;	// Nom du fichier qui contient les logins / password
