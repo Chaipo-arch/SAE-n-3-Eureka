@@ -7,23 +7,33 @@ use PDO;
 
 class HomeController {
 
-    /*private UserService $userService;
 
-    public function __construct(UserService $userService) {
-        $this->userService = $userService; 
-    }*/
+    public function __construct() {
+    }
 
     public function index($pdo) {
-        //$searchStmt = $this->userService->getCategories($pdo);
-        $sql = "select code_categorie, designation 
-        from a_categories
-        order by code_categorie";
-        $searchStmt = $pdo->prepare($sql);
-        $searchStmt->execute();
-        $view = new View("/views/all_categories");
-        $view->setVar('searchStmt',$searchStmt);
+       
+        $view = new View("SaeWeb/EurekaYASM/views/connexion");
         return $view;
     }
+    public function tentativeConnexion($pdo) {
+       var_dump($_POST);
+       $connexionReussi = true; // stub
+       // faire la connexion
+
+
+       if($connexionReussi) {
+        $view = new View("SaeWeb/EurekaYASM/views/forum");
+       } 
+        $view = new View("SaeWeb/EurekaYASM/views/connexion");
+        return $view;
+    }
+    public function deconnexion($pdo) {
+        session_start();
+        session_destroy();
+         $view = new View("SaeWeb/EurekaYASM/views/connexion");
+         return $view;
+     }
 
 }
 

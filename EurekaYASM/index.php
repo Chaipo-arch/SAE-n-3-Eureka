@@ -1,20 +1,19 @@
 <?php
-const PREFIX_TO_RELATIVE_PATH = "\SaeWeb\EurekaYASM";
-echo  $_SERVER[ 'DOCUMENT_ROOT' ] . PREFIX_TO_RELATIVE_PATH . '/lib/vendor/autoload.php';
-require $_SERVER[ 'DOCUMENT_ROOT' ] . PREFIX_TO_RELATIVE_PATH . '/lib/vendor/autoload.php';
 
-use application\DefaultComponentFactory;
+spl_autoload_extensions(".php");
+spl_autoload_register();
+
 use yasmf\DataSource;
 use yasmf\Router;
 
 $dataSource = new DataSource(
-    $host = 'mezabi-1-db',
-    $port = '3306', 
-    $db = 'mezabi-1', 
-    $user = 'mezabi-1', 
-    $pass = 'mezabi-1', 
+    $host = 'localhost',
+    $port = '3306', # to change with the port your mySql server listen to
+    $db = 'eureka', # to change with your db name
+    $user = 'root', # to change with your db user name
+    $pass = 'root', # to change with your db password
     $charset = 'utf8mb4'
 );
 
-$router = new Router(new DefaultComponentFactory(), $dataSource) ;
-$router->route(PREFIX_TO_RELATIVE_PATH, $dataSource);
+$router = new Router() ;
+$router->route($dataSource);
