@@ -1,5 +1,5 @@
 <?php 
-    function listeDesComptes() {
+    function listeDesEntreprise() {
 		// Retourne la liste des entreprises participantes au forum sous forme de tableau
 		// Parametre $IdClient=Identifiant du client dans la BD pour lequel on veut la liste des comptes
 		global $connexion;  // Connexion à la BD
@@ -8,19 +8,15 @@
 		
 		try {
 			$maRequete = $connexion->prepare("
-				");
+				SELECT Designation,activity_sector AS secteur,logo,presentation FROM Entreprise");
 
-			$maRequete->bindParam(':LidClient', $_SESSION['IdClient']);
 			if ($maRequete->execute()) {
 				$maRequete->setFetchMode(PDO::FETCH_OBJ);
 				while ($ligne=$maRequete->fetch()) {
-					$tabCompte['IdCompte']=$ligne->IdCompte;
-					$tabCompte['NoCompte']=$ligne->NoCompte;
-					$tabCompte['IdClient']=$ligne->IdClient;
-					$tabCompte['libelle']=$ligne->libelle;
-					$tabCompte['image']=$ligne->image;
-					$tabCompte['solde']=$ligne->solde;
-					
+					$tabCompte['designation']=$ligne->Designation;
+					$tabCompte['secteur']=$ligne->secteur;
+					$tabCompte['logo']=$ligne->logo;
+					$tabCompte['presentation']=$ligne->presentation;					
 					$tableauRetour[]=$tabCompte;
 				}
 				return $tableauRetour;
