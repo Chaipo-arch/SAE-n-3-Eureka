@@ -1,0 +1,24 @@
+{
+    "name": "SaeWeb",
+    "config": {
+      "vendor-dir": "SaeWeb/EurekaYASM/lib/vendor"
+    },
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/the-yasmf-project/yasmf"
+      }
+    ],
+    "autoload": {
+      "psr-4": {
+        "controllers\\": "SaeWeb/EurekaYASM/controllers",
+        "services\\": "SaeWeb/EurekaYASM/services",
+        "application\\": "SaeWeb/EurekaYASM/application"
+      }
+    },
+    "require": {
+      "php": ">=8.1",
+      "ext-pdo": "*",
+      "yasmf/yasmf": ">=1.6.1"
+    }
+  }
