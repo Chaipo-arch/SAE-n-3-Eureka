@@ -146,26 +146,69 @@ BEGIN
 END//
 DELIMITER ;
 
+<<<<<<< HEAD
 --INSERT INTO role Value()
 --DROP PROCEDURE IF EXISTS CreateAdmin;
+=======
+INSERT INTO role(designation) Value("Admin");
+INSERT INTO role(designation) Value("Etudiant");
+INSERT INTO role(designation) Value("Gestionnaire");
 
---DELIMITER //
---CREATE PROCEDURE CreateAdmin(
-  --  IN username VARCHAR(30),
-    --IN p_mot_de_passe TEXT
---)
---BEGIN
-  --  DECLARE compte_existant INT;
-    --START TRANSACTION;   
-    --SELECT COUNT(*) INTO compte_existant
-    --FROM utilisateurs
-    --WHERE nom_utilisateur = p_nom_utilisateur AND mot_de_passe = p_mot_de_passe;
+DROP PROCEDURE IF EXISTS CreateAdmin;
+>>>>>>> b0a8a5984b7867b6284a19ba7cb2d69193138a5f
 
-    --IF compte_existant < 1 THEN 
-    --    SELECT FALSE AS est_utilisateur;
-    --ELSE 
-      --  SELECT TRUE AS est_utilisateur;
-    --END IF;
-    --COMMIT;
---END//
---DELIMITER ;
+DELIMITER //
+CREATE PROCEDURE CreateAdmin(
+  IN p_nom_utilisateur VARCHAR(30),
+  IN p_mot_de_passe TEXT
+)
+BEGIN
+    DECLARE compte_existant INT;
+    START TRANSACTION;   
+    SELECT COUNT(*) INTO compte_existant
+    FROM utilisateur
+    WHERE Username = p_nom_utilisateur OR password = p_mot_de_passe;
+
+    IF compte_existant < 1 THEN 
+        INSERT INTO Utilisateur(Username,password,id_role) Value(p_nom_utilisateur,p_mot_de_passe,1);
+        SELECT TRUE;
+    ELSE 
+        SELECT FALSE;
+    END IF;
+    COMMIT;
+END//
+DELIMITER ;
+
+CALL CreateAdmin("asa","asa"); -- exemple d'appel de procédure
+
+
+DROP PROCEDURE IF EXISTS AjoutEntreprise;
+
+DELIMITER //
+CREATE PROCEDURE AjoutEntreprise(
+  IN p_designation VARCHAR(25),
+  IN p_activity_sector VARCHAR(25),
+  IN p_logo TEXT,
+  IN p_presentation TEXT
+)
+BEGIN
+    DECLARE entreprise_existante INT;
+    START TRANSACTION;   
+    SELECT COUNT(*) INTO entreprise_existante
+    FROM Entreprise
+    WHERE p_designation = designation OR logo = p_logo OR presentation = p_presentation;
+
+    IF entreprise_existante < 1 THEN 
+        INSERT INTO Entreprise(designation,activity_sector,logo,p_presentation) Value(p_designation,p_activity_sector,p_logo,p_presentation);
+        SELECT TRUE;
+    ELSE 
+        SELECT FALSE;
+    END IF;
+    COMMIT;
+END//
+DELIMITER ;
+
+CALL AjoutEntreprise("asa","asa","",""); -- exemple d'appel de procédure
+
+
+
