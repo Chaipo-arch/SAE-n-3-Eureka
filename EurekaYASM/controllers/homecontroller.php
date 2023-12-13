@@ -2,7 +2,6 @@
 namespace controllers;
 
 use yasmf\View;
-use userService\UserService;
 use PDO;
 
 class HomeController {
@@ -16,6 +15,7 @@ class HomeController {
         $view = new View("SaeWeb/EurekaYASM/views/connexion");
         return $view;
     }
+
     public function tentativeConnexion($pdo) {
        var_dump($_POST);
        $connexionReussi = true; // stub
@@ -24,6 +24,7 @@ class HomeController {
 
        if($connexionReussi) {
         $view = new View("SaeWeb/EurekaYASM/views/forum");
+        return $view;
        } 
         $view = new View("SaeWeb/EurekaYASM/views/connexion");
         return $view;

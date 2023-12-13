@@ -39,6 +39,7 @@ class View
     {
         // convert view params in variables accessible by the php file
         extract($this->viewParams);
+        
         // "enrole" the php file used to build and send the response
         require_once $_SERVER['DOCUMENT_ROOT'] . "/$this->relativePath.php";
     }

@@ -1,32 +1,8 @@
-<?php
-	session_start();
-	// test si on est bien passé par la page de login sinon on retourne sur index.php
-	if (!isset($_SESSION['connecte'])) {
-		//Pas de session en cours, on est pas passé par le login password
-		header('Location: ../index.php');
-		exit();
-	}
-	
-	// Intégration des fonctions qui seront utilisées pour les acces à la BD
-	require('../fonctions/gestionBD.php');
-	
-	// Connexion à la BD
-	if (!connecteBD($erreur)) {
-		// Pas de connexion à la BD, renvoie vers l'index
-		header('Location: ../index.php');
-		exit();
-	} 
-?>
-<html>
-<head>
-	<title>Forum</title>
-	<meta charset ="utf-8"/>
-	<link href="../bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet"/>
-	<link href="../css/ForumCss.css" rel="stylesheet"/>
-	<link href="../fontawesome-free-6.2.1-web/css/all.css" rel="stylesheet"/>
-</head>	
-<body>
-	<header>
+<?php 
+
+	function headerHelper(){
+        ?>
+        <header>
 		<div class="container-fluid">
 			<nav class="navbar navbar-light bg-light ">
 				<div class="col-md-12">
@@ -42,15 +18,28 @@
 						</form>
 						</div>
 						<div class= "col-md-2 d-flex justify-content-center">
-							<a class="nav-link active onglet rounded" href="index.php">Entreprises</a>
+							<a class="nav-link active onglet rounded" href="index.php?controller=Entreprise&action=index">Entreprises</a>
 						</div>
+						<?php if(isset($_SESSION['administrateur']) &&$_SESSION['administrateur'] ||isset($_SESSION['gestionnaire']) && $_SESSION['gestionnaire']) { ?>
+							<div class= "col-md-2 d-flex justify-content-center">
+								<a class="nav-link active onglet rounded" href="">souhaits Etudiants</a>
+							</div>
+						<?php } else { ?>
+							<div class= "col-md-2 d-flex justify-content-center">
+								<a class="nav-link active onglet rounded" href="">Mes souhaits</a>
+							</div>
+						<?php } ?>
+						<?php if(isset($_SESSION['administrateur']) &&$_SESSION['administrateur'] ||isset($_SESSION['gestionnaire']) && $_SESSION['gestionnaire']) {?>
+							<div class= "col-md-2 d-flex justify-content-center">
+								<a class="nav-link active onglet rounded" href="index.php?controller=Planning">Planning Etudiants</a>
+							</div>
+						<?php } else { ?>
+							<div class= "col-md-2 d-flex justify-content-center">
+								<a class="nav-link active onglet rounded" href="index.php?controller=Planning">Mon Etudiants</a>
+							</div>
+						<?php } ?>
 						<div class= "col-md-2 d-flex justify-content-center">
-							<a class="nav-link active onglet rounded" href="">Mes souhaits</a>
-						</div>
-						<div class= "col-md-2 d-flex justify-content-center">
-						</div>
-						<div class= "col-md-2 d-flex justify-content-center">
-							<a class="nav-link active onglet rounded" href="deconnection.php">Déconnexion</a>
+							<a class="nav-link active onglet rounded" href="index.php?action=deconnexion">Déconnexion</a>
 						</div>
 					</div>
 					
@@ -85,7 +74,11 @@
 			</nav>
 		</div>
 	</header>
-	<footer>
+    <?php 
+	}
+    function footerHelper(){
+        ?>
+        <footer>
 		<div class="container-fluid">
 			<div class="col-md-12">
 				a
@@ -94,7 +87,6 @@
 			</div>
 		</div>
 	</footer>
-	a
-	
-</body>
-</html>
+    <?php
+    }
+?>

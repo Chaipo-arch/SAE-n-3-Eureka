@@ -17,15 +17,24 @@
 		exit();
 	} 
 ?>
-<html>
-<head>
-	<title>Forum</title>
-	<meta charset ="utf-8"/>
-	<link href="../bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet"/>
-	<link href="../css/ForumCss.css" rel="stylesheet"/>
-	<link href="../fontawesome-free-6.2.1-web/css/all.css" rel="stylesheet"/>
-</head>	
-<body>
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8">
+		<title>IUT BANK - Liste des comptes</title>
+
+		<!-- Bootstrap CSS -->
+		<link href="../bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">
+
+		<!-- Lien vers mon CSS -->
+		<link href="../css/monStyle.css" rel="stylesheet">
+		<link href="../css/ForumCss.css" rel="stylesheet">
+
+		<!-- Lien vers CSS fontawesome -->
+		<link href="../fontawesome-free-6.2.1-web/css/all.css" rel="stylesheet"> <!--load all styles -->
+	</head>
+
+	<body>
 	<header>
 		<div class="container-fluid">
 			<nav class="navbar navbar-light bg-light ">
@@ -34,7 +43,7 @@
 				
 					<div class= "row">
 						<div class= "col-md-2 d-flex justify-content-center">
-							<img href="../images/eurekaLogo.png" alt="logo eureka">
+							<img href="" alt="logo eureka">
 						</div>
 						<div class= "col-md-2 d-flex justify-content-center">
 						<form class="form-inline my-1 my-lg-1" action="Recherche.php" method="get">
@@ -42,49 +51,32 @@
 						</form>
 						</div>
 						<div class= "col-md-2 d-flex justify-content-center">
-							<a class="nav-link active onglet rounded" href="index.php">Entreprises</a>
+							<a class="nav-link active onglet" href="">Entreprises</a>
 						</div>
 						<div class= "col-md-2 d-flex justify-content-center">
-							<a class="nav-link active onglet rounded" href="">Mes souhaits</a>
+							<a class="nav-link active onglet" href="">Mes souhaits</a>
 						</div>
 						<div class= "col-md-2 d-flex justify-content-center">
 						</div>
 						<div class= "col-md-2 d-flex justify-content-center">
-							<a class="nav-link active onglet rounded" href="deconnection.php">Déconnexion</a>
+							<a class="nav-link active onglet" href="deconnection.php">Déconnexion</a>
 						</div>
 					</div>
 					
 					
-					<!---
-				<div class="col-md-2">	
-						<img src="../images/eurekaLogo.png" alt="logo eureka" />
-					</div>
-					<div class="col-md-2">
-						<form class="form-inline my-1 my-lg-1">
-							<input class="form-control mr-sm-1" type="search" placeholder="Search" aria-label="Search">
-							<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-						</form>
-					</div>
-					<div class="col-md-2">
-						a
-					</div>
-					<div class="col-md-2">
-						a
-					</div>
-					<div class="col-md-2">
-			
-						a
-					</div>
-					<div class="col-md-2">
-			
-						a
-					</div>
--->
+				
+
 				
 				</div>
 			</nav>
 		</div>
 	</header>
+	<form>
+		<select name="filiere">
+			<!-- option-->
+		</select>
+	</form>
+
 	<footer>
 		<div class="container-fluid">
 			<div class="col-md-12">
@@ -94,7 +86,5 @@
 			</div>
 		</div>
 	</footer>
-	a
-	
-</body>
+  </body>
 </html>
