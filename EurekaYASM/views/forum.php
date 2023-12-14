@@ -11,10 +11,8 @@
 <?php 
     include("fonctions/viewHelper.php");
     headerHelper();
-
-    ?>
-	
-	
+  ?>
+  
     <?php footerHelper(); ?>
 	
 </body>

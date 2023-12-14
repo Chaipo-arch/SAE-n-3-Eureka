@@ -1,5 +1,8 @@
 <?php 
-
+	/**
+	 * Aide pour afficher le haut de page 
+	 * évite de répéter le code
+	 */
 	function headerHelper(){
         ?>
         <header>
@@ -76,6 +79,11 @@
 	</header>
     <?php 
 	}
+
+	/**
+	 * Aide pour afficher le bas de page 
+	 * évite de répéter le code
+	 */
     function footerHelper(){
         ?>
         <footer>

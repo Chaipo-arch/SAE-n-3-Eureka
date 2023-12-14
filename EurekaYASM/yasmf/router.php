@@ -20,18 +20,27 @@
 namespace yasmf;
 
 use controllers;
-
+use services\UserService;
+use yasmf\DefaultComponentFactory;
 class Router
 {
+
+    /**
+     * @param ComponentFactory $componentFactory component factory
+     */
+    function __construct(DefaultComponentFactory $defaultComponentFactory) {
+        $this->defaultComponentFactory = $defaultComponentFactory;
+    }
+
     public function route($dataSource = null)
     {
         var_dump($_GET);
         var_dump($_POST);
         // set the controller to enrole
         $controllerName = HttpHelper::getParam('controller') ?: 'Home';
-            $controllerQualifiedName = "controllers\\" . $controllerName . "Controller";
-        
-        $controller = new $controllerQualifiedName();
+        $controllerQualifiedName = "controllers\\" . $controllerName . "Controller";
+        $controller = $this->defaultComponentFactory->buildControllerByName($controllerName,$controllerQualifiedName);
+        //$controller = new $controllerQualifiedName(new UserService());
         // set the action to trigger
         
         $action = HttpHelper::getParam('action') ?: 'index';

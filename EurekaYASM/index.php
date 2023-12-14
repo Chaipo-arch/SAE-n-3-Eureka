@@ -1,8 +1,9 @@
 <?php
-
+session_start();
 spl_autoload_extensions(".php");
 spl_autoload_register();
 
+use yasmf\DefaultComponentFactory;
 use yasmf\DataSource;
 use yasmf\Router;
 
@@ -15,5 +16,5 @@ $dataSource = new DataSource(
     $charset = 'utf8mb4'
 );
 
-$router = new Router() ;
+$router = new Router(new DefaultComponentFactory) ;
 $router->route($dataSource);

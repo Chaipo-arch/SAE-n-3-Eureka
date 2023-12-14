@@ -1,46 +1,10 @@
-
-
-
-
 <?php
-
-//TODO Faires ens orte de sauvegarder les données rentrer meme si erreurs
-//Quel duree ou l'on reste connecter ?
-//
-
-
-
-session_start();
-$connecte=false; 			// Variable qui permettra de savoir si on a pu se connecter
-$tentativeConnection=false; // Variable qui permettra de savoir que l'on a tenté de se connecter
-$problemeDonnees=false;		// Variable qui se mettra à true si pbme d'accès à la BD
-$messageRetour="";			// Message à afficher si problème de donnéees
-$identifiantSaisi = ""; // Variable pour stocker l'identifiant saisi
-
-
-//TODO a modifier
-if (isset($_SESSION['connecte'])) {
+if (isset($_SESSION['connecte']) && $_SESSION['connecte']) {
     //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
-    header('Location: pages/Forum.php');
+    header('Location: index.php?action=retour');
     exit();
 }
 
-
-
-if (isset($_POST['identifiant']) and isset($_POST['pwd'])) {
-    // Les identifiants ont été saisis. Vérification si OK
-    $tentativeConnection=true; // On stocke qu'un utilisateur veut se connecter pour afficher un message en cas de login ou pwd erroné
-
-    $identifiantSaisi = $_POST['identifiant']; // Stocker l'identifiant saisi, qu'il soit valide ou non
-
-    			
-}
-
-if ($connecte) {
-    //On est connecté, on renvoie vers la page des comptes. 
-    header('Location: pages/Forum.php');
-    exit();
-}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -89,7 +53,7 @@ if ($connecte) {
         ?>
         
         <div class="user-box">
-            <input type="text" name="identifiant" required="" autocomplete="off" value="<?php echo htmlspecialchars($identifiantSaisi); ?>">
+            <input type="text" name="identifiant" required="" autocomplete="off" value="<?php if(isset($_POST['identifiant'])) {echo htmlspecialchars($_POST['identifiant']); }?>">
             <label>Username</label>
         </div>
 
