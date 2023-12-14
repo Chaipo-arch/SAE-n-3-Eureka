@@ -13,6 +13,7 @@ class EtudiantController {
     public function index($pdo) {
         
         $view = new View("SaeWeb/EurekaYASM/views/etudiant");
+        $_SESSION['nomPage'] = "etudiant";
         return $view;
     }
 

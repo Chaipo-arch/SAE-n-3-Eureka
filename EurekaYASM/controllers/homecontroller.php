@@ -33,8 +33,9 @@ class HomeController {
             $connexionReussi = $this->userService->verifUtilisateur($pdo,$login,$pwd);
             var_dump($_SESSION);
             if($connexionReussi) {
-                
                 $view = new View("SaeWeb/EurekaYASM/views/forum");
+                //$view->setVar('nomPage',"forum");
+                $_SESSION['nomPage'] = "forum";
                 return $view;
             } 
             $view = new View("SaeWeb/EurekaYASM/views/connexion");
@@ -44,12 +45,12 @@ class HomeController {
             $view->setVar('pwd',$pwd);
             return $view;
         }catch ( Exception $e ) {
-                $view = new View("SaeWeb/EurekaYASM/views/connexion");
-                $view->setVar('problemeDonnees',true);
-                $view->setVar('tentativeConnection',true);
-                $view->setVar('messageRetour',"La base de donnée n'est actuellement pas disponible");
-                return $view;
-            } 
+            $view = new View("SaeWeb/EurekaYASM/views/connexion");
+            $view->setVar('problemeDonnees',true);
+            $view->setVar('tentativeConnection',true);
+            $view->setVar('messageRetour',"La base de donnée n'est actuellement pas disponible");
+            return $view;
+        } 
             
     }
     public function deconnexion($pdo) {
@@ -60,9 +61,13 @@ class HomeController {
         $view->setVar('tentativeConnection',false);
         return $view;
      }
+
      public function retour($pdo) {
-        
-        $view = new View("SaeWeb/EurekaYASM/views/forum");
+        $view = new View("SaeWeb/EurekaYASM/views/".$_SESSION['nomPage']);
+        return $view;
+    }
+    public function renvoi($pdo) {
+        $view = new View("SaeWeb/EurekaYASM/views/connexion");
         return $view;
     }
 

@@ -1,4 +1,10 @@
-
+<?php
+if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
+    //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+    header('Location: index.php?action=renvoi');
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 	<head>
@@ -21,18 +27,28 @@
     include("fonctions/viewHelper.php");
     headerHelper();
     ?>
-	
-	<form action="index.php">
-	<input name="controller" type="hidden" value="Entreprise">
-		<select name="filiere">
-			<!-- option-->
-		</select>
-	</form>
-	<form class="form-inline my-1 my-lg-1" action="index.php" method="get">
-		<input name="action" type="hidden" value="recherche">
-		<input name="controller" type="hidden" value="Entreprise">
-		<input class="form-control mr-sm-1" name="recherche" type="search submit" placeholder="Search" aria-label="Search">
-	</form>	
+	</br>
+	<div class="container">
+			<div class="col-md-12">
+				<div class= "row">
+					<div class="col-md-2">
+						<form action="index.php">
+							<input name="controller" type="hidden" value="Entreprise">
+							<select name="filiere">
+								<!-- option-->
+							</select>
+						</form>
+					</div>
+					<div class="col-md-10">
+						<form class="form my-1 my-lg-1" action="index.php" method="get">
+							<input name="action" type="hidden" value="recherche">
+							<input name="controller" type="hidden" value="Entreprise">
+							<input class="form-control mr-sm-1" name="recherche" type="search submit" placeholder="Search" aria-label="Search">
+						</form>	
+					</div>
+				</div>
+			</div>
+	</div>
     <?php footerHelper(); ?>
   </body>
 </html>

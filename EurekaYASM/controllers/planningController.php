@@ -13,6 +13,7 @@ class PlanningController {
     public function index($pdo) {
         
         $view = new View("SaeWeb/EurekaYASM/views/planning");
+        $_SESSION['nomPage'] = "planning";
         return $view;
     }
 
