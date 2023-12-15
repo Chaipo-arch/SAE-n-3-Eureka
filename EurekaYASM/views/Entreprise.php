@@ -58,9 +58,7 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 				</div>
 			</div>
 		</div>
-		
 		<?php 
-		
 		if(isset($_POST['entreprises'])) {
 			foreach($_POST['entreprises'] as $entreprise) {?>
 		<?php// for ($i = 0 ; $i< 10 ; $i= $i +1) { ?>

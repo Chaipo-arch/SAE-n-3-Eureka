@@ -12,8 +12,13 @@
 				
 				
 					<div class= "row">
+<<<<<<< HEAD
 						<div class= "col-md-2 col-4 d-flex justify-content-center">
 							<img href="images/LDD.jpg" alt="logo eureka">
+=======
+						<div class= "col-md-2 d-flex justify-content-center">
+							<img href="../images/eurekaLogo.jpg" alt="logo eureka">
+>>>>>>> 485420d206b13d863fcc6894c5f9babd8fa88d6b
 						</div>
 						<div class= "col-md-2 col-8 d-flex justify-content-center">
 						<form class="form my-md-2 my-1" action="Recherche.php" method="get">
