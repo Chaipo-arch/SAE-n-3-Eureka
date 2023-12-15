@@ -35,7 +35,7 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 	<div class="container separation">
 		<div class="col-md-12">
 			<div class= "row centre">
-				<div class="col-md-2 centre">
+				<div class="col-md-4 centre">
 					
 					<form action="index.php" method="Post">
 						<input name="controller" type="hidden" value="Entreprise">
@@ -49,7 +49,7 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 						<input type="submit" value="valider">
 					</form>
 				</div>
-				<div class="col-md-10 centre">
+				<div class="col-md-8 centre">
 					<form class="form my-1 my-lg-1" action="index.php" method="get">
 						<input name="action" type="hidden" value="recherche">
 						<input name="controller" type="hidden" value="Entreprise">
@@ -79,7 +79,6 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 			</p>
 		<?php } }?>
 	</div>
-	<?php var_dump($_SESSION);var_dump($_POST); ?>
     <?php footerHelper();
 	 ?>
 	 

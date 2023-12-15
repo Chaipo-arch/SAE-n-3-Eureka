@@ -4,6 +4,7 @@ namespace yasmf;
 use services\UserService;
 use services\EntrepriseService;
 use services\FiliereService;
+use services\EtudiantService;
 use controllers;
 
 class DefaultComponentFactory
@@ -21,6 +22,8 @@ class DefaultComponentFactory
             return new $qualified_name(new UserService);
         } else if($controller_name == "Entreprise"){
             return new $qualified_name(new EntrepriseService,new FiliereService);
+        } else if($controller_name == "Etudiant"){
+            return new $qualified_name(new EtudiantService, new FiliereService);
         } else {
             return new $qualified_name();
         }
