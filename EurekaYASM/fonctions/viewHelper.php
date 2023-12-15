@@ -8,40 +8,40 @@
         <header>
 		<div class="container-fluid">
 			<nav class="navbar navbar-light bg-light ">
-				<div class="col-md-12">
+				<div class="col-md-12 col-12">
 				
 				
 					<div class= "row">
-						<div class= "col-md-2 d-flex justify-content-center">
-							<img href="../images/eurekaLogo.png" alt="logo eureka">
+						<div class= "col-md-2 col-4 d-flex justify-content-center">
+							<img href="images/LDD.jpg" alt="logo eureka">
 						</div>
-						<div class= "col-md-2 d-flex justify-content-center">
-						<form class="form-inline my-1 my-lg-1" action="Recherche.php" method="get">
+						<div class= "col-md-2 col-8 d-flex justify-content-center">
+						<form class="form my-md-2 my-1" action="Recherche.php" method="get">
 							<input class="form-control mr-sm-1" name="recherche" type="search submit" placeholder="Search" aria-label="Search">
 						</form>
 						</div>
-						<div class= "col-md-2 d-flex justify-content-center">
+						<div class= "col-md-2 col-3 col-xs-6 d-flex justify-content-center ">
 							<a class="nav-link active onglet rounded" href="index.php?controller=Entreprise&action=index">Entreprises</a>
 						</div>
 						<?php if($_SESSION['role'] == 'Admin' ||$_SESSION['gestionnaire'] == 'Gestionnaire') { ?>
-							<div class= "col-md-2 d-flex justify-content-center">
+							<div class= "col-md-2 col-3 col-xs-6  d-flex justify-content-center">
 								<a class="nav-link active onglet rounded" href="">souhaits Etudiants</a>
 							</div>
 						<?php } else { ?>
-							<div class= "col-md-2 d-flex justify-content-center">
+							<div class= "col-md-2 col-3 col-xs-6  d-flex justify-content-center">
 								<a class="nav-link active onglet rounded" href="">Mes souhaits</a>
 							</div>
 						<?php } ?>
 						<?php if($_SESSION['role'] == 'Admin' || $_SESSION['gestionnaire'] == 'Gestionnaire'){?>
-							<div class= "col-md-2 d-flex justify-content-center">
+							<div class= "col-md-2 col-3 col-xs-6  d-flex justify-content-center">
 								<a class="nav-link active onglet rounded" href="index.php?controller=Planning">Planning Etudiants</a>
 							</div>
 						<?php } else { ?>
-							<div class= "col-md-2 d-flex justify-content-center">
+							<div class= "col-md-2 col-3 col-xs-6  d-flex justify-content-center">
 								<a class="nav-link active onglet rounded" href="index.php?controller=Planning">Mon Etudiants</a>
 							</div>
 						<?php } ?>
-						<div class= "col-md-2 d-flex justify-content-center">
+						<div class= "col-md-2 col-3  col-xs-6  d-flex justify-content-center">
 							<a class="nav-link active onglet rounded" href="index.php?action=deconnexion">Déconnexion</a>
 						</div>
 					</div>

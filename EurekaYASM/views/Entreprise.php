@@ -1,4 +1,5 @@
 <?php
+
 if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
     //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
     header('Location: index.php?action=renvoi');
@@ -26,22 +27,29 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 
 	<body>
 	<?php 
-    include("fonctions/viewHelper.php");
-    headerHelper();
+	include("fonctions/viewHelper.php");
+	headerHelper();
     ?>
 	</br>
+	
 	<div class="container separation">
 		<div class="col-md-12">
-			<div class= "row">
-				<div class="col-md-2">
-					<form action="index.php">
+			<div class= "row centre">
+				<div class="col-md-2 centre">
+					
+					<form action="index.php" method="Post">
 						<input name="controller" type="hidden" value="Entreprise">
-						<select name="filiere">
+						<input name="action" type="hidden" value="filiereChanger">
+						<select name="filiere" type="submit">
+							<option>Toutes</option>
 							<!-- option-->
+							<option>test1aaaaaaaaaaaaaaa</option>
+							<option>test2</option>
 						</select>
+						<input type="submit" value="valider">
 					</form>
 				</div>
-				<div class="col-md-10">
+				<div class="col-md-10 centre">
 					<form class="form my-1 my-lg-1" action="index.php" method="get">
 						<input name="action" type="hidden" value="recherche">
 						<input name="controller" type="hidden" value="Entreprise">
@@ -50,25 +58,32 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 				</div>
 			</div>
 		</div>
-		<?php for ($i = 0 ; $i< 10 ; $i= $i +1) { ?>
+		
+		<?php 
+		
+		if(isset($_POST['entreprises'])) {
+			foreach($_POST['entreprises'] as $entreprise) {?>
+		<?php// for ($i = 0 ; $i< 10 ; $i= $i +1) { ?>
 			<p>
 			<div class="col-md-12 entrepriseCase">
 				<div class= "row">
-					<div class="col-md-2">
+					<div class="col-md-2 case">
 						logo
 					</div>
-					<div class="col-md-4">
+					<div class="col-md-4 case">
 						designation + secteur
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-6 case">
 						voir plus de détails
 					</div>
 				</div>
 			</div>
 			</p>
-		<?php } ?>
+		<?php } }?>
 	</div>
-
-    <?php footerHelper(); ?>
+	<?php var_dump($_SESSION);var_dump($_POST); ?>
+    <?php footerHelper();
+	 ?>
+	 
   </body>
 </html>
