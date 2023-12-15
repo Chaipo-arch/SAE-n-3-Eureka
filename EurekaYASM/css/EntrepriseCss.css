@@ -1,11 +1,21 @@
 .entrepriseCase {
 	min-height: 100px;
 	background-color: #f7f7f7;
+
 }
 .separation{
 	top : 100px;
 	position:relative;
 }
-body {
-	
+.case {
+	min-height: 100px;
+	display: flex;
+  align-items: center;
+  justify-content: center;
+	text-align: center;
+	vertical-align: middle;
+}
+.centre {
+	text-align: center;
+	align-items: center;
 }
