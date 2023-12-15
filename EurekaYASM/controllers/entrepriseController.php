@@ -7,7 +7,8 @@ use PDO;
 class EntrepriseController {
 
 
-    public function __construct() {
+    public function __construct(EntrepriseService $entrepriseService) {
+        $this->entrepriseService = $entrepriseService;
     }
 
     public function index($pdo) {

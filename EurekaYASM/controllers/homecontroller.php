@@ -18,7 +18,6 @@ class HomeController {
     }*/
 
     public function index($pdo) {
-       
         $view = new View("SaeWeb/EurekaYASM/views/connexion");
         $view->setVar('problemeDonnees',false);
         $view->setVar('tentativeConnection',false);

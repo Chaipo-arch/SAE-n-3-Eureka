@@ -20,6 +20,5 @@ class DefaultComponentFactory
         } else if($controller_name == "Entreprise"){
             return new $qualified_name(new EntrepriseService);
         }
-        
     }
 }
