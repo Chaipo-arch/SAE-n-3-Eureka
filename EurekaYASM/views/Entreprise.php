@@ -37,7 +37,7 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 					<form action="index.php">
 						<input name="controller" type="hidden" value="Entreprise">
 						<select name="filiere">
-							<!-- option-->
+							
 						</select>
 					</form>
 				</div>
@@ -50,25 +50,40 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 				</div>
 			</div>
 		</div>
-		<?php for ($i = 0 ; $i< 10 ; $i= $i +1) { ?>
-			<p>
-			<div class="col-md-12 entrepriseCase">
-				<div class= "row">
-					<div class="col-md-2">
-						logo
-					</div>
-					<div class="col-md-4">
-						designation + secteur
-					</div>
-					<div class="col-md-6">
-						voir plus de détails
-					</div>
-				</div>
-			</div>
-			</p>
-		<?php } ?>
-	</div>
-
+		<table>
+			<?php
+				$listeDesEntreprises = $_SESSION['listeEntrepriseRecherche'];		     
+				foreach($listeDesEntreprises as $key => $entreprise) { //affichage de toutes les entreprises
+			?>
+				<tr>
+					<div class="col-md-12 entrepriseCase">
+						<div class= "row">
+							<div class="col-md-2">
+								<td><?php echo $entreprise['logo']; ?></td>
+							</div>
+							<div class="col-md-2">
+								<td><?php echo $entreprise['designation']; ?></td>	
+							</div>
+							<div class="col-md-2">
+								<td><?php echo $entreprise['secteur']; ?></td>	
+							</div>
+							<div class="col-md-6">
+								<td><button class="accordion-btn">voir détails</button></td>
+							</div>
+						</div>
+					</div>	
+				</tr>
+				<tr>
+					<div class="col-md-12">
+						<td colspan="12">
+							<div class="accordion-content">
+								<p><?php echo $entreprise['presentation']; ?></p>
+							</div>
+						</td>			
+					</div>					
+				</tr>
+			<?php } ?>
+		</table>
     <?php footerHelper(); ?>
   </body>
 </html>

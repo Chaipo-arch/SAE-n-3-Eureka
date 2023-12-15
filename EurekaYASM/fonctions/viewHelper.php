@@ -13,7 +13,7 @@
 				
 					<div class= "row">
 						<div class= "col-md-2 d-flex justify-content-center">
-							<img href="../images/eurekaLogo.png" alt="logo eureka">
+							<img href="../images/eurekaLogo.jpg" alt="logo eureka">
 						</div>
 						<div class= "col-md-2 d-flex justify-content-center">
 						<form class="form-inline my-1 my-lg-1" action="Recherche.php" method="get">
