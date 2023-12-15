@@ -6,17 +6,23 @@ use yasmf\View;
 use services\UserService;
 use PDO;
 
+/**
+ * Controlleur de base du site web
+ * Permet l'accés à la page connexion et a la page aprés connexion 
+ */
 class HomeController {
 
-
+    /**
+     * Constructeur de HomeControlleur on utilise une instance de UserService pour séparer les responsabilités
+     */
     public function __construct(UserService $userService) {
         $this->userService = $userService; 
     }
 
-   /* public function __construct() {
-        //$this->userService = $userService; 
-    }*/
-
+    /**
+     * Méthodes de base du controlleur
+     * Appel la page connexion
+     */
     public function index($pdo) {
         $view = new View("SaeWeb/EurekaYASM/views/connexion");
         $view->setVar('problemeDonnees',false);
@@ -24,6 +30,11 @@ class HomeController {
         return $view;
     }
 
+    /**
+     * Méthodes appelé lors d'une tentative de connexion
+     * Si les informations données correspondent à un utilisateur envoient vers la page de base du forum
+     * Sinon vers la page connexion
+     */
     public function tentativeConnexion($pdo) {
         var_dump($_POST);
         $login = HttpHelper::getParam('identifiant');

@@ -5,16 +5,18 @@ use yasmf\HttpHelper;
 use PDO;
 use PDOStatement;
 
+/**
+ * Classe gérant la logique pour les utilisateurs
+ */
 class UserService {
 
-    
+    /**
+     * Vérifie si l'utilisateur existe
+	 * Les paramétres sont le login et le mot de passe envoyé par le formulaire de connexion
+     * Renvoie vrai ou faux en fonction si l'utilisateur a été trouvé.
+	 * Si vrai, enregistrement du role de l'utilisateur, utiliser par la suite pour utiliser des fonctionnalités différentes
+     */
     function verifUtilisateur($connexion,$login,$pwd) {
-		// Vérifie si l'utilisateur existe
-		// Les paramétres sont le login et le mot de passe envoyé par le formulaire de connexion
-		// Renvoie vrai ou faux en fonction si l'utilisateur a été trouvé.
-		// Si vrai, enregistrement du role de l'utilisateur, utiliser par la suite pour utiliser des fonctionnalités différentes
-		
-		
 		$connecte=false;
         $maRequete = $connexion->prepare("call connexion(:leLogin, :lePWD)");
         $maRequete->bindParam(':leLogin', $login);

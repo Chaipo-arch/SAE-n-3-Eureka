@@ -34,8 +34,6 @@ class Router
 
     public function route($dataSource = null)
     {
-        var_dump($_GET);
-        var_dump($_POST);
         // set the controller to enrole
         $controllerName = HttpHelper::getParam('controller') ?: 'Home';
         $controllerQualifiedName = "controllers\\" . $controllerName . "Controller";

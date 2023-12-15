@@ -9,7 +9,7 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 <html lang="fr">
 	<head>
 		<meta charset="utf-8">
-		<title>IUT BANK - Liste des comptes</title>
+		<title>Entreprises</title>
 
 		<!-- Bootstrap CSS -->
 		<link href="bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">
@@ -30,7 +30,7 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
     headerHelper();
     ?>
 	</br>
-	<div class="container">
+	<div class="container separation">
 		<div class="col-md-12">
 			<div class= "row">
 				<div class="col-md-2">

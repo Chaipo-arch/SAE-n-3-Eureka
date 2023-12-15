@@ -3,6 +3,7 @@ namespace controllers;
 
 use yasmf\View;
 use PDO;
+use services\EntrepriseService;
 
 class EntrepriseController {
 
