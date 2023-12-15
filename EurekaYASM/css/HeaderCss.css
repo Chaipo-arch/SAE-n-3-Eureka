@@ -1,0 +1,26 @@
+header {
+	top : 0;
+	background-color: white;
+	position: fixed;
+	width: 90%;
+	display: block;
+    margin-left: auto;
+    margin-right: auto ;
+	z-index: 1;
+}
+.onglet {
+	background-color: white;
+}
+.onglet:hover {
+	background-color: lightcoral;
+	color : white;
+}
+footer {
+	background-color: lightgray;
+	position: relative;
+	display: block;
+	bottom: -100px;
+	width: 100%;
+	text-align: center;
+  }
+

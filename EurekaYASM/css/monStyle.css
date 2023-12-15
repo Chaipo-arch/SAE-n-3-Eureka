@@ -1,0 +1,161 @@
+/* Importation de la police Google */
+@import url('https://fonts.googleapis.com/css?family=Righteous&display=swap');
+
+
+
+h1 {
+	/* D�finition des titres (des pages) */
+	color:#3900EC;		/* Couleur police */
+	font-size: 2em; 	/* Double de la police normale */
+	font-weight:bold;	/* En gras */
+}
+
+h2 {
+	/* D�finition des titres de niveau 2 */
+	color:black;		/* Couleur police */
+	font-size: 1.8em; 	/* 1,8 fois la police normale */
+}
+
+.ligne { /* Pour les lignes ou on veut un d�grad� */
+	/*background: linear-gradient(white,#00B3EC);*/
+	padding:5px;				/* Marge int�rieure */
+	margin : 2px; 				/* Marge ext�rieure */
+	text-align:center;  		/* Centrage du texte */
+}
+
+.entete { /* Pour les lignes ou on veut une bordure */
+	/*background-color:#00B3EC;	/* couleur de fond des lignes */
+	padding:5px;				/* Marge int�rieure */
+	margin : 2px; 				/* Marge ext�rieure */
+	text-align:center;  		/* Centrage du texte */
+}
+
+
+#logoIUT{ /* Largeur du logo de l'IUT en bas � droite */
+	width:100px;
+}
+
+a{
+	color:#AF00EC;		/* couleur des liens non visit�s */
+}
+
+a:visited { 
+	color: #EC00B3; 		/* couleur des liens  visit�s */
+}
+
+img:hover { /* Agrandissement image quandon passe dessus */
+	-webkit-transform:scale(1.2); 	/* Transformation pour Firefox */
+	transform: scale(1.2);			/* Transformation pour les autres navigateurs  */
+}
+
+/* .texte{ 
+	font-size: 1.3em; 	
+	color:#3900EC!important;
+	font-weight:bold;
+	
+} */
+
+.imgCompte { /* Taille image compte */
+	height:100px;
+}
+
+.imgCompteHorizontal { /* Taille pour image dans comptes */
+	width:150px;
+}
+
+.enVert{/* texte en vert */
+	color:green!important;
+}
+
+.enRouge{ /* texte en rouge */
+	color:red!important;
+}
+
+#imageHaut{ /* Hauteur du logo */
+	height:120px;
+	border-radius: 5px; /* Arrondi image */
+}
+
+
+/* @media(max-width:767px){
+	.texte{ 
+		font-size: 0.8em; 	
+		color:#3900EC;
+	}
+} */
+
+.aligneDroite{
+	text-align:right;
+}
+
+
+
+/* 
+====================================================================== */
+
+
+html {
+  height: 100%;
+}
+
+body {
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  /*background: linear-gradient(#141e30, #243b55);*/
+}
+
+.login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  padding: 40px;
+  transform: translate(-50%, -50%);
+  /*background: rgba(0,0,0,.5);*/
+  box-sizing: border-box;
+  /*box-shadow: 0 15px 25px rgba(0,0,0,.6);*/
+  border-radius: 10px;
+}
+
+.login-box h2 {
+  margin: 0 0 30px;
+  padding: 0;
+  color: black;
+  text-align: center;
+}
+
+.login-box .user-box {
+  position: relative;
+}
+
+.login-box .user-box input {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  color: black;
+  margin-bottom: 30px;
+  border: none;
+  border-bottom: 1px solid black
+  outline: none;
+  background: transparent;
+}
+
+.login-box .user-box label {
+  position: absolute;
+  top:0;
+  left: 0;
+  padding: 10px 0;
+  font-size: 16px;
+  color: black;
+  pointer-events: none;
+  transition: .5s;
+}
+
+.login-box .user-box input:focus ~ label,
+.login-box .user-box input:valid ~ label {
+  top: -20px;
+  left: 0;
+  color: #03e9f4;
+  font-size: 12px;
+}
