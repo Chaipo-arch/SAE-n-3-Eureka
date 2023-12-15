@@ -23,7 +23,7 @@
 						<div class= "col-md-2 d-flex justify-content-center">
 							<a class="nav-link active onglet rounded" href="index.php?controller=Entreprise&action=index">Entreprises</a>
 						</div>
-						<?php if(isset($_SESSION['administrateur']) &&$_SESSION['administrateur'] ||isset($_SESSION['gestionnaire']) && $_SESSION['gestionnaire']) { ?>
+						<?php if($_SESSION['role'] == 'Admin' ||$_SESSION['gestionnaire'] == 'Gestionnaire') { ?>
 							<div class= "col-md-2 d-flex justify-content-center">
 								<a class="nav-link active onglet rounded" href="">souhaits Etudiants</a>
 							</div>
@@ -32,7 +32,7 @@
 								<a class="nav-link active onglet rounded" href="">Mes souhaits</a>
 							</div>
 						<?php } ?>
-						<?php if(isset($_SESSION['administrateur']) &&$_SESSION['administrateur'] ||isset($_SESSION['gestionnaire']) && $_SESSION['gestionnaire']) {?>
+						<?php if($_SESSION['role'] == 'Admin' || $_SESSION['gestionnaire'] == 'Gestionnaire'){?>
 							<div class= "col-md-2 d-flex justify-content-center">
 								<a class="nav-link active onglet rounded" href="index.php?controller=Planning">Planning Etudiants</a>
 							</div>

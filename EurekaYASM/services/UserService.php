@@ -24,10 +24,22 @@ class UserService {
             while ($ligne=$maRequete->fetch()) {	
                 if(isset($ligne->est_utilisateur) && $ligne->est_utilisateur ==0){
                     return $connecte;
-                }		
-                $_SESSION['connecte']= true ; 			// Stockage dans les variables de session que l'on est connecté (sera utilisé sur les autres pages)
-                $_SESSION['role']= $ligne->id_role ;
-                $_SESSION['IdUser']= $ligne->id ;       // Stockage dans les variables de session de l'Id du client
+                }
+                switch ($ligne->id_role) {
+                    case 1:
+                        $_SESSION['role'] = "Admin";
+                        break;
+                    case 2:
+                        $_SESSION['role'] = "Etudiant";
+                        break;
+                    case 3:
+                        $_SESSION['role'] = "Gestionnaire";
+                        break;
+                    default :
+                        throw new Exception();
+                }
+                $_SESSION['connecte'] = true ; 			// Stockage dans les variables de session que l'on est connecté (sera utilisé sur les autres pages)
+                $_SESSION['IdUser'] = $ligne->id ;       // Stockage dans les variables de session de l'Id du client
                 $connecte=true;
             }
         }

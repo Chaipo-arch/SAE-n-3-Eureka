@@ -16,7 +16,7 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 
 		<!-- Lien vers mon CSS -->
 		<link href="css/monStyle.css" rel="stylesheet">
-		<link href="css/ForumCss.css" rel="stylesheet">
+		<link href="css/HeaderCss.css" rel="stylesheet">
 
 		<!-- Lien vers CSS fontawesome -->
 		<link href="fontawesome-free-6.2.1-web/css/all.css" rel="stylesheet"> <!--load all styles -->
