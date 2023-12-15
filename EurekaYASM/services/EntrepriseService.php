@@ -30,6 +30,6 @@ class EntrepriseService {
 				$tableauRetourF[]=$tabEntrepriseF;
 			}		
 		}
-        return $tableauRetourF;
+        $_SESSION['listeEntrepriseRecherche'] = $tableauRetourF;
 	} 
 }

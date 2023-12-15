@@ -10,7 +10,7 @@ CREATE TABLE filiere(
     id int(15) AUTO_INCREMENT,
     year int(1),
     field Varchar(25),
-    course Varchar(10),
+    abreviation Varchar(10),
     PRIMARY KEY(id)
     );
 
@@ -124,8 +124,8 @@ CREATE Table Forum(
  
 );
 
-Drop Table if EXISTs filiereInterventions;
-CREATE Table filiereInterventions(
+Drop Table if EXISTs FiliereInterventions;
+CREATE Table FiliereInterventions(
     id int(15) AUTO_INCREMENT,
     id_filiere int(15),
     id_intervenant int(15),
@@ -248,24 +248,34 @@ DELIMITER ;
 
 
 -- procédure qui affiche la liste des entreprise en fonction de leur désignation
-DROP PROCEDURE IF EXISTS displayEntrepriseByDesignationByFiliaire;
+DROP PROCEDURE IF EXISTS displayEntrepriseByDesignationByFiliere;
 
 DELIMITER //
-CREATE PROCEDURE displayEntrepriseByDesignationByFiliaire(
+CREATE PROCEDURE displayEntrepriseByDesignationByFiliere(
     IN p_designation VARCHAR(50),
-    IN p_filiaire VARCHAR(20)
+    IN p_Filiere VARCHAR(20)
 )
 BEGIN
     START TRANSACTION;
-    SELECT Id, Designation, activity_sector, logo, presentation, Filiaire.field as Filiaire 
-    FROM Entreprise 
-    JOIN Intervenants ON Entreprise.Id = Intervenants.id_entreprise 
-    JOIN FiliaireIntervention ON Intervenants.Id = FiliaireIntervention.id_intervenant
-    JOIN Filiaire ON Filiaire.Id = FiliaireIntervention.id_filiere
-    WHERE Designation LIKE CONCAT('%', p_designation, '%') 
-      AND (p_filiaire = 'toutes' OR Filiaire.field = p_filiaire)
-    ORDER BY Designation ASC;
-    
+     IF p_Filiere != 'Toutes' THEN
+        SELECT Entreprise.Id, Entreprise.Designation, Entreprise.activity_sector, Entreprise.logo, Entreprise.presentation, Filiere.field as Filiere 
+        FROM Entreprise 
+        JOIN Intervenants ON Entreprise.Id = Intervenants.id_entreprise 
+        JOIN FiliereInterventions ON Intervenants.Id = FiliereInterventions.id_intervenant
+        JOIN Filiere ON Filiere.Id = FiliereInterventions.id_filiere
+        WHERE Designation LIKE CONCAT('%', p_designation, '%')  AND Filiere.field = p_Filiere
+        ORDER BY Designation ASC;
+   
+    ELSE
+     SELECT Entreprise.Id, Entreprise.Designation, Entreprise.activity_sector, Entreprise.logo, Entreprise.presentation, Filiere.field as Filiere 
+        FROM Entreprise 
+        JOIN Intervenants ON Entreprise.Id = Intervenants.id_entreprise 
+        JOIN FiliereInterventions ON Intervenants.Id = FiliereInterventions.id_intervenant
+        JOIN Filiere ON Filiere.Id = FiliereInterventions.id_filiere
+        WHERE Designation LIKE CONCAT('%', p_designation, '%')
+        ORDER BY Designation ASC;
+    END IF;
+     
     COMMIT;
 END//
 DELIMITER ;
