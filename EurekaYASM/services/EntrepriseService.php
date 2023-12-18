@@ -27,15 +27,12 @@ class EntrepriseService {
         $tableauRetourF = array();
 		if ($maRequete->execute()) {
             $maRequete->setFetchMode(PDO::FETCH_OBJ);
-            while ($ligne=$maRequete->fetch()) {
-                $tabEntrepriseF['designation']=$ligne['Designation'];
-                $tabEntrepriseF['secteur']=$ligne['secteur'];
-                $tabEntrepriseF['logo']=$ligne['logo'];
-                $tabEntrepriseF['presentation']=$ligne['presentation'];					
-                $tableauRetourF[]=$tabEntrepriseF;
-            }		
+            $ligne=$maRequete->fetchAll()
+                			
+                
+            		
 		}
-        return $tableauRetourF;
+        return $ligne;
         return false;
 
     }

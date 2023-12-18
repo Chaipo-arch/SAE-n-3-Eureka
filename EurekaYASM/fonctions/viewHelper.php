@@ -13,10 +13,13 @@
 				
 					<div class= "row">
 						<div class= "col-md-2 d-flex justify-content-center">
-							<img href="../images/eurekaLogo.jpg" alt="logo eureka">
+							<form class="form my-md-2 my-1" action="index.php" method="get">
+								<img href="images/eurekaLogo.jpg" name="accueil" alt="logo eureka">
+							</form>
+							
 						</div>
 						<div class= "col-md-2 col-8 d-flex justify-content-center">
-						<form class="form my-md-2 my-1" action="Recherche.php" method="get">
+						<form class="form my-md-2 my-1" action="index.php" method="get">
 							<input class="form-control mr-sm-1" name="recherche" type="search submit" placeholder="Search" aria-label="Search">
 						</form>
 						</div>
