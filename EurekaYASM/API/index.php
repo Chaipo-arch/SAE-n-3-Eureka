@@ -13,11 +13,8 @@
                         case "statNombreEtudiantParFiliere":
                             affichageStats();
                             break;
-                        case "affichage":
-                            
-                                affichageDonne();
-                            
-                            
+                        case "getRole":
+                                getRole($_SESSION["idrole"]);
                             break;
                         case "emotion":
                             affichageEmotion();

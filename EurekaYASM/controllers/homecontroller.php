@@ -36,14 +36,12 @@ class HomeController {
      * Sinon vers la page connexion
      */
     public function tentativeConnexion($pdo) {
-        var_dump($_POST);
         $login = HttpHelper::getParam('identifiant');
         $pwd = HttpHelper::getParam('pwd');
         $login = htmlspecialchars($login);
         $pwd = htmlspecialchars($pwd);
         try{ // Bloc try bd injoignable 
             $connexionReussi = $this->userService->verifUtilisateur($pdo,$login,$pwd);
-            var_dump($_SESSION);
             if($connexionReussi) {
                 $view = new View("sae/EurekaYASM/views/forum");
                 //$view->setVar('nomPage',"forum");

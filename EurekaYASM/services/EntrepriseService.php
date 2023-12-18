@@ -10,13 +10,20 @@ use PDOStatement;
  */
 class EntrepriseService {
 
+    function toutesLesEntreprise($connexion){
+        $maRequete = $connexion->prepare("SELECT * From Entreprise");
+        $maRequete->execute();
+
+        $tableauRetourF = $maRequete->fetchAll();
+        return $tableauRetourF;
+    }
     function Entreprise($connexion,$filiere) {
-        $maRequete = $connexion->prepare("CALL displayEntrepriseByDesignationByFiliaire(:laDesignation,:laFiliaire)");
-        $maRequete->bindParam(':laDesignation', "a");
         if($filiere == null) {
             $filiere = "";
         } 
-        $maRequete->bindParam(':laFiliaire', $filiere);
+            $maRequete = $connexion->prepare("CALL displayEntrepriseByDesignationByFiliere(:laDesignation, :laFiliaire)");
+            $maRequete->bindParam(':laDesignation', $filiere);
+            $maRequete->bindParam(':laFiliaire', $filiere);
         $tableauRetourF = array();
 		if ($maRequete->execute()) {
             $maRequete->setFetchMode(PDO::FETCH_OBJ);
@@ -34,7 +41,7 @@ class EntrepriseService {
     }
     function RechercheEntreprise($connexion,$chaineCaractere,$filiaire){
         global $connexion;  
-        $maRequete = $connexion->prepare("CALL displayEntrepriseByDesignationByFiliaire(:laDesignation,:laFiliaire)");
+        $maRequete = $connexion->prepare("CALL displayEntrepriseByDesignationByFiliere(:laDesignation,:laFiliaire)");
         $maRequete->bindParam(':laDesignation', $chaineCaractere);
         $maRequete->bindParam(':laFiliaire', $filiaire);
         $tableauRetourF = array();
@@ -48,7 +55,8 @@ class EntrepriseService {
 				$tableauRetourF[]=$tabEntrepriseF;
 			}		
 		}
-        $_SESSION['listeEntrepriseRecherche'] = $tableauRetourF
+        $_SESSION['listeEntrepriseRecherche'] = $tableauRetourF;
+        echo "tableauRetourF";
         return $tableauRetourF;
 	} 
 }

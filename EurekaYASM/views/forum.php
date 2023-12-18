@@ -17,9 +17,18 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 <?php 
     include("fonctions/viewHelper.php");
     headerHelper();
+    
   ?>
-  
+  <br>
+  <br><br>
+  <h1>Stat : </h1><br><br>
+  <div class="col-md-3" ><canvas id="myChart"></canvas></div>
+
     <?php footerHelper(); ?>
-	
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/Dashboard.js"></script>
 </body>
 </html>

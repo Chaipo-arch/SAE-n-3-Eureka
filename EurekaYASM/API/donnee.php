@@ -75,4 +75,29 @@
 		}
     }
     
+	function getRole($id){
+        try {
+            $pdo=getPDO();
+            $maRequete = "SELECT role.designation as role 
+            FROM Utilisateur
+			JOIN role on id_role = role.id
+            WHERE id_role = :id;
+            ";
+            
+            $stmt = $pdo->prepare($maRequete);										// Préparation de la requête
+			$stmt->bindParam(":id",$id);
+			$stmt->execute();	
+				
+			$clients=$stmt->fetchALL();
+			$stmt->closeCursor();
+			$stmt=null;
+			$pdo=null;
+
+			sendJSON($clients, 200) ;
+        } catch(PDOException $e){
+			$infos['Statut']="KO";
+			$infos['message']=$e->getMessage();
+			sendJSON($infos, 500) ;
+		}
+    }
 ?>

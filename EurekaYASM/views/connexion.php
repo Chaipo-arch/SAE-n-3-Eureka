@@ -1,5 +1,4 @@
 <?php
-var_dump($_POST);
 if (isset($_SESSION['connecte']) && $_SESSION['connecte']) {
     
     //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes

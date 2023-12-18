@@ -59,17 +59,22 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 			</div>
 		</div>
 		<?php 
-		if(isset($_POST['entreprises'])) {
-			foreach($_POST['entreprises'] as $entreprise) {?>
+		
+		if(isset($entreprises)) {
+			
+			foreach($entreprises as $entreprise) {
+				
+			?>
 		<?php// for ($i = 0 ; $i< 10 ; $i= $i +1) { ?>
 			<p>
 			<div class="col-md-12 entrepriseCase">
 				<div class= "row">
 					<div class="col-md-2 case">
-						logo
+						<?php echo '<img src ="images/'.$entreprise["logo"].'"</img>' ;?>
 					</div>
 					<div class="col-md-4 case">
-						designation + secteur
+					<?php echo '<div class="col-md-6 ">'. $entreprise["Designation"].'</div>' ; 
+						echo $entreprise["activity_sector"] ;?>
 					</div>
 					<div class="col-md-6 case">
 						voir plus de détails
@@ -79,7 +84,7 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 			</p>
 		<?php } }?>
 	</div>
-	<?php var_dump($_SESSION);var_dump($_POST); ?>
+	<?php  ?>
     <?php footerHelper();
 	 ?>
 	 
