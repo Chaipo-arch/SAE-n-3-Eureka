@@ -166,31 +166,84 @@ INSERT INTO role(designation) Value("Etudiant");
 INSERT INTO role(designation) Value("Gestionnaire");
 
 DROP PROCEDURE IF EXISTS CreateUser;
-
+-- Renvoie un boolean correspondant au succés de l'ajout d'un utilisateur
 DELIMITER //
 CREATE PROCEDURE CreateUser(
-  IN p_nom_utilisateur VARCHAR(30),
-  IN p_mot_de_passe TEXT
+  IN p_Username VARCHAR(30),
+  IN p_nom VARCHAR(40),
+  IN p_prenom VARCHAR(25),
+  IN p_mot_de_passe TEXT,
+  IN p_role INT(15),
+  IN p_filiere INT(15)
 )
 BEGIN
     DECLARE compte_existant INT;
+    DECLARE role_existant INT;
+    DECLARE filiere_existant INT;
+
     START TRANSACTION;   
+
+    -- Vérification de l'existence du compte
     SELECT COUNT(*) INTO compte_existant
     FROM utilisateur
-    WHERE Username = p_nom_utilisateur OR password = p_mot_de_passe;
+    WHERE Username = p_Username 
+    AND nom = p_nom
+    AND prenom = p_prenom
+    AND password = p_mot_de_passe
+    AND id_role = p_role
+    AND id_filiere = p_filiere;
 
-    IF compte_existant < 1 THEN 
-        INSERT INTO Utilisateur(Username,password,id_role) Value(p_nom_utilisateur,p_mot_de_passe,1);
+    -- Vérification de l'existence du rôle
+    SELECT COUNT(*) INTO role_existant
+    FROM role
+    WHERE role.id = p_role;
+
+    -- Vérification de l'existence de la filière
+    SELECT COUNT(*) INTO filiere_existant
+    FROM filiere
+    WHERE filiere.id = p_filiere;
+
+    IF compte_existant < 1 AND role_existant > 0 AND filiere_existant > 0 THEN 
+        INSERT INTO Utilisateur(Username,nom,prenom,password,id_role,id_filiere) 
+        VALUES (p_Username,p_nom,p_prenom,p_mot_de_passe,p_role,p_filiere);
         SELECT TRUE;
     ELSE 
         SELECT FALSE;
     END IF;
+
     COMMIT;
 END//
 DELIMITER ;
 
 CALL CreateUser("asa","asa"); -- exemple d'appel de procédure
 
+DROP PROCEDURE IF EXISTS DeleteUser;
+
+DELIMITER //
+CREATE PROCEDURE DeleteDelete(
+  IN p_id INT
+  
+)
+BEGIN
+    START TRANSACTION;   
+    DELETE FROM utilisateur WHERE id = p_id;
+    COMMIT;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS EditPasswordUser;
+
+DELIMITER //
+CREATE PROCEDURE EditPasswordUser(
+  IN p_id INT
+  
+)
+BEGIN
+    START TRANSACTION;   
+    DELETE FROM utilisateur WHERE id = p_id;
+    COMMIT;
+END//
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS AjoutEntreprise;
 
@@ -217,22 +270,6 @@ BEGIN
     COMMIT;
 END//
 DELIMITER ;
-
-
-DROP PROCEDURE IF EXISTS DeleteAdmin;
-
-DELIMITER //
-CREATE PROCEDURE DeleteAdmin(
-  IN p_id INT
-  
-)
-BEGIN
-    START TRANSACTION;   
-    DELETE FROM utilisateur WHERE id = p_id;
-    COMMIT;
-END//
-DELIMITER ;
-
 
 -- procédure qui affiche la liste des étudiants
 DROP PROCEDURE IF EXISTS DisplayAllStudent;
