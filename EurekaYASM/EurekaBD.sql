@@ -372,3 +372,42 @@ BEGIN
     COMMIT;
 END//
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS getSouhait;
+
+DELIMITER //
+CREATE PROCEDURE getSouhait(
+	IN p_utilisateur INT(15)
+)
+BEGIN
+    START TRANSACTION;
+    SELECT souhaitEtudiant.id_entreprise FROM Utilisateur JOIN souhaitEtudiant ON souhaitEtudiant.id_Utilisateur = p_utilisateur;
+    COMMIT;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS setSouhait;
+DELIMITER //
+CREATE PROCEDURE setSouhait(
+	 IN p_entreprise INT(15),
+     IN p_utilisateur INT(15)
+)
+BEGIN
+    START TRANSACTION;
+    INSERT INTO souhaitEtudiant (id_entreprise,id_Utilisateur) VALUES (p_entreprise,p_utilisateur);
+    COMMIT;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS deleteSouhait;
+DELIMITER //
+CREATE PROCEDURE deleteSouhait(
+	 IN p_entreprise INT(15),
+     IN p_utilisateur INT(15)
+)
+BEGIN
+    START TRANSACTION;
+    DELETE FROM souhaitEtudiant WHERE souhaitEtudiant.id_rentreprise = p_entreprise AND souhaitEtudiant.id_Utilisatreur;
+    COMMIT;
+END//
+DELIMITER ;
