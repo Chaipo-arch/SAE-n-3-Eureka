@@ -59,13 +59,13 @@ CREATE Table souhaitEntreprise(
 
 Drop Table if EXISTs souhaitEtudiant;
 CREATE Table souhaitEtudiant(
-    
+    id int(15),
     id_entreprise int(15),
     id_utilisateur int(15),
     
     FOREIGN KEY (id_entreprise) REFERENCES Entreprise(id),
     FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id),
-    PRIMARY Key(id_entreprise,id_utilisateur) 
+    PRIMARY Key(id) 
 );
 
 
@@ -76,7 +76,6 @@ CREATE Table Lieu(
     ville Varchar(25),
     cp int(5),
     adresse  Varchar(50),
-    num_rue int(5),
     id_entreprise int(15),
    
     FOREIGN KEY (id_entreprise) REFERENCES Entreprise(id),
@@ -160,6 +159,7 @@ END//
 DELIMITER ;
 
 CALL connexion('assssqsa','asa');
+
 
 DROP PROCEDURE IF EXISTS CreateUser;
 -- Renvoie un boolean correspondant au succés de l'ajout d'un utilisateur
@@ -247,18 +247,34 @@ CREATE PROCEDURE AjoutEntreprise(
   IN p_designation VARCHAR(25),
   IN p_activity_sector VARCHAR(25),
   IN p_logo TEXT,
-  IN p_presentation TEXT
+  IN p_presentation TEXT,
+  IN p_ville VARCHAR(25),
+  IN p_cp INT(5),
+  IN p_adresse VARCHAR(50)
 )
 BEGIN
     DECLARE entreprise_existante INT;
+    DECLARE lieu_existante INT;
+    DECLARE entrepriseID INT;
     START TRANSACTION;   
     SELECT COUNT(*) INTO entreprise_existante
     FROM Entreprise
     WHERE p_designation = Entreprise.designation AND logo = p_logo AND presentation = p_presentation;
 
     IF entreprise_existante < 1 THEN 
-        INSERT INTO Entreprise(designation,activity_sector,logo,p_presentation) Value(p_designation,p_activity_sector,p_logo,p_presentation);
+        INSERT INTO Entreprise(designation,activity_sector,logo,presentation) Value(p_designation,p_activity_sector,p_logo,p_presentation);
         SELECT TRUE;
+        SELECT COUNT(*) INTO lieu_existante
+        FROM lieu
+        WHERE p_ville = lieu.ville AND p_cp = lieu.cp AND p_adresse = lieu.adresse;
+        IF lieu_existante < 1 THEN
+            SELECT max(id) INTO entrepriseID FROM entreprise;
+            INSERT INTO Lieu(ville,cp,adresse,id_entreprise) Value(p_ville,p_cp,p_logo,p_adresse,entrepriseID);
+        ELSE 
+            UPDATE Lieu
+            SET id_entreprise = entrepriseID
+            WHERE ville = p_ville AND cp = p_cp AND adresse = p_adresse;
+        END IF;    
     ELSE 
         SELECT FALSE;
     END IF;
@@ -377,7 +393,7 @@ CREATE PROCEDURE getSouhait(
 )
 BEGIN
     START TRANSACTION;
-    SELECT souhaitEtudiant.id_entreprise FROM Utilisateur JOIN souhaitEtudiant ON souhaitEtudiant.id_Utilisateur = p_utilisateur;
+    SELECT DISTINCT souhaitEtudiant.id_entreprise FROM Utilisateur JOIN souhaitEtudiant ON souhaitEtudiant.id_Utilisateur = p_utilisateur;
     COMMIT;
 END//
 DELIMITER ;
@@ -403,7 +419,7 @@ CREATE PROCEDURE deleteSouhait(
 )
 BEGIN
     START TRANSACTION;
-    DELETE FROM souhaitEtudiant WHERE souhaitEtudiant.id_rentreprise = p_entreprise AND souhaitEtudiant.id_Utilisatreur;
+    DELETE FROM souhaitEtudiant WHERE souhaitEtudiant.id_entreprise = p_entreprise AND souhaitEtudiant.id_Utilisateur;
     COMMIT;
 END//
 DELIMITER ;
