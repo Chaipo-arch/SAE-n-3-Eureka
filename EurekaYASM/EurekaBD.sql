@@ -161,10 +161,6 @@ DELIMITER ;
 
 CALL connexion('assssqsa','asa');
 
-INSERT INTO role(designation) Value("Admin");
-INSERT INTO role(designation) Value("Etudiant");
-INSERT INTO role(designation) Value("Gestionnaire");
-
 DROP PROCEDURE IF EXISTS CreateUser;
 -- Renvoie un boolean correspondant au succés de l'ajout d'un utilisateur
 DELIMITER //
