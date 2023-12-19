@@ -2,7 +2,7 @@
 
 if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
     //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
-    header('Location: index.php?action=renvoi');
+    header('Location: ../index.php?action=renvoi');
     exit();
 }
 ?>
@@ -28,55 +28,113 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 	<body>
 	<?php 
 	include("fonctions/viewHelper.php");
-	headerHelper();
+	//headerHelper();
     ?>
 	</br>
 	
 	<div class="container separation">
-		<div class="col-md-12">
-			<div class= "row centre">
-				<div class="col-md-4 centre">
-					
-					<form action="index.php" method="Post">
+	<form action="index.php" method="get">
+
+		<div class="col-md-4 centre">
+		<input name="action" type="hidden" value="recherche">
 						<input name="controller" type="hidden" value="Entreprise">
-						<input name="action" type="hidden" value="filiereChanger">
 						<select name="filiere" type="submit">
 							<option>Toutes</option>
 							<!-- option-->
-							<option>test1aaaaaaaaaaaaaaa</option>
-							<option>test2</option>
+							<?php 
+							if(isset($filieres)) {
+								var_dump($filieres);
+								foreach($filieres as $filiere) { ?>
+								<option
+								<?php if($_SESSION['filiere'] == $filiere) {  echo " selected ";}?>
+								> 
+								<?php  echo $filiere['field'] ; ?>
+								</option>
+							<?php } } ?>
 						</select>
+		</div>
+		<div class="col-md-6 centre">
+		<input class="form-control mr-sm-1" name="recherche" type="search submit" placeholder="Search" aria-label="Search">
+					
+		</div>
+		<div class="col-md-2 centre">
+		<input type="submit" value="valider">
+		</div>	
+		
+		
+		<div class="col-md-12">
+			<div class= "row centre">
+				<form action="index.php" method="get">
+					<div class="col-md-4 centre">
+						<input name="action" type="hidden" value="recherche">
+						<input name="controller" type="hidden" value="Entreprise">
+						<select name="filiere" type="submit">
+							<option>Toutes</option>
+							<!-- option-->
+							<?php 
+							if(isset($filieres)) {
+								var_dump($filieres);
+								foreach($filieres as $filiere) { ?>
+								<option
+								<?php if($_SESSION['filiere'] == $filiere) {  echo " selected ";}?>
+								> 
+								<?php  echo $filiere['field'] ; ?>
+								</option>
+							<?php } } ?>
+						</select>
+					</div>
+					<div class="col-md-2 centre">
 						<input type="submit" value="valider">
-					</form>
-				</div>
-				<div class="col-md-8 centre">
+					</div>
+						
+					
+					
+					<div class="col-md-6 centre">
+						<input class="form-control mr-sm-1" name="recherche" type="search submit" placeholder="Search" aria-label="Search">
+					
+					</div>
+				</form>
+				<!-- affichage de l'ajout d'entreprise si admin !-->
+				<?php if($_SESSION['role'] == 'Admin'){ ?>
+				<div class="col-md-2 centre">
 					<form class="form my-1 my-lg-1" action="index.php" method="get">
 						<input name="action" type="hidden" value="recherche">
 						<input name="controller" type="hidden" value="Entreprise">
-						<input class="form-control mr-sm-1" name="recherche" type="search submit" placeholder="Search" aria-label="Search">
+						<input class="btn btn-form-control mr-sm-1 btn-outline-dark" type="submit" value="+">
 					</form>	
 				</div>
+				<?php } ?>
 			</div>
 		</div>
 		<?php 
-		if(isset($_POST['entreprises'])) {
-			foreach($_POST['entreprises'] as $entreprise) {?>
-		<?php// for ($i = 0 ; $i< 10 ; $i= $i +1) { ?>
-			<p>
-			<div class="col-md-12 entrepriseCase">
-				<div class= "row">
-					<div class="col-md-2 case">
-						logo
-					</div>
-					<div class="col-md-4 case">
-						designation + secteur
-					</div>
-					<div class="col-md-6 case">
-						voir plus de détails
+		if(isset($entreprises)) {
+		
+			foreach($entreprises as $entreprise) {
+				?>
+				<p>
+				<div class="col-12">
+					<div class="card mb-4 shadow-sm d-flex flex-row">
+						<img src="<?php echo $entreprise['logo'] ; ?>">
+						<div class="card-body d-flex flex-column justify-content-between">;
+							<p class="card-text">
+							<?php echo $entreprise['designation'] ;?>
+							</p>
+							<?php echo $entreprise['presentation'] ;?>
+							<div class="btn-group mt-2">
+								<button type="button" class="btn btn-sm btn-outline-secondary">
+									Nous Découvrir
+								</button>
+								<button type="button" class="btn btn-sm btn-outline-secondary ml-1">
+									Rendez vous
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
-			</p>
+					
+				
+
+				</p>
 		<?php } }?>
 	</div>
     <?php footerHelper();

@@ -21,16 +21,16 @@
 						<div class= "col-md-2 col-3 col-xs-6 d-flex justify-content-center ">
 							<a class="nav-link active onglet rounded" href="index.php?controller=Entreprise">Entreprises</a>
 						</div>
-						<?php if($_SESSION['role'] == 'Admin' ||$_SESSION['gestionnaire'] == 'Gestionnaire') { ?>
+						<?php if($_SESSION['role'] == 'Admin' ||$_SESSION['role'] == 'Gestionnaire') { ?>
 							<div class= "col-md-2 col-3 col-xs-6  d-flex justify-content-center">
-								<a class="nav-link active onglet rounded" href="index.php?controller=Etudiant">souhaits Etudiants</a>
+								<a class="nav-link active onglet rounded" href="index.php?controller=Etudiant ">souhaits Etudiants</a>
 							</div>
 						<?php } else { ?>
 							<div class= "col-md-2 col-3 col-xs-6  d-flex justify-content-center">
-								<a class="nav-link active onglet rounded" href="">Mes souhaits</a>
+								<a class="nav-link active onglet rounded" href="index.php?controller=Souhait ">Mes souhaits</a>
 							</div>
 						<?php } ?>
-						<?php if($_SESSION['role'] == 'Admin' || $_SESSION['gestionnaire'] == 'Gestionnaire'){?>
+						<?php if($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Gestionnaire'){?>
 							<div class= "col-md-2 col-3 col-xs-6  d-flex justify-content-center">
 								<a class="nav-link active onglet rounded" href="index.php?controller=Planning">Planning Etudiants</a>
 							</div>

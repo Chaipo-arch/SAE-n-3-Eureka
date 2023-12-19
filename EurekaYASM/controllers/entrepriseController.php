@@ -16,15 +16,21 @@ class EntrepriseController {
     }
 
     public function index($pdo) {
+        $view = new View("SaeWeb/EurekaYASM/views/entreprise");
+        $filieres = $this->getFilieres($pdo);
         
-        if($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Gestionnaire') {
-            $filieres = $this->filiereService->getFilieres($pdo);
-            $_SESSION['filiere'] = 'Toutes';
-        } else {
-            $filiere = $this->filiereService->getStudentFiliere($pdo,$_SESSION['IdUser']);
-            $_SESSION['filiere'] = $filiere;
-        }
-        $entreprises = $this->entrepriseService->Entreprise($pdo,$_SESSION['filiere']);
+        $entreprises = $this->callLogique($pdo, null);
+        $view->setVar('filieres',$filieres);
+        $_SESSION['nomPage'] = "entreprise";
+        $view->setVar('entreprises',$entreprises);
+        return $view;
+    }
+
+    public function recherche($pdo) {
+        $_SESSION['filiere'] = HttpHelper::getParam('filiere');
+        $saisies = HttpHelper::getParam('recherche');
+        $filieres = $this->getFilieres($pdo);
+        $entreprises = $this->callLogique($pdo, $saisies);
         $view = new View("SaeWeb/EurekaYASM/views/entreprise");
         $_SESSION['nomPage'] = "entreprise";
         $view->setVar('filieres',$filieres);
@@ -32,23 +38,30 @@ class EntrepriseController {
         return $view;
     }
 
-    public function recherche($pdo) {
-        $saisies = HttpHelper::getParam('recherche');
-        $entreprises = $this->entrepriseService->rechercheEntreprise($pdo,$saisies,$_SESSION['filiere']);
-        $view = new View("SaeWeb/EurekaYASM/views/entreprise");
-        $_SESSION['nomPage'] = "entreprise";
-        $view->setVar('entreprises',$entreprises);
-        return $view;
+    private function getFilieres($pdo) {
+        if($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Gestionnaire') {
+            $filiere = $this->filiereService->getFilieres($pdo);
+            
+            if(!isset($_SESSION['filiere'])) {
+                $_SESSION['filiere'] = 'Toutes';
+             }
+        } else {
+            $filiere = $this->filiereService->getStudentFiliere($pdo,$_SESSION['IdUser']);
+            if(!isset($_SESSION['filiere'])) {
+                $_SESSION['filiere'] = $filiere;
+            }
+            
+        }
+        return $filiere;
     }
 
-    public function filiereChanger($pdo) {
-        $_SESSION['filiere'] = HttpHelper::getParam('filiere');
-        $entreprises = $this->entrepriseService->Entreprise($pdo,$_SESSION['filiere']);
-        $view = new View("SaeWeb/EurekaYASM/views/entreprise");
-        $view->setVar('entreprises',$entreprises);
-        return $view;
+    private function callLogique($pdo, $saisies) {
+        if ($saisies != null) {
+            return $this->entrepriseService->rechercheEntreprise($pdo,$saisies,$_SESSION['filiere']);
+        } else {
+            return $this->entrepriseService->Entreprise($pdo,$_SESSION['filiere']);
+        }
     }
-
 
 
 }

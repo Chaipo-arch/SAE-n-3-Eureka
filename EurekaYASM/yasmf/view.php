@@ -22,7 +22,7 @@ namespace yasmf;
 class View
 {
     private $relativePath;
-    private $viewParams = array();
+    public $viewParams = array();
 
     public function __construct($relativePath)
     {

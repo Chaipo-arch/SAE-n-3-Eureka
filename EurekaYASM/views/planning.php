@@ -1,7 +1,7 @@
 <?php
 if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
     //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
-    header('Location: index.php?action=renvoi');
+    header('Location: ../index.php?action=renvoi');
     exit();
 }
 ?>

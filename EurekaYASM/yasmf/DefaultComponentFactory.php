@@ -24,7 +24,9 @@ class DefaultComponentFactory
             return new $qualified_name(new EntrepriseService,new FiliereService);
         } else if($controller_name == "Etudiant"){
             return new $qualified_name(new EtudiantService, new FiliereService);
-        } else {
+        }else if($controller_name == "Souhait"){
+            return new $qualified_name();
+        }else {
             return new $qualified_name();
         }
     }
