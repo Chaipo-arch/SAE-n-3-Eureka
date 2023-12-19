@@ -356,7 +356,7 @@ BEGIN
 END//
 DELIMITER ;
 
--- procédure qui affiche la liste des étudiants
+-- procédure qui affiche la filiere d'un étudiant donné
 DROP PROCEDURE IF EXISTS DisplayFiliereOfStudent;
 
 DELIMITER //
