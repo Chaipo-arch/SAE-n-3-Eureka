@@ -355,3 +355,20 @@ BEGIN
     COMMIT;
 END//
 DELIMITER ;
+
+-- procédure qui affiche la liste des étudiants
+DROP PROCEDURE IF EXISTS DisplayFiliereOfStudent;
+
+DELIMITER //
+CREATE PROCEDURE DisplayFiliereOfStudent(
+	IN p_id_etudiant INT    
+)
+BEGIN
+    START TRANSACTION;
+    SELECT filiere.year FROM Utilisateur 
+    JOIN filiere 
+    ON utilisateur.id_filiere = filiere.id 
+    WHERE id_role = p_id_etudiant;
+    COMMIT;
+END//
+DELIMITER ;
