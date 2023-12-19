@@ -1,6 +1,18 @@
+
+.test {
+  border: 10px solid black;
+}
+
+
 /* Importation de la police Google */
 @import url('https://fonts.googleapis.com/css?family=Righteous&display=swap');
 
+
+.center{
+  text-align:center;
+  display: flex;
+  justify-content: center;
+}
 
 
 h1 {
@@ -8,6 +20,14 @@ h1 {
 	color:#3900EC;		/* Couleur police */
 	font-size: 2em; 	/* Double de la police normale */
 	font-weight:bold;	/* En gras */
+}
+
+.h1center {
+	/* D�finition des titres (des pages) */
+	color:white;		/* Couleur police */
+	font-size: 2em; 	/* Double de la police normale */
+	font-weight:bold;	/* En gras */
+  text-align:center;
 }
 
 h2 {
@@ -43,10 +63,7 @@ a:visited {
 	color: #EC00B3; 		/* couleur des liens  visit�s */
 }
 
-img:hover { /* Agrandissement image quandon passe dessus */
-	-webkit-transform:scale(1.2); 	/* Transformation pour Firefox */
-	transform: scale(1.2);			/* Transformation pour les autres navigateurs  */
-}
+
 
 /* .texte{ 
 	font-size: 1.3em; 	
@@ -98,11 +115,15 @@ html {
   height: 100%;
 }
 
+
+
+
 body {
   margin:0;
   padding:0;
   font-family: sans-serif;
   background: linear-gradient(#141e30, #243b55);
+  height: 100vh;
 }
 
 .login-box {
@@ -158,4 +179,106 @@ body {
   left: 0;
   color: #03e9f4;
   font-size: 12px;
+}
+
+
+
+/* ================================================================================ */
+
+*, ::before, ::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100vh;
+}
+
+.accueil {
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-size: 10px 50px; */
+  /* background-position: left; */
+}
+
+
+.custom-size {
+  background: url(https://images.unsplash.com/photo-1488554378835-f7acf46e6c98?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1351&q=80);
+  background-size: contain;
+  height: 120px; /* Hauteur personnalisée */
+}
+
+
+
+/* ================================================================= */
+/* AJOUT ENTREPRISE  */
+
+.formAjoutEntreprise {
+  width: 70%;
+  margin: 25px auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  font-weight: bold;
+}
+
+.TextDescriptif {
+  font-weight: bold;
+}
+
+input[type="text"],
+textarea {
+  width: calc(100% - 12px);
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[type="file"] {
+  margin-bottom: 15px;
+}
+
+input[type="submit"] {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+/* Pour rendre le champ de fichier plus stylisé */
+input[type="file"] {
+  position: relative;
+  overflow: hidden;
+}
+
+input[type="file"]:before {
+  content: 'Choisir un fichier';
+  display: inline-block;
+  background: #4caf50;
+  color: white;
+  padding: 8px 20px;
+  outline: none;
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+input[type="file"]:hover:before {
+  background: #45a049;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+  visibility: hidden;
 }

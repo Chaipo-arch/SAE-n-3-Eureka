@@ -1,4 +1,5 @@
 <?php 
+$connexion;
 	/////////////////////////////////////////////////////////////////////////////////////////////		
 	function connecteBD(&$erreurRenvoyee) {
 		// Fonction permettant de se connecter à la base de données
@@ -52,6 +53,7 @@
 					$_SESSION['connecte']= true ; 			// Stockage dans les variables de session que l'on est connecté (sera utilisé sur les autres pages)
 					$_SESSION['nomClient']= $ligne->$login ;   // Stockage dans les variables de session du nom du client
 					$_SESSION['IdUser']= $ligne->id ;// Stockage dans les variables de session de l'Id du client
+					$_SESSION['role']= $ligne->role;
 					$connecte=true;
 				}
 			}
@@ -64,7 +66,19 @@
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	
-	
+	function RechercheEntreprise($connexion,$chaineCaractere,$filiaire){
+        global $connexion;  
+        $maRequete = $connexion->prepare("CALL displayEntrepriseByDesignationByFiliere(:laDesignation,:laFiliaire)");
+        $maRequete->bindParam(':laDesignation', $chaineCaractere);
+        $maRequete->bindParam(':laFiliaire', $filiaire);
+    
+		$maRequete->execute();
+		
+		$tableauRetourF=$maRequete->fetchAll();
+		
+       
+        return $tableauRetourF;
+	} 
 	/////////////////////////////////////////////////////////////////////////////////////////////
 
 	/////////////////////////////////////////////////////////////////////////////////////////////	

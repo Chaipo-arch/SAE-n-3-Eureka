@@ -21,7 +21,7 @@
 	//TODO a modifier
 	if (isset($_SESSION['connecte'])) {
 		//On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
-		header('Location: pages/page1.php');
+		header('Location: pages/Forum.php');
 		exit();
 	}
 	
@@ -50,7 +50,7 @@
 
 	if ($connecte) {
 		//On est connecté, on renvoie vers la page des comptes. 
-		header('Location: pages/page1.php');
+		header('Location: pages/Forum.php');
 		exit();
 	}
 ?>
@@ -80,7 +80,7 @@
 		?>
 		<div class="row">
 			<div class="col-12">
-				<?php echo $messageRetour; ?>
+				<?php echo '<p class="blanc">' . $messageRetour . '</p>'; ?>
 			</div>
 		</div>
 		<?php 
@@ -100,7 +100,7 @@
 			?>
 			
 			<div class="user-box">
-				<input type="text" name="identifiant" required="" autocomplete="off" value="<?php echo htmlspecialchars($identifiantSaisi); ?>">
+				<input type="input" name="identifiant" required="" autocomplete="off" value="<?php echo htmlspecialchars($identifiantSaisi); ?>">
 				<label>Username</label>
 			</div>
 
