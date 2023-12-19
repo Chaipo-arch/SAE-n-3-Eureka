@@ -47,10 +47,10 @@ INSERT INTO souhaitEtudiant (id_entreprise, id_utilisateur) VALUES
 (3, 3);
 
 -- Insérer des données dans la table 'Lieu'
-INSERT INTO Lieu (ville, cp, adresse, num_rue, id_entreprise) VALUES
-('Ville A', 12345, 'Rue Principale', 10, 1),
-('Ville B', 67890, 'Avenue Centrale', 20, 2),
-('Ville C', 54321, 'Boulevard Principal', 30, 3);
+INSERT INTO Lieu (ville, cp, adresse, id_entreprise) VALUES
+('Ville A', 12345, 'Rue Principale', 1),
+('Ville B', 67890, 'Avenue Centrale', 2),
+('Ville C', 54321, 'Boulevard Principal', 3);
 
 -- Insérer des données dans la table 'Intervenants'
 INSERT INTO Intervenants (name, id_entreprise, id_filiere) VALUES
@@ -70,6 +70,6 @@ INSERT INTO Forum (Heure_debut, Heure_fin, duree, date_limite) VALUES
 
 -- Insérer des données dans la table 'filiereInterventions'
 INSERT INTO filiereInterventions (id_filiere, id_intervenant) VALUES
-(1, 1),
-(2, 2),
-(3, 3);
+(1, 1, 1),
+(2, 2, 2),
+(3, 3, 3);
