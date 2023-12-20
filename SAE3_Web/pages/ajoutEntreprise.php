@@ -21,28 +21,31 @@
   && isset($_POST['ville']) && isset($_POST['adresse']) && isset($_POST['cp'])){
 
     //echo "Test debug";
+    //htmlspecialchars($identifiantSaisi);
 
-    $nom=$_POST['nomEntreprise'];
+    $nom=htmlspecialchars($_POST['nomEntreprise']);
     echo $_POST['nomEntreprise'];
 
-    $activité=$_POST['secteurActivite'];
+    $activité=htmlspecialchars($_POST['secteurActivite']);
     echo $_POST['secteurActivite'];
 
-    $presentation=$_POST['presentation'];
+    $presentation=htmlspecialchars($_POST['presentation']);
     echo $_POST['presentation'];
 
-    $ville=$_POST['ville'];
+    $ville=htmlspecialchars($_POST['ville']);
     echo $_POST['ville'];
     
-    $adresse=$_POST['adresse'];
+    $adresse=htmlspecialchars($_POST['adresse']);
     echo $_POST['adresse'];
     
-    $codePostal=$_POST['cp'];
+    $codePostal=htmlspecialchars($_POST['cp']);
     echo $_POST['cp'];
     
     $logo="../images/doxio.jpg";
 
-    AjoutEntreprise($connexion,$nom,$activité,$presentation,$ville,$adresse,$codePostal,$logo);
+    if(AjoutEntreprise($connexion,$nom,$activité,$presentation,$ville,$adresse,$codePostal,$logo)){
+      header('Location: Forum.php');
+    }
   }
 
 

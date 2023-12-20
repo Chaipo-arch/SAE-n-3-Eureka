@@ -80,22 +80,22 @@ $connexion;
 	} 
 
 
-	function AjoutEntreprise($connexion,$nom,$activité,$presentation,$ville,$adresse,$codePostal,$logo){
+	function AjoutEntreprise($connexion,$nom,$activite,$presentation,$ville,$adresse,$codePostal,$logo){
 		global $connexion;
+		$codePostal = intval($codePostal);
+		/* $maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(a,a,a,
+		a,a,12345,a)"); */
 
-		$maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(a,a,a,
-		a,a,12345,a)");
-
-		$maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(:nomEntreprise,:activitéEntreprise,:logoEntreprise,
+		$maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(:nomEntreprise,:activiteEntreprise,:logoEntreprise,
 		:presentationEntreprise,:villeEntreprise,:codePostalEntreprise,:adresseEntreprise)");
 
 		$maRequeteInsertion->bindParam(':nomEntreprise', $nom);
-		$maRequeteInsertion->bindParam(':activitéEntreprise', $activité);
+		$maRequeteInsertion->bindParam(':activiteEntreprise', $activite);
 		$maRequeteInsertion->bindParam(':logoEntreprise', $logo);
 		$maRequeteInsertion->bindParam(':presentationEntreprise', $presentation);
 		$maRequeteInsertion->bindParam(':villeEntreprise', $ville);	
 		$maRequeteInsertion->bindParam(':codePostalEntreprise', $codePostal);
-		$maRequeteInsertion->bindParam(':adresseEntreprise', $adresse);
+		$maRequeteInsertion->bindParam(':adresseEntreprise', $adresse); 
 
 		if($maRequeteInsertion->execute()){
 			return true;
