@@ -241,18 +241,18 @@ DROP PROCEDURE IF EXISTS AjoutEntreprise;
 
 DELIMITER //
 CREATE PROCEDURE AjoutEntreprise(
-  IN p_designation VARCHAR(25),
-  IN p_activity_sector VARCHAR(25),
+  IN p_designation VARCHAR(100),
+  IN p_activity_sector VARCHAR(100),
   IN p_logo TEXT,
   IN p_presentation TEXT,
   IN p_ville VARCHAR(25),
-  IN p_cp INT,
+  IN p_cp INT(5),
   IN p_adresse VARCHAR(50)
 )
 BEGIN
     DECLARE entreprise_existante INT;
     DECLARE lieu_existante INT;
-    DECLARE entrepriseID INT;
+    DECLARE entrepriseID INT(15);
     START TRANSACTION;   
     SELECT COUNT(*) INTO entreprise_existante
     FROM Entreprise
