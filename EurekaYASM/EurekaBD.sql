@@ -282,18 +282,6 @@ BEGIN
 END//
 DELIMITER ;
 
--- procédure qui affiche la liste des étudiants
-DROP PROCEDURE IF EXISTS DisplayAllStudent;
-
-DELIMITER //
-CREATE PROCEDURE DisplayAllStudent()
-BEGIN
-    START TRANSACTION;
-    SELECT * FROM Utilisateur WHERE id_role = 3;
-    COMMIT;
-END//
-DELIMITER ;
-
 
 -- procédure qui affiche la liste des entreprise en fonction de leur désignation
 DROP PROCEDURE IF EXISTS displayEntrepriseByDesignationByFiliere;
