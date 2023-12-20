@@ -131,6 +131,8 @@ CREATE Table FiliereInterventions(
 );
 -- Fin de la création des table
 
+SET GLOBAL FOREIGN_KEY_CHECKS=0;
+
 -- Procedure de connexion en cours de réalisation
 DROP PROCEDURE IF EXISTS connexion;
 
@@ -253,20 +255,21 @@ BEGIN
     DECLARE entreprise_existante INT;
     DECLARE lieu_existante INT;
     DECLARE entrepriseID INT(15);
-    START TRANSACTION;   
+    SELECT COUNT(*) INTO lieu_existante
+    FROM lieu
+    WHERE p_ville = lieu.ville AND p_cp = lieu.cp AND p_adresse = lieu.adresse;
     SELECT COUNT(*) INTO entreprise_existante
     FROM Entreprise
     WHERE p_designation = Entreprise.designation AND logo = p_logo AND presentation = p_presentation;
-
+    
+    START TRANSACTION;   
     IF entreprise_existante < 1 THEN 
         INSERT INTO Entreprise(designation,activity_sector,logo,presentation) Value(p_designation,p_activity_sector,p_logo,p_presentation);
         SELECT TRUE;
-        SELECT COUNT(*) INTO lieu_existante
-        FROM lieu
-        WHERE p_ville = lieu.ville AND p_cp = lieu.cp AND p_adresse = lieu.adresse;
         IF lieu_existante < 1 THEN
             SELECT max(id) INTO entrepriseID FROM entreprise;
-            INSERT INTO Lieu(ville,cp,adresse,id_entreprise) Value(p_ville,p_cp,p_logo,p_adresse,entrepriseID);
+            SET entrepriseID = entrepriseID;
+            INSERT INTO Lieu(ville,cp,adresse,id_entreprise) Value(p_ville,p_cp,p_adresse,entrepriseID);
         ELSE 
             UPDATE Lieu
             SET id_entreprise = entrepriseID
