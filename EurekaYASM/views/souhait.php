@@ -1,18 +1,11 @@
 <?php
-var_dump($_POST);
-if (isset($_SESSION['connecte']) && $_SESSION['connecte']) {
-    
-    //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
-    header('Location: index.php?action=retour');
-    exit();
-}
 
 ?>
 <!DOCTYPE html>
 <html lang="fr">
     <head>
         <meta charset="utf-8">
-        <title>IUT BANK - Liste des comptes</title>
+        <title></title>
 
         <!-- Bootstrap CSS -->
         <link href="bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">
@@ -31,60 +24,53 @@ if (isset($_SESSION['connecte']) && $_SESSION['connecte']) {
 	headerHelper();
     ?>
 	</br>
-	
+	</br>
+	</br>
 	<div class="container separation">
-		<div class="col-md-12">
-			<div class= "row centre">
-				<div class="col-md-4 centre">
-					
-					<form action="index.php" method="Post">
-						<input name="controller" type="hidden" value="Entreprise">
-						<input name="action" type="hidden" value="filiereChanger">
-						<select name="filiere" type="submit">
-							<option>Toutes</option>
-							<!-- option-->
-							<option>test1aaaaaaaaaaaaaaa</option>
-							<option>test2</option>
-						</select>
-						<input type="submit" value="valider">
-					</form>
-				</div>
-				<div class="col-md-6 centre">
-					<form class="form my-1 my-lg-1" action="index.php" method="get">
-						<input name="action" type="hidden" value="recherche">
-						<input name="controller" type="hidden" value="Entreprise">
-						<input class="form-control mr-sm-1" name="recherche" type="search submit" placeholder="Search" aria-label="Search">
-					</form>	
-				</div>
-                <div class="col-md-2 centre">
-					<form class="form my-1 my-lg-1" action="index.php" method="get">
-						<input name="action" type="hidden" value="recherche">
-						<input name="controller" type="hidden" value="Entreprise">
-						<input class="btn btn-form-control mr-sm-1 btn-light" name="recherche" type=" submit" value="+">
-					</form>	
-				</div>
-			</div>
-		</div>
+	</br>
+	
 		<?php 
-		if(isset($souhaits)) {
-			foreach($souhaits as $souhait) {?>
-		<?php// for ($i = 0 ; $i< 10 ; $i= $i +1) { ?>
-			<p>
-			<div class="col-md-12 entrepriseCase">
-				<div class= "row">
-					<div class="col-md-2 case">
-						logo
+		if(isset($entreprises)) {
+			foreach($entreprises as $entreprise) {?>
+				
+					<p>
+					<div class="col-12">
+						<div class="card mb-4 shadow-sm d-flex flex-row">
+							<img src="<?php echo $entreprise['logo'] ; ?>">
+							<div class="card-body d-flex flex-column justify-content-between">
+								<p class="card-text">
+								<?php echo $entreprise['Designation'] ;?>
+								</p>
+								<?php echo $entreprise['presentation'] ;?>
+								<div class="btn-group mt-2">
+									<button type="button" class="btn btn-sm btn-outline-secondary">
+										Nous Découvrir
+									</button>
+									
+									<?php if($_SESSION['role'] == "Etudiant"  ) { 
+										$passage = false;
+										foreach($_SESSION['souhait'] as $souhait) {
+											if($souhait == $entreprise['id']) {
+												$passage = true;?>
+									
+												<form action ="index.php" methode="get">
+													<input name="action" type="hidden" value="deleteSouhaitEtudiant">
+													<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['id'] ; ?>">
+													<input name="controller" type="hidden" value="Entreprise">
+													<button type="button submit" class="btn btn-sm btn-outline-secondary ml-1">
+														Annuler Rendez Vous
+													</button>
+												</form>
+												  
+													
+									<?php  } } } ?>
+										
+								</div>
+							</div>
+						</div>
 					</div>
-					<div class="col-md-4 case">
-						designation + secteur
-					</div>
-					<div class="col-md-6 case">
-						voir plus de détails
-					</div>
-				</div>
-			</div>
-			</p>
-		<?php } }?>
+					</p>
+			<?php } }?>
 	</div>
     <?php footerHelper();
 	 ?>

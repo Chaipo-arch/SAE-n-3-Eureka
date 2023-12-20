@@ -21,11 +21,11 @@ class DefaultComponentFactory
         if($controller_name == "Home") {
             return new $qualified_name(new UserService);
         } else if($controller_name == "Entreprise"){
-            return new $qualified_name(new EntrepriseService,new FiliereService);
+            return new $qualified_name(new EntrepriseService,new FiliereService, new UserService);
         } else if($controller_name == "Etudiant"){
             return new $qualified_name(new EtudiantService, new FiliereService);
         }else if($controller_name == "Souhait"){
-            return new $qualified_name();
+            return new $qualified_name(new EntrepriseService, new UserService);
         }else {
             return new $qualified_name();
         }

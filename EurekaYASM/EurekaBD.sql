@@ -9,8 +9,8 @@ CREATE TABLE filiere(
     
     id int(15) AUTO_INCREMENT,
     year int(1),
-    field Varchar(25),
-    abreviation Varchar(10),
+    field Varchar(25) ,
+    abreviation Varchar(10) Unique,
     PRIMARY KEY(id)
     );
 
@@ -18,14 +18,14 @@ CREATE TABLE filiere(
 Drop TABLE if EXISTs role;
 CREATE Table role(
     id int(15) AUTO_INCREMENT,
-    designation Varchar(25),
+    designation Varchar(25) UNIQUE,
     PRIMARY key(id)
 );
 
 Drop Table if EXISTs Utilisateur;
 CREATE Table Utilisateur(
     id int(15) AUTO_INCREMENT,
-    Username Varchar(30),
+    Username Varchar(30) UNIQUE,
     nom Varchar(40),
     prenom Varchar(25),
     password TEXT,
@@ -48,24 +48,24 @@ CREATE Table Entreprise(
 
 Drop Table if EXISTs souhaitEntreprise;
 CREATE Table souhaitEntreprise(
-    
+    id int(15) AUTO_INCREMENT,
     DesignationDuPoste Varchar(50),
     id_entreprise int(15),
     id_filiere int(15),
     FOREIGN KEY (id_entreprise) REFERENCES Entreprise(id),
     FOREIGN KEY (id_filiere) REFERENCES filiere(id),
-    PRIMARY Key(id_entreprise,id_filiere) 
+    PRIMARY KEY (id)
 );
 
 Drop Table if EXISTs souhaitEtudiant;
 CREATE Table souhaitEtudiant(
-    
+    id int(15) AUTO_INCREMENT,
     id_entreprise int(15),
     id_utilisateur int(15),
     
     FOREIGN KEY (id_entreprise) REFERENCES Entreprise(id),
     FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id),
-    PRIMARY Key(id_entreprise,id_utilisateur) 
+    PRIMARY KEY (id)
 );
 
 
@@ -107,7 +107,8 @@ CREATE Table RDV(
     id_souhait_entreprise INT(15),  -- Utiliser une colonne différente pour la référence
     id_souhait_utilisateur INT(15),  -- Utiliser une colonne différente pour la référence
     FOREIGN KEY (id_intervenant) REFERENCES Intervenants(id),
-    FOREIGN KEY (id_souhait_entreprise, id_souhait_utilisateur) REFERENCES souhaitEtudiant(id_entreprise, id_utilisateur),
+    FOREIGN KEY (id_souhait_entreprise) REFERENCES souhaitentreprise(id),
+    FOREIGN KEY (id_souhait_utilisateur) REFERENCES souhaitEtudiant(id),
     
     PRIMARY KEY (id)
 );
@@ -161,26 +162,77 @@ DELIMITER ;
 
 CALL connexion('assssqsa','asa');
 
-INSERT INTO role(designation) Value("Admin");
-INSERT INTO role(designation) Value("Etudiant");
-INSERT INTO role(designation) Value("Gestionnaire");
-
 DROP PROCEDURE IF EXISTS CreateUser;
-
+-- Renvoie un boolean correspondant au succés de l'ajout d'un utilisateur
 DELIMITER //
 CREATE PROCEDURE CreateUser(
-  IN p_nom_utilisateur VARCHAR(30),
-  IN p_mot_de_passe TEXT
+  IN p_Username VARCHAR(30),
+  IN p_nom VARCHAR(40),
+  IN p_prenom VARCHAR(25),
+  IN p_mot_de_passe TEXT,
+  IN p_role INT(15),
+  IN p_filiere INT(15)
+)
+BEGIN
+    DECLARE log_identique INT;      
+    SELECT COUNT(*) INTO log_identique
+    FROM utilisateur
+    WHERE Username = p_Username AND password = p_mot_de_passe;
+    
+    START TRANSACTION; 
+    IF log_identique < 1 THEN 
+        INSERT INTO Utilisateur(Username,nom,prenom,password,id_role,id_filiere) 
+        VALUES (p_Username,p_nom,p_prenom,p_mot_de_passe,p_role,p_filiere);
+        SELECT TRUE;
+    ELSE 
+        SELECT FALSE;
+    END IF;
+
+    COMMIT;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS DeleteUser;
+
+DELIMITER //
+CREATE PROCEDURE DeleteUser(
+  IN p_id INT  
 )
 BEGIN
     DECLARE compte_existant INT;
-    START TRANSACTION;   
+    -- Vérification de l'existence de l'étudiant
     SELECT COUNT(*) INTO compte_existant
-    FROM utilisateur
-    WHERE Username = p_nom_utilisateur OR password = p_mot_de_passe;
+    FROM Utilisateur
+    WHERE Utilisateur.id = p_id;
 
-    IF compte_existant < 1 THEN 
-        INSERT INTO Utilisateur(Username,password,id_role) Value(p_nom_utilisateur,p_mot_de_passe,1);
+
+    START TRANSACTION;   
+    DELETE FROM utilisateur WHERE Utilisateur.id = p_id;
+    COMMIT;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS EditPasswordUser;
+
+DELIMITER //
+CREATE PROCEDURE EditPasswordUser(
+  IN p_id_etudiant INT,
+  IN p_new_Password INT  
+)
+BEGIN
+    DECLARE etudiant_existant INT;
+
+    -- Vérification de l'existence de l'étudiant
+    SELECT COUNT(*) INTO etudiant_existant
+    FROM Utilisateur
+    WHERE Utilisateur.id = p_id_etudiant
+    AND Utilisateur.id_role = (SELECT role.id FROM role WHERE designation = 'Etudiant');
+
+    START TRANSACTION;   
+    IF etudiant_existant > 0 THEN
+        UPDATE Utilisateur
+        SET password = p_new_Password
+        WHERE Utilisateur.id = p_id_etudiant;
         SELECT TRUE;
     ELSE 
         SELECT FALSE;
@@ -188,9 +240,6 @@ BEGIN
     COMMIT;
 END//
 DELIMITER ;
-
-CALL CreateUser("asa","asa"); -- exemple d'appel de procédure
-
 
 DROP PROCEDURE IF EXISTS AjoutEntreprise;
 
@@ -206,7 +255,7 @@ BEGIN
     START TRANSACTION;   
     SELECT COUNT(*) INTO entreprise_existante
     FROM Entreprise
-    WHERE p_designation = designation AND logo = p_logo AND presentation = p_presentation;
+    WHERE p_designation = Entreprise.designation AND logo = p_logo AND presentation = p_presentation;
 
     IF entreprise_existante < 1 THEN 
         INSERT INTO Entreprise(designation,activity_sector,logo,p_presentation) Value(p_designation,p_activity_sector,p_logo,p_presentation);
@@ -218,22 +267,6 @@ BEGIN
 END//
 DELIMITER ;
 
-
-DROP PROCEDURE IF EXISTS DeleteAdmin;
-
-DELIMITER //
-CREATE PROCEDURE DeleteAdmin(
-  IN p_id INT
-  
-)
-BEGIN
-    START TRANSACTION;   
-    DELETE FROM utilisateur WHERE id = p_id;
-    COMMIT;
-END//
-DELIMITER ;
-
-
 -- procédure qui affiche la liste des étudiants
 DROP PROCEDURE IF EXISTS DisplayAllStudent;
 
@@ -241,7 +274,7 @@ DELIMITER //
 CREATE PROCEDURE DisplayAllStudent()
 BEGIN
     START TRANSACTION;
-    SELECT * FROM utilisateur WHERE id_role = (SELECT id FROM role WHERE designation = 'Etudiant');
+    SELECT * FROM Utilisateur WHERE id_role = (SELECT id FROM role WHERE designation = 'Etudiant');
     COMMIT;
 END//
 DELIMITER ;
@@ -281,14 +314,27 @@ END//
 DELIMITER ;
 
 
--- procédure qui affiche la liste des entreprise en fonction de leur désignation
-DROP PROCEDURE IF EXISTS displayAllEntreprise;
+-- procédure qui affiche la liste des roles
+DROP PROCEDURE IF EXISTS displayAllRole;
 
 DELIMITER //
-CREATE PROCEDURE displayAllEntreprise()
+CREATE PROCEDURE displayAllRole()
 BEGIN
     START TRANSACTION;
-    SELECT * FROM Entreprise ;
+    SELECT * FROM role ;
+    
+    COMMIT;
+END//
+DELIMITER ;
+
+-- procédure qui affiche la liste des filieres
+DROP PROCEDURE IF EXISTS displayAllFiliere;
+
+DELIMITER //
+CREATE PROCEDURE displayAllFiliere()
+BEGIN
+    START TRANSACTION;
+    SELECT DISTINCT field FROM filiere ;
     
     COMMIT;
 END//
@@ -296,13 +342,99 @@ DELIMITER ;
 
 
 DROP PROCEDURE IF EXISTS nombreEtudiantSansSouhait;
-
+ 
 DELIMITER //
 CREATE PROCEDURE nombreEtudiantSansSouhait()
 BEGIN
     START TRANSACTION;
-    SELECT * FROM Utilisateur WHERE id != (SELECT id_utilisateur FROM souhaitEtudiant ) AND id_role = (SELECT id FROM role WHERE Designation = 'Etudiant' ) ;
+    SELECT * FROM Utilisateur WHERE id != (SELECT id_utilisateur FROM souhaitEtudiant ) 	AND id_role = (SELECT id FROM role WHERE Designation = 'Etudiant');
     
+    COMMIT;
+END//
+DELIMITER ;
+
+-- procédure qui affiche la filiere d'un étudiant donné
+DROP PROCEDURE IF EXISTS DisplayFiliereOfStudent;
+
+
+-- procédure qui affiche la liste des filieres
+DROP PROCEDURE IF EXISTS displayAllFiliere;
+
+DELIMITER //
+CREATE PROCEDURE displayAllFiliere()
+BEGIN
+    START TRANSACTION;
+    SELECT DISTINCT field FROM filiere ;
+    
+    COMMIT;
+END//
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS nombreEtudiantSansSouhait;
+ 
+DELIMITER //
+CREATE PROCEDURE nombreEtudiantSansSouhait()
+BEGIN
+    START TRANSACTION;
+    SELECT * FROM Utilisateur WHERE id != (SELECT id_utilisateur FROM souhaitEtudiant ) 	AND id_role = (SELECT id FROM role WHERE Designation = 'Etudiant');
+    
+    COMMIT;
+END//
+DELIMITER ;
+
+-- procédure qui affiche la filiere d'un étudiant donné
+DROP PROCEDURE IF EXISTS DisplayFiliereOfStudent;
+
+DELIMITER //
+CREATE PROCEDURE DisplayFiliereOfStudent(
+	IN p_id_etudiant INT    
+)
+BEGIN
+    START TRANSACTION;
+    SELECT filiere.year FROM Utilisateur 
+    JOIN filiere 
+    ON utilisateur.id_filiere = filiere.id 
+    WHERE id_role = p_id_etudiant;
+    COMMIT;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS getSouhait;
+
+DELIMITER //
+CREATE PROCEDURE getSouhait(
+	IN p_utilisateur INT(15)
+)
+BEGIN
+    START TRANSACTION;
+    SELECT DISTINCT souhaitEtudiant.id_entreprise FROM Utilisateur JOIN souhaitEtudiant ON souhaitEtudiant.id_Utilisateur = p_utilisateur;
+    COMMIT;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS setSouhait;
+DELIMITER //
+CREATE PROCEDURE setSouhait(
+	 IN p_entreprise INT(15),
+     IN p_utilisateur INT(15)
+)
+BEGIN
+    START TRANSACTION;
+    INSERT INTO souhaitEtudiant (id_entreprise,id_Utilisateur) VALUES (p_entreprise,p_utilisateur);
+    COMMIT;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS deleteSouhait;
+DELIMITER //
+CREATE PROCEDURE deleteSouhait(
+	 IN p_entreprise INT(15),
+     IN p_utilisateur INT(15)
+)
+BEGIN
+    START TRANSACTION;
+    DELETE FROM souhaitEtudiant WHERE souhaitEtudiant.id_entreprise = p_entreprise AND souhaitEtudiant.id_Utilisateur;
     COMMIT;
 END//
 DELIMITER ;

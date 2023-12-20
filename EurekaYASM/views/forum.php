@@ -16,7 +16,7 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 <body>
 <?php 
     include("fonctions/viewHelper.php");
-    headerHelper();
+   headerHelper();
   ?>
   
     <?php footerHelper(); ?>

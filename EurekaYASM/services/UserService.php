@@ -31,10 +31,10 @@ class UserService {
                     case 1:
                         $_SESSION['role'] = "Admin";
                         break;
-                    case 2:
+                    case 3:
                         $_SESSION['role'] = "Etudiant";
                         break;
-                    case 3:
+                    case 2:
                         $_SESSION['role'] = "Gestionnaire";
                         break;
                     default :
@@ -49,4 +49,20 @@ class UserService {
 		
 	}
 
+    function getSouhait($connexion,$idEtudiant) {
+        $_SESSION['souhait']  = array();
+        $souhaits= array();
+		$maRequete = $connexion->prepare("CALL getSouhait(:IdE)");
+        $maRequete->bindParam(':IdE', $idEtudiant);
+        
+        if ($maRequete->execute()) {
+            while ($ligne=$maRequete->fetch()) {	
+                $souhaits[]= $ligne['id_entreprise'];
+                var_dump($souhaits);
+            }
+
+        }
+        var_dump($souhaits);
+        $_SESSION['souhait'] = $souhaits;
+	}
 }

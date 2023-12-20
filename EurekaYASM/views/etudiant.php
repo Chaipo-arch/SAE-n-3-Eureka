@@ -22,58 +22,73 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 		<!-- Lien vers CSS fontawesome -->
 		<link href="fontawesome-free-6.2.1-web/css/all.css" rel="stylesheet"> <!--load all styles -->
 	</head>
-
+	<body>
 	<?php 
 	include("fonctions/viewHelper.php");
 	headerHelper();
     ?>
 	</br>
-	
+	</br>
+	</br>
 	<div class="container separation">
 		<div class="col-md-12">
 			<div class= "row centre">
-				<div class="col-md-4 centre">
-					
-					<form action="index.php" method="Post">
-						<input name="controller" type="hidden" value="Entreprise">
-						<input name="action" type="hidden" value="filiereChanger">
-						<select name="filiere" type="submit">
-							<option>Toutes</option>
-							<!-- option-->
-							<option>test1aaaaaaaaaaaaaaa</option>
-							<option>test2</option>
-						</select>
-						<input type="submit" value="valider">
-					</form>
-				</div>
-				<div class="col-md-8 centre">
-					<form class="form my-1 my-lg-1" action="index.php" method="get">
+				<form action="index.php" method="get">
+					<div class="col-md-3 centre">
 						<input name="action" type="hidden" value="recherche">
 						<input name="controller" type="hidden" value="Entreprise">
+						<select name="filiere" type="submit">
+							<?php if ($_SESSION['role'] != "Etudiant") { ?>
+								
+							<option>Toutes</option>
+							<?php } ?>
+							<!-- option-->
+							<?php 
+							if(isset($filieres)) {
+
+								foreach($filieres as $filiere) { ?>
+									<option
+									<?php if($_SESSION['filiere'] == $filiere['field']) {  echo " selected ";}?>
+									> 
+									<?php  echo $filiere['field'] ; ?>
+									</option>
+								<?php }  ?>
+								<?php 
+								if($_SESSION['role'] == "Etudiant") {
+									echo '<option>'. $filieres. '</option>';
+								}
+							}?>
+						</select>
+					</div>
+					<div class="col-md-2 centre">
+						<input type="submit" value="valider">
+					</div>
+					<div class="col-md-6 centre">
 						<input class="form-control mr-sm-1" name="recherche" type="search submit" placeholder="Search" aria-label="Search">
-					</form>	
-				</div>
+					</div>
+				</form>
 			</div>
 		</div>
+		</br>
+	
 		<?php 
 		if(isset($etudiants)) {
-			foreach($etudiants as $etudiant) {?>
-		<?php// for ($i = 0 ; $i< 10 ; $i= $i +1) { ?>
-			<p>
-			<div class="col-md-12 entrepriseCase">
-				<div class= "row">
-					<div class="col-md-2 case">
-						logo
-					</div>
-					<div class="col-md-4 case">
-						designation + secteur
-					</div>
-					<div class="col-md-6 case">
-						voir plus de détails
+			var_dump($etudiants);
+			foreach($etudiants as $etudiant) {
+				var_dump($etudiant);?>
+				<p>
+				<div class="col-12">
+					<div class="card mb-4 shadow-sm d-flex flex-row">
+						<img src="<?php echo  ""; ?>">
+						<div class="card-body d-flex flex-column justify-content-between">
+							<p class="card-text">
+							<?php echo  "";?>
+							</p>
+							<?php echo "" ;?>
+						</div>
 					</div>
 				</div>
-			</div>
-			</p>
+				</p>
 		<?php } }?>
 	</div>
     <?php footerHelper();

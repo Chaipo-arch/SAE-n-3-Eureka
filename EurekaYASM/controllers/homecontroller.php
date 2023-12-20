@@ -36,18 +36,21 @@ class HomeController {
      * Sinon vers la page connexion
      */
     public function tentativeConnexion($pdo) {
-        var_dump($_POST);
         $login = HttpHelper::getParam('identifiant');
         $pwd = HttpHelper::getParam('pwd');
         try{ // Bloc try bd injoignable 
             $connexionReussi = $this->userService->verifUtilisateur($pdo,$login,$pwd);
-            var_dump($_SESSION);
+            
             if($connexionReussi) {
+                if($_SESSION['role'] == 'Etudiant')  {
+                    $this->userService->getSouhait($pdo,$_SESSION['IdUser']);
+                }
                 $view = new View("SaeWeb/EurekaYASM/views/forum");
                 //$view->setVar('nomPage',"forum");
                 $_SESSION['nomPage'] = "forum";
                 return $view;
             } 
+            
             $view = new View("SaeWeb/EurekaYASM/views/connexion");
             $view->setVar('problemeDonnees',false);
             $view->setVar('tentativeConnection',true);
