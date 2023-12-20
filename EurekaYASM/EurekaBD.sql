@@ -246,7 +246,7 @@ CREATE PROCEDURE AjoutEntreprise(
   IN p_logo TEXT,
   IN p_presentation TEXT,
   IN p_ville VARCHAR(25),
-  IN p_cp INT(5),
+  IN p_cp INT,
   IN p_adresse VARCHAR(50)
 )
 BEGIN
