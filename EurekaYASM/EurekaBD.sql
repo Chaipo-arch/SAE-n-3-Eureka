@@ -39,8 +39,8 @@ CREATE Table Utilisateur(
 Drop Table if EXISTs Entreprise;
 CREATE Table Entreprise(
     id int(15) AUTO_INCREMENT ,
-    Designation Varchar(25),
-    activity_sector Varchar(25),
+    Designation Varchar(100),
+    activity_sector Varchar(100),
     logo TEXT,
     presentation Text,
     PRIMARY Key(id)
@@ -59,7 +59,7 @@ CREATE Table souhaitEntreprise(
 
 Drop Table if EXISTs souhaitEtudiant;
 CREATE Table souhaitEtudiant(
-    id int(15),
+    id int(15) AUTO_INCREMENT,
     id_entreprise int(15),
     id_utilisateur int(15),
     
@@ -103,11 +103,8 @@ CREATE Table RDV(
     dateRDV date,
     id_souhait int(30),
     id_intervenant int(15),
-    id_souhait_entreprise INT(15),  -- Utiliser une colonne différente pour la référence
-    id_souhait_utilisateur INT(15),  -- Utiliser une colonne différente pour la référence
     FOREIGN KEY (id_intervenant) REFERENCES Intervenants(id),
-    FOREIGN KEY (id_souhait_entreprise, id_souhait_utilisateur) REFERENCES souhaitEtudiant(id_entreprise, id_utilisateur),
-    
+    FOREIGN KEY (id_souhait) REFERENCES souhaitEtudiant(id),
     PRIMARY KEY (id)
 );
 
@@ -289,7 +286,7 @@ DELIMITER //
 CREATE PROCEDURE DisplayAllStudent()
 BEGIN
     START TRANSACTION;
-    SELECT * FROM Utilisateur WHERE id_role = (SELECT id FROM role WHERE designation = 'Etudiant');
+    SELECT * FROM Utilisateur WHERE id_role = 3;
     COMMIT;
 END//
 DELIMITER ;
@@ -420,6 +417,21 @@ CREATE PROCEDURE deleteSouhait(
 BEGIN
     START TRANSACTION;
     DELETE FROM souhaitEtudiant WHERE souhaitEtudiant.id_entreprise = p_entreprise AND souhaitEtudiant.id_Utilisateur;
+    COMMIT;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS displayEtudiantEtSouhait;
+DELIMITER //
+CREATE PROCEDURE displayEtudiantEtSouhait()
+BEGIN
+    START TRANSACTION;
+    SELECT Utilisateur.id,nom,prenom,souhaitEtudiant.Entreprise.Designation,filiere.field 
+    FROM Utilisateur 
+    JOIN souhaitEtudiant ON souhaitEtudiant.id_Utilisateur = Utilisateur.id 
+    JOIN Entreprise ON Entreprise.id = souhaitEtudiant.id_Entreprise
+    JOIN filiere ON filiere.id = Utilisateur.id_Filiere 
+    WHERE Utilisateur.id_role = 3;
     COMMIT;
 END//
 DELIMITER ;
