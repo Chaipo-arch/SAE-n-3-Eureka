@@ -33,12 +33,18 @@ header {
 	}
   }
 footer {
-	background-color: lightgray;
+	background-color: rgb(228, 226, 226);
 	position: relative;
 	display: block;
 	bottom: -100px;
 	width: 100%;
 	text-align: center;
   }
+
+#imageHead {
+	width: 50px;
+	height: 50px;
+	overflow:hidden;
+}
 
 

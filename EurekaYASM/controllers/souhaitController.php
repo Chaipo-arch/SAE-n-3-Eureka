@@ -15,8 +15,13 @@ class SouhaitController {
     }
 
     public function index($pdo) {
+        if ($_SESSION['role'] == "Gestionnaire" | $_SESSION['role'] == "Admin" ) {
+            //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+            header('Location: ../index.php');
+            exit();
+        }
         $view = new View("SaeWeb/EurekaYASM/views/souhait");
-        $_SESSION['nomPage'] = "souhait";
+        $_SESSION['nomPage'] = "Souhait";
         $entreprises = array();
         foreach($_SESSION['souhait'] as $souhait ) {
             $liste = $this->entrepriseService->getEntreprise($pdo,$souhait);

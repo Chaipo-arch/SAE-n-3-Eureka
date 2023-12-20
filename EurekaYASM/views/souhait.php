@@ -1,5 +1,14 @@
 <?php
-
+if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
+    //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+    header('Location: ../index.php?action=renvoi');
+    exit();
+}
+if ($_SESSION['role'] == "Gestionnaire" | $_SESSION['role'] == "Admin" ) {
+    //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+    header('Location: index.php');
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">

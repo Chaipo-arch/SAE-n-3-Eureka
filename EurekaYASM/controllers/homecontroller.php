@@ -47,7 +47,7 @@ class HomeController {
                 }
                 $view = new View("SaeWeb/EurekaYASM/views/forum");
                 //$view->setVar('nomPage',"forum");
-                $_SESSION['nomPage'] = "forum";
+                $_SESSION['nomPage'] = "Home";
                 return $view;
             } 
             
@@ -69,16 +69,8 @@ class HomeController {
     public function deconnexion($pdo) {
         $_SESSION['connecte'] = false;
         session_destroy();
-        $view = new View("SaeWeb/EurekaYASM/views/connexion");
-        $view->setVar('problemeDonnees',false);
-        $view->setVar('tentativeConnection',false);
-        return $view;
+        return $this->index($pdo);
      }
-
-     public function retour($pdo) {
-        $view = new View("SaeWeb/EurekaYASM/views/".$_SESSION['nomPage']);
-        return $view;
-    }
     public function renvoi($pdo) {
         $view = new View("SaeWeb/EurekaYASM/views/connexion");
         return $view;

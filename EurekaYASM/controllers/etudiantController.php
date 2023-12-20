@@ -19,7 +19,7 @@ class EtudiantController {
         $filieres = $this->getFilieres($pdo);
         $etudiants = $this->callLogique($pdo, null);
         $view->setVar('filieres',$filieres);
-        $_SESSION['nomPage'] = "etudiant";
+        $_SESSION['nomPage'] = "Etudiant";
         $view->setVar('etudiants',$etudiants);
         return $view;
     }

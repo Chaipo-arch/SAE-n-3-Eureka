@@ -27,7 +27,7 @@ class EntrepriseController {
         $filieres = $this->getFilieres($pdo);
         $entreprises = $this->callLogique($pdo, null);
         $view->setVar('filieres',$filieres);
-        $_SESSION['nomPage'] = "entreprise";
+        $_SESSION['nomPage'] = "Entreprise";
         $view->setVar('entreprises',$entreprises);
         return $view;
     }
@@ -42,7 +42,7 @@ class EntrepriseController {
         $filieres = $this->getFilieres($pdo);
         $entreprises = $this->callLogique($pdo, $saisies);
         $view = new View("SaeWeb/EurekaYASM/views/entreprise");
-        $_SESSION['nomPage'] = "entreprise";
+        $_SESSION['nomPage'] = "Entreprise";
         $view->setVar('filieres',$filieres);
         $view->setVar('entreprises',$entreprises);
         return $view;

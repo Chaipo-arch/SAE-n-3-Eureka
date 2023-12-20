@@ -34,6 +34,9 @@ class Router
 
     public function route($dataSource = null)
     {
+        if (isset($_SESSION['role']) && $_SESSION['role'] == "Etudiant" && isset($_GET['controller']) && $_GET['controller'] == "Admin" ) {
+            $_GET['controller'] = "???";
+        }
         // set the controller to enrole
         $controllerName = HttpHelper::getParam('controller') ?: 'Home';
         $controllerQualifiedName = "controllers\\" . $controllerName . "Controller";

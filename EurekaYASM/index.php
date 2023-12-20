@@ -14,7 +14,11 @@ $dataSource = new DataSource(
     $user = 'root', # to change with your db user name
     $pass = 'root', # to change with your db password
     $charset = 'utf8mb4'
-);
 
-$router = new Router(new DefaultComponentFactory) ;
-$router->route($dataSource);
+);
+try {
+    $router = new Router(new DefaultComponentFactory) ;
+    $router->route($dataSource);
+} catch(Exception $e) {
+    var_dump($e);
+}

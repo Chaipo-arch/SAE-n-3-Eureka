@@ -2,7 +2,7 @@
 
 if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
     //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
-    header('Location: ../index.php?action=renvoi');
+    header('Location: index.php?action=renvoi');
     exit();
 }
 ?>
@@ -16,7 +16,6 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 		<link href="bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">
 
 		<!-- Lien vers mon CSS -->
-		<link href="css/monStyle.css" rel="stylesheet">
 		
 		<link href="css/EntrepriseCss.css" rel="stylesheet">
 		<link href="css/HeaderCss.css" rel="stylesheet">
@@ -26,63 +25,66 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 	</head>
 
 	<body>
-	<?php 
-	include("fonctions/viewHelper.php");
-	headerHelper();
+		<?php 
+		include("fonctions/viewHelper.php");
+		headerHelper();
 
-    ?>
-	</br>
-	
-	<div class="container separation">
-	
-		<div class="col-md-12">
-			<div class= "row centre">
-				<form action="index.php" method="get">
-					<div class="col-md-3 centre">
-						<input name="action" type="hidden" value="recherche">
-						<input name="controller" type="hidden" value="Entreprise">
-						<select name="filiere" type="submit">
-							<?php if ($_SESSION['role'] != "Etudiant") { ?>
-								
-							<option>Toutes</option>
-							<?php } ?>
-							<!-- option-->
-							<?php 
-							if(isset($filieres)) {
-
-								foreach($filieres as $filiere) { ?>
-									<option
-									<?php if($_SESSION['filiere'] == $filiere['field']) {  echo " selected ";}?>
-									> 
-									<?php  echo $filiere['field'] ; ?>
-									</option>
-								<?php }  ?>
-								<?php 
-								if($_SESSION['role'] == "Etudiant") {
-									echo '<option>'. $filieres. '</option>';
-								}
-							}?>
-						</select>
-					</div>
-					<div class="col-md-2 centre">
-						<input type="submit" value="valider">
-					</div>
-					<div class="col-md-6 centre">
-						<input class="form-control mr-sm-1" name="recherche" type="search submit" placeholder="Search" aria-label="Search">
-					</div>
-				</form>
-				<!-- affichage de l'ajout d'entreprise si admin !-->
-				<?php if($_SESSION['role'] == 'Admin'){ ?>
-					<div class="col-md-2 centre">
-						<form class="form my-1 my-lg-1" action="index.php" method="get">
+		?>
+		</br>
+		
+		<div class="container separation">
+		
+			<div class="col-md-12">
+				
+					<form action="index.php" method="get">
+						<div class= "row centre">
+						<div class="col-md-3 centre">
 							<input name="action" type="hidden" value="recherche">
 							<input name="controller" type="hidden" value="Entreprise">
-							<input class="btn btn-form-control mr-sm-1 btn-outline-dark" type="submit" value="+">
-						</form>	
-					</div>
-				<?php } ?>
+							<select name="filiere" type="submit">
+								<?php if ($_SESSION['role'] != "Etudiant") { ?>
+									
+								<option>Toutes</option>
+								<?php } ?>
+								<!-- option-->
+								
+								<?php 
+								if(isset($filieres)) {
+										
+									foreach($filieres as $filiere) { ?>
+										<option
+										<?php if($_SESSION['filiere'] == $filiere['field']) {  echo " selected ";}?>
+										> 
+										<?php  echo $filiere['field'] ; ?>
+										</option>
+									<?php }  ?>
+									<?php 
+									if($_SESSION['role'] == "Etudiant") {
+										echo '<option>'. $filieres. '</option>';
+									}
+								}?>
+							</select>
+						</div>
+						<div class="col-md-2 centre">
+							<input type="submit" value="valider">
+						</div>
+						<div class="col-md-6 centre">
+							<input class="form-control mr-sm-1" name="recherche" type="search submit" placeholder="Search" aria-label="Search">
+						</div>
+						</div>
+					</form>
+					<!-- affichage de l'ajout d'entreprise si admin !-->
+					<?php if($_SESSION['role'] == 'Admin'){ ?>
+						<div class="col-md-12 centre">
+							<form class="form my-1 my-lg-1" action="index.php" method="get">
+								<input name="action" type="hidden" value="ajouterEntreprise">
+								<input name="controller" type="hidden" value="Admin">
+								<input class="btn btn-form-control mr-sm-1 btn-outline-dark" type="submit" value="+">
+							</form>	
+						</div>
+					<?php } ?>
+					
 			</div>
-		</div>
 		
 			<?php 
 			if(isset($entreprises)) {
@@ -135,11 +137,16 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 									<?php } } ?>
 								</div>
 								<?php if ($_SESSION['role'] == "Admin") { ?>
-								<div class="btn-group mt-2">
-									<button type="button submit"  class="btn btn-sm btn-outline-secondary">
-										Modifier Entreprise
-									</button>
-								</div>
+									<form action="index.php" method="post">
+										<div class="btn-group mt-2 col-md-12">
+										<input name="action" type="hidden" value="modifierEntreprise">
+										<input name="controller" type="hidden" value="Admin">
+										<button type="button submit" class="btn btn-sm btn-outline-secondary">
+											Modifier Entreprise
+										</button>
+									
+										</div>
+									</form>
 								<?php } ?>
 							</div>
 						</div>
@@ -147,6 +154,7 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 					</p>
 			<?php } }?>
 	</div>
+	
     <?php footerHelper();
 	 ?>
 	 
