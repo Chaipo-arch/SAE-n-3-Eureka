@@ -51,9 +51,8 @@ $connexion;
 						return $connecte;
 					}		
 					$_SESSION['connecte']= true ; 			// Stockage dans les variables de session que l'on est connecté (sera utilisé sur les autres pages)
-					$_SESSION['nomClient']= $ligne->$login ;   // Stockage dans les variables de session du nom du client
 					$_SESSION['IdUser']= $ligne->id ;// Stockage dans les variables de session de l'Id du client
-					$_SESSION['role']= $ligne->role;
+					$_SESSION['role']= $ligne->id_role;
 					$connecte=true;
 				}
 			}
@@ -79,20 +78,34 @@ $connexion;
        
         return $tableauRetourF;
 	} 
+
+
+	function AjoutEntreprise($connexion,$nom,$activité,$presentation,$ville,$adresse,$codePostal,$logo){
+		global $connexion;
+
+		$maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(a,a,a,
+		a,a,12345,a)");
+
+		$maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(:nomEntreprise,:activitéEntreprise,:logoEntreprise,
+		:presentationEntreprise,:villeEntreprise,:codePostalEntreprise,:adresseEntreprise)");
+
+		$maRequeteInsertion->bindParam(':nomEntreprise', $nom);
+		$maRequeteInsertion->bindParam(':activitéEntreprise', $activité);
+		$maRequeteInsertion->bindParam(':logoEntreprise', $logo);
+		$maRequeteInsertion->bindParam(':presentationEntreprise', $presentation);
+		$maRequeteInsertion->bindParam(':villeEntreprise', $ville);	
+		$maRequeteInsertion->bindParam(':codePostalEntreprise', $codePostal);
+		$maRequeteInsertion->bindParam(':adresseEntreprise', $adresse);
+
+		if($maRequeteInsertion->execute()){
+			return true;
+		} else {
+			return false;
+		}
+
+
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////
 
-	/////////////////////////////////////////////////////////////////////////////////////////////	
-
-	
-	/////////////////////////////////////////////////////////////////////////////////////////////
-
-	/////////////////////////////////////////////////////////////////////////////////////////////
-	
-	/////////////////////////////////////////////////////////////////////////////////////////////
-
-	/////////////////////////////////////////////////////////////////////////////////////////////
-	
-	/////////////////////////////////////////////////////////////////////////////////////////////
-
-	/////////////////////////////////////////////////////////////////////////////////////////////
 ?>

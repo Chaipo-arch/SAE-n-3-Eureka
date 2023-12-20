@@ -16,6 +16,49 @@
 		header('Location: ../index.php');
 		exit();
 	} 
+
+  if (isset($_POST['nomEntreprise']) && isset($_POST['secteurActivite']) && isset($_POST['presentation'])
+  && isset($_POST['ville']) && isset($_POST['adresse']) && isset($_POST['cp'])){
+
+    //echo "Test debug";
+
+    $nom=$_POST['nomEntreprise'];
+    echo $_POST['nomEntreprise'];
+
+    $activité=$_POST['secteurActivite'];
+    echo $_POST['secteurActivite'];
+
+    $presentation=$_POST['presentation'];
+    echo $_POST['presentation'];
+
+    $ville=$_POST['ville'];
+    echo $_POST['ville'];
+    
+    $adresse=$_POST['adresse'];
+    echo $_POST['adresse'];
+    
+    $codePostal=$_POST['cp'];
+    echo $_POST['cp'];
+    
+    $logo="../images/doxio.jpg";
+
+    AjoutEntreprise($connexion,$nom,$activité,$presentation,$ville,$adresse,$codePostal,$logo);
+  }
+
+
+  /* $nomEntreprise="";
+
+
+	if (isset($_POST['nomEntreprise'])) {
+		$nomEntreprise = htmlspecialchars($_POST['nomEntreprise']);
+	} */
+
+
+
+  /* value="<?php echo htmlspecialchars($nomEntreprise);?>" */
+
+  $imageTest="";
+  
 ?>
 
 <!DOCTYPE html>
@@ -39,52 +82,69 @@
 
     <div id="container">
       <header>
-        <div>
-          <h1 class="h1center">AJOUTER UNE ENTREPRISE</h1>
-          <img src="../images/Eureka.png">
-        </div>
+        
       </header>
       
-      <form class="formAjoutEntreprise">
+      <form class="formAjoutEntreprise" action="ajoutEntreprise.php" method="post">
+
+        <div class="row caseCentrer">
+          <div class=" col-md-4 col-sm-3">
+            <img  src="../images/Eureka.png">
+          </div>
+          <div class=" col-md-8 col-sm-9 titreCentrer">
+            <h2 class="h2center">AJOUTER UNE ENTREPRISE</h2>
+          </div>
+        </div>
+
         <fieldset>
-          <legend>Fields marked with * are required</legend>
+          <legend>Les champs marqué par une * sont obligatoire</legend>
 
-          <!-- START DIV part-1 PERSONAL INFORMATION -->
+
           <div>
-            <h2>Personal Information (required)</h2>
-            <label for="first-name">Nom de L'entreprise</label>
-            <input type="text" name="first-name" required>
+            <label for="first-name">Nom de L'entreprise*</label>
+            <input type="text" name="nomEntreprise"  required >
             <br/>
-            <label for="first-name">Secteur D'activité</label>
-            <input type="text" name="first-name" required>
+            <label for="first-name">Secteur D'activité*</label>
+            <input type="text" name="secteurActivite" required>
             <br/>
 
-            <label for="message">Presentation de l'entreprise</label>
+            <label for="message">Presentation de l'entreprise*</label>
             <br/>
-            <textarea rows="5" cols="50" id="message" tabindex="-1"></textarea>
+            <textarea rows="5" cols="50" tabindex="-1" name="presentation" required></textarea>
 
-            <p class="TextDescriptif">Localisation</p>
+            <p class="TextDescriptif">Localisation*</p>
             <div class="row">
               
-              <div class="col-5">
-                <input class="" type="text" placeholder="Ville">
+              <div class="col-md-5 col-sm-12 col-12">
+                <input class="" name="ville" type="text" placeholder="Ville" required>
               </div>
 
-              <div class="col-5">
-                <input class="" type="text" placeholder="Adresse">
+              <div class="col-md-5 col-sm-8 col-8">
+                <input class="" type="text" name="adresse" placeholder="Adresse" required>
               </div>
 
-              <div class="col-2">
-                <input class="" type="text" placeholder="Code Postal">
+              <div class="col-md-2 col-sm-4 col-4">
+                <input class="" type="text" name="cp" placeholder="Code Postal ex: 12000" pattern="[0-9]{5}" required>
               </div>
               
             </div>
-            <label for="image">Importer une image :</label><br>
-            <input type="file" name="image"><br><br>   
+            <!-- <label for="image">Importer une image :</label><br>
+            <input type="file" name="image"><br><br>    -->
           </div>
-          <!-- END DIV part-3 ACCOUNT INFORMATION -->
-          <input type="submit" name="submitButton" value="Send-message">
-          <input type="reset" value="Reset all info" tabindex="-1">
+          
+
+          <div class="row caseCentrer">
+            <div class=" col-md-4 col-sm-3 col-3">
+              <a href="Forum.php" class="btn btn-outline-primary tailleMoyenne">Retour</a>
+            </div>
+            <div class=" col-md-8 col-sm-9 col-9 boutonDroite">
+              <input type="submit" class="btn btn-outline-primary tailleMoyenne " name="bouttonAjout" value="Ajouter l'Entreprise">
+              
+            </div>
+          </div>
+          <!-- <input type="submit" name="submitButton" value="Ajouter l'Entreprise"> -->
+          <!-- <input type="reset" value="Reset all info" tabindex="-1"> -->
+
         </fieldset>
       </form>
     </div>
