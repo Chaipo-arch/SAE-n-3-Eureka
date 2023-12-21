@@ -6,6 +6,7 @@ use services\EntrepriseService;
 use services\FiliereService;
 use services\EtudiantService;
 use services\AdminService;
+use services\ForumService;
 use controllers;
 
 class DefaultComponentFactory
@@ -20,7 +21,7 @@ class DefaultComponentFactory
      */
     public function buildControllerByName(string $controller_name, string $qualified_name ) {
         if($controller_name == "Home") {
-            return new $qualified_name(new UserService);
+            return new $qualified_name(new UserService, new ForumService);
         } else if($controller_name == "Entreprise"){
             return new $qualified_name(new EntrepriseService,new FiliereService, new UserService);
         } else if($controller_name == "Etudiant" && isset($_SESSION['role']) && $_SESSION['role'] != "Etudiant"){
@@ -28,10 +29,12 @@ class DefaultComponentFactory
         }else if($controller_name == "Souhait" && isset($_SESSION['role']) && $_SESSION['role'] == "Etudiant"){
             return new $qualified_name(new EntrepriseService, new UserService);
         }else if($controller_name == "Admin" && isset($_SESSION['role']) && $_SESSION['role'] != "Etudiant"){
-            return new $qualified_name(new AdminService);
+            return new $qualified_name(new AdminService, new ForumService);
+        } else if($controller_name == "Planning" ){
+            return new $qualified_name();
         } else {
-            header('Location: index.php');
-            exit();;
+            header('Location: index.php?action=pageNTrouve&pageNTrouve='.$controller_name);
+            exit();
         }
     }
     

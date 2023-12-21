@@ -4,6 +4,7 @@ namespace controllers;
 use yasmf\HttpHelper;
 use yasmf\View;
 use services\UserService;
+use services\ForumService;
 use PDO;
 
 /**
@@ -15,8 +16,9 @@ class HomeController {
     /**
      * Constructeur de HomeControlleur on utilise une instance de UserService pour séparer les responsabilités
      */
-    public function __construct(UserService $userService) {
+    public function __construct(UserService $userService,ForumService $forumService) {
         $this->userService = $userService; 
+        $this->forumService = $forumService;
     }
 
     /**
@@ -24,6 +26,10 @@ class HomeController {
      * Appel la page connexion
      */
     public function index($pdo) {
+        // Cas particulier pour le forum
+        if(isset($_SESSION['nomPage']) && $_SESSION['nomPage'] == "Home") {
+            return $this->toForum($pdo);
+        }
         $view = new View("SaeWeb/EurekaYASM/views/connexion");
         $view->setVar('problemeDonnees',false);
         $view->setVar('tentativeConnection',false);
@@ -45,10 +51,7 @@ class HomeController {
                 if($_SESSION['role'] == 'Etudiant')  {
                     $this->userService->getSouhait($pdo,$_SESSION['IdUser']);
                 }
-                $view = new View("SaeWeb/EurekaYASM/views/forum");
-                //$view->setVar('nomPage',"forum");
-                $_SESSION['nomPage'] = "Home";
-                return $view;
+                return $this->toForum($pdo);
             } 
             
             $view = new View("SaeWeb/EurekaYASM/views/connexion");
@@ -66,6 +69,20 @@ class HomeController {
         } 
             
     }
+
+    public function toForum($pdo) {
+        $view = new View("SaeWeb/EurekaYASM/views/forum");
+        $_SESSION['nomPage'] = "Home";
+        $caractéristiques = $this->forumService->getForumCaracteristiques($pdo);
+        $view->setVar('date',$caractéristiques['date']);
+        $view->setVar('dateLimite',$caractéristiques['dateLimite']);
+        $view->setVar('duree',$caractéristiques['duree']);
+        return $view;
+            
+            
+            
+            
+    }
     public function deconnexion($pdo) {
         $_SESSION['connecte'] = false;
         session_destroy();
@@ -75,7 +92,12 @@ class HomeController {
         $view = new View("SaeWeb/EurekaYASM/views/connexion");
         return $view;
     }
-
+    public function pageNTrouve($pdo) {
+        $pageNTrouve = HttpHelper::getParam('pageNTrouve');
+        $view = $this->toForum($pdo);
+        $view->setVar('pageNTrouve', $pageNTrouve);
+        return $view;
+    }
 }
 
 

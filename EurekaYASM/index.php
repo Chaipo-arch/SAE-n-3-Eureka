@@ -2,7 +2,6 @@
 session_start();
 spl_autoload_extensions(".php");
 spl_autoload_register();
-
 use yasmf\DefaultComponentFactory;
 use yasmf\DataSource;
 use yasmf\Router;
@@ -20,5 +19,5 @@ try {
     $router = new Router(new DefaultComponentFactory) ;
     $router->route($dataSource);
 } catch(Exception $e) {
-    var_dump($e);
+    echo "Nous rencontrons un problème pour le moment veuillez revenir plus tard";
 }

@@ -65,7 +65,7 @@ if ($_SESSION['role'] == "Gestionnaire" | $_SESSION['role'] == "Admin" ) {
 												<form action ="index.php" methode="get">
 													<input name="action" type="hidden" value="deleteSouhaitEtudiant">
 													<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['id'] ; ?>">
-													<input name="controller" type="hidden" value="Entreprise">
+													<input name="controller" type="hidden" value="Souhait">
 													<button type="button submit" class="btn btn-sm btn-outline-secondary ml-1">
 														Annuler Rendez Vous
 													</button>

@@ -12,7 +12,7 @@ class EntrepriseService {
 
     
     function Entreprise($connexion,$filiere) {
-        
+        $filiere = htmlspecialchars($filiere);
         $tableauRetourF = array();
         $recherche = "";
         $maRequete = $connexion->prepare("CALL displayEntrepriseByDesignationByFiliere(:laDesignation,:laFiliaire)");
@@ -25,7 +25,6 @@ class EntrepriseService {
         }
         
         return $tableauRetourF;
-
     }
 
     function getEntreprise($connexion,$idSouhait) {

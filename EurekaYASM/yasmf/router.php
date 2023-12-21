@@ -34,20 +34,19 @@ class Router
 
     public function route($dataSource = null)
     {
-        if (isset($_SESSION['role']) && $_SESSION['role'] == "Etudiant" && isset($_GET['controller']) && $_GET['controller'] == "Admin" ) {
-            $_GET['controller'] = "???";
-        }
         // set the controller to enrole
         $controllerName = HttpHelper::getParam('controller') ?: 'Home';
         $controllerQualifiedName = "controllers\\" . $controllerName . "Controller";
         $controller = $this->defaultComponentFactory->buildControllerByName($controllerName,$controllerQualifiedName);
         //$controller = new $controllerQualifiedName(new UserService());
         // set the action to trigger
-        
         $action = HttpHelper::getParam('action') ?: 'index';
         // trigger the appropriate action and get the resulted view
+        if(!method_exists($controller, $action)) {
+            $action = 'index';
+        }
         if ($dataSource != null) {
-            $view = $controller->$action($dataSource->getPdo());
+            $view = $controller->$action($dataSource->getPdo()) ;
         } else {
             $view = $controller->$action();
         }

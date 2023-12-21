@@ -10,8 +10,8 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 	<title>Forum</title>
 	<meta charset ="utf-8"/>
 	<link href="bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet"/>
+    <link href="css/EntrepriseCss.css" rel="stylesheet">
 	<link href="css/HeaderCss.css" rel="stylesheet">
-  <link href="css/EntrepriseCss.css" rel="stylesheet">
 	<link href="fontawesome-free-6.2.1-web/css/all.css" rel="stylesheet"/>
 </head>	
 <body>
@@ -19,36 +19,35 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
     include("fonctions/viewHelper.php");
    headerHelper();
   ?>
-  
-   <div class="container separation">
-      <div class="col-md-12">
-        <?php 
-        if(isset($pageNTrouve)) {
-          ?>
-          La page que vous avez demandée n'a pas était trouvé 
-        <?php } else {?>
-          <div class="row">
+  <div class="container separation">
+    <form action="index.php" method="post">
+        <div class="row">
             <div class ="col-md-4 centre">
-                
+                <input type="hidden" name="controller" value="Admin">
+                <input type="hidden" name="action" value="modifierForum">
+                <input type="hidden" name="edition" value="true">
                 Date</br>
-                <?php echo $date ; ?> 
-                
+                <input type="text" name="date" value="<?php if(isset($date)) { echo $date;}?>">
             
             </div>
             <div class ="col-md-4 centre">
                 Durée par défaut (minutes)</br>
-                <?php echo $duree ; ?> 
-                
+                <input type="text" name="duree" value="<?php if(isset($duree)) { echo $duree;}?>">
             </div>
             <div class ="col-md-4 centre">
                 Date Limite (rendez Vous)</br>
-                <?php echo $dateLimite ; ?> 
+                <input type="text" name="dateLimite" value="<?php if(isset($dateLimite)) { echo $dateLimite;}?>">
             </div>
             </br>
+            <div class ="col-md-12 centre">
+                </br>
+            <input type="submit"  value="Modifier Caractéristiques forum">
+            </div>
         </div>
-          <?php }?>
-        </div>
-  </div>
+        
+    </form>
+    <a  href="index.php">Retour</a>
+</div>
     <?php footerHelper(); ?>
 	
 </body>

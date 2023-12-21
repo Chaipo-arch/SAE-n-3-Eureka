@@ -2,6 +2,7 @@
 namespace controllers;
 
 use yasmf\View;
+use yasmf\HttpHelper;
 use PDO;
 use services\EntrepriseService;
 use services\UserService;
@@ -30,5 +31,11 @@ class SouhaitController {
         $view->setVar('entreprises',$entreprises);
         return $view;
 
+    }
+    public function deleteSouhaitEtudiant($pdo) {
+        $idE = HttpHelper::getParam('idEntreprise');
+        $this->entrepriseService->deleteSouhait($pdo, $idE, $_SESSION['IdUser']);
+        $this->userService->getSouhait($pdo, $_SESSION['IdUser']);
+        return $this->index($pdo);
     }
 }

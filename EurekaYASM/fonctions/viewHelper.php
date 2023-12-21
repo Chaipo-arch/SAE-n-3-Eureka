@@ -14,9 +14,11 @@
 							<img src="eurekaLogo.jpg" id="imageHead" alt="logo eureka">
 						</div>
 						<div class= "col-md-2 col-8 d-flex justify-content-center">
-						<form class="form my-md-2 my-1" action="Recherche.php" method="get">
-							<input class="form-control mr-sm-1" name="recherche" type="search submit" placeholder="Search" aria-label="Search">
-						</form>
+						<?php if($_SESSION['role'] == 'Admin') { ?>
+							<a class="nav-link active onglet rounded" href="index.php?controller=Admin&action=toForum">Forum</a>
+						<?php } else { ?>
+							<a class="nav-link active onglet rounded" href="index.php?action=toForum">Forum</a>
+						<?php } ?>
 						</div>
 						<div class= "col-md-2 col-3 col-xs-6 d-flex justify-content-center ">
 							<a class="nav-link active onglet rounded" href="index.php?controller=Entreprise">Entreprises</a>

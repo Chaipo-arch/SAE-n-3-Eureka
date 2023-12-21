@@ -136,6 +136,7 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 											</form>
 									<?php } } ?>
 								</div>
+								<div class="row">
 								<?php if ($_SESSION['role'] == "Admin") { ?>
 									<form action="index.php" method="post">
 										<div class="btn-group mt-2 col-md-12">
@@ -147,7 +148,18 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 									
 										</div>
 									</form>
+									<form action="index.php" method="post">
+										<div class="btn-group mt-2 col-md-12">
+										<input name="action" type="hidden" value="modifierEntreprise">
+										<input name="controller" type="hidden" value="Admin">
+										<button type="button submit" class="btn btn-sm btn-outline-secondary">
+											Supprimer Entreprise
+										</button>
+									
+										</div>
+									</form>
 								<?php } ?>
+								</div>
 							</div>
 						</div>
 					</div>

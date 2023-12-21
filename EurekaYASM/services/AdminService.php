@@ -10,4 +10,7 @@ use PDOStatement;
  */
 class AdminService {
     
+    public function ModifierForumCaracteristiques($pdo,$date,$dateLimite,$duree) {
+        return false;
+    }
 }
