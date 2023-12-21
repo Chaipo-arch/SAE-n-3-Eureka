@@ -16,7 +16,14 @@
 		header('Location: ../index.php');
 		exit();
 	} 
-
+	if (isset($_SESSION['nbBTN'])){
+		for($i = 0; $i < $_SESSION['nbBTN']; $i++){
+			if (isset($_POST('txt'.$i))) {
+				//header('Location: modifierEntreprise.php');
+				$_SESSION['nom'] = $_POST['txt'.$i];
+			}
+		}
+	}
 
 	$rechercheUtilisateur = "";
 	
@@ -24,6 +31,11 @@
 	if (isset($_GET['chaineRecherche'])) {
 		$rechercheUtilisateur = $_GET['chaineRecherche'];
 	}
+	
+	
+
+	
+
 ?>
 
 
@@ -118,29 +130,39 @@
 				}
 				$tableauEntreprise = RechercheEntreprise($connexion,$recherche,$filiere);
 				//var_dump($tableauEntreprise);
+				$indexIncrement= 0;
+				//echo '<form action="index.php" method="post">';
 				foreach($tableauEntreprise as $ligne) {
 
-
+					//TODO AFFICHAGE BOUTON QUE SI ADMIN
 					echo '<div class="col-12">';
 					echo '<div class="card mb-4 shadow-sm d-flex flex-row">';
 					echo '<img src="'.$ligne['logo'].'">';
 					echo '<div class="card-body d-flex flex-column justify-content-between">';
+					
 					echo '<p class="card-text">';
 					echo $ligne['Designation'];
 					echo '</p>';
+
 					echo $ligne['presentation'];
 					echo '<div class="btn-group mt-2">';
-					echo '<button type="button" class="btn btn-sm btn-outline-secondary">
-					Nous Découvrir
-					</button>';
+					echo '<form action="Forum.php" method="post">';
 					echo '<button type="button" class="btn btn-sm btn-outline-secondary ml-1">
+					Modifier
+					</button>';
+					echo '<input type="hidden" name="txt'.$indexIncrement.'" value="'.$indexIncrement.'" /> ';
+					echo '</form>';
+					echo '<button type="button"  class="btn btn-sm btn-outline-secondary ml-1">
 					Rendez vous
 					</button>';
+					$indexIncrement+=1;
 					echo '</div>
 					</div>
 					</div>
 					</div>';
                 } 
+				$_SESSION['nbBTN'] = $indexIncrement;
+				
 			?>
 			
 
