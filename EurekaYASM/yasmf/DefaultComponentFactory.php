@@ -25,7 +25,7 @@ class DefaultComponentFactory
         } else if($controller_name == "Entreprise"){
             return new $qualified_name(new EntrepriseService,new FiliereService, new UserService);
         } else if($controller_name == "Etudiant" && isset($_SESSION['role']) && $_SESSION['role'] != "Etudiant"){
-            return new $qualified_name(new EtudiantService, new FiliereService);
+            return new $qualified_name(new EtudiantService, new FiliereService, new EntrepriseService);
         }else if($controller_name == "Souhait" && isset($_SESSION['role']) && $_SESSION['role'] == "Etudiant"){
             return new $qualified_name(new EntrepriseService, new UserService);
         }else if($controller_name == "Admin" && isset($_SESSION['role']) && $_SESSION['role'] != "Etudiant"){

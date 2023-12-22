@@ -96,8 +96,12 @@ class EntrepriseController {
         $this->userService->getSouhait($pdo, $_SESSION['IdUser']);
         return $this->index($pdo);
     }
-
-
+    public function afficherSouhait($pdo) {
+        $idUser = HttpHelper::getParam('idUserS');
+        var_dump($_POST);
+        return $this->index();
+    }
+    
 }
 
 

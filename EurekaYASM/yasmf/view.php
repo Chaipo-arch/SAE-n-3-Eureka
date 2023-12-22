@@ -38,10 +38,23 @@ class View
     public function render()
     {
         // convert view params in variables accessible by the php file
+        if(file_exists($_SERVER['DOCUMENT_ROOT'] . "/$this->relativePath.php")) {
+
+        
         extract($this->viewParams);
         
         // "enrole" the php file used to build and send the response
         require_once $_SERVER['DOCUMENT_ROOT'] . "/$this->relativePath.php";
+        } else {
+            $pageNTrouve = $this->relativePath;
+            $this->relativePath = "SaeWeb/EurekaYASM/views/forum" ;
+            $_SESSION['nomPage'] = "Home";
+            $this->setVar('pageNTrouve', $pageNTrouve);
+            extract($this->viewParams);
+        
+            // "enrole" the php file used to build and send the response
+            require_once $_SERVER['DOCUMENT_ROOT'] . "/$this->relativePath.php";
+        }
     }
 
 }

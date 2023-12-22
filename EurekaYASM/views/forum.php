@@ -7,7 +7,7 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 ?>
 <html>
 <head>
-	<title>Forum</title>
+	<title>Eureka - Forum</title>
 	<meta charset ="utf-8"/>
 	<link href="bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet"/>
 	<link href="css/HeaderCss.css" rel="stylesheet">

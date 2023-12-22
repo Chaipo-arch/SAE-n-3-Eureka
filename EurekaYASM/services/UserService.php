@@ -49,20 +49,19 @@ class UserService {
 		
 	}
 
+    /**
+     * Permet de récupérer les souhaits de la base de donnée
+     */
     function getSouhait($connexion,$idEtudiant) {
         $_SESSION['souhait']  = array();
         $souhaits= array();
 		$maRequete = $connexion->prepare("CALL getSouhait(:IdE)");
         $maRequete->bindParam(':IdE', $idEtudiant);
-        
         if ($maRequete->execute()) {
             while ($ligne=$maRequete->fetch()) {	
                 $souhaits[]= $ligne['id_entreprise'];
-                var_dump($souhaits);
             }
-
         }
-        var_dump($souhaits);
         $_SESSION['souhait'] = $souhaits;
 	}
 }

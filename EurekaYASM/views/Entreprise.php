@@ -10,7 +10,7 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 <html lang="fr">
 	<head>
 		<meta charset="utf-8">
-		<title>Entreprises</title>
+		<title>Eureka - Entreprises</title>
 
 		<!-- Bootstrap CSS -->
 		<link href="bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">

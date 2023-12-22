@@ -14,7 +14,7 @@ if ($_SESSION['role'] == "Gestionnaire" | $_SESSION['role'] == "Admin" ) {
 <html lang="fr">
     <head>
         <meta charset="utf-8">
-        <title></title>
+        <title>Eureka - Vos Souhaits</title>
 
         <!-- Bootstrap CSS -->
         <link href="bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">

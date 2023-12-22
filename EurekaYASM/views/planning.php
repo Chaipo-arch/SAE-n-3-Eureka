@@ -9,7 +9,7 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
 <html lang="fr">
 	<head>
 		<meta charset="utf-8">
-		<title>IUT BANK - Liste des comptes</title>
+		<title>Eureka - Votre planning</title>
 
 		<!-- Bootstrap CSS -->
 		<link href="bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">

@@ -70,6 +70,9 @@ class HomeController {
             
     }
 
+    /**
+     * Renvoie sur la page du forum en donnant les caractéristiques du forum
+     */
     public function toForum($pdo) {
         $view = new View("SaeWeb/EurekaYASM/views/forum");
         $_SESSION['nomPage'] = "Home";
@@ -78,20 +81,30 @@ class HomeController {
         $view->setVar('dateLimite',$caractéristiques['dateLimite']);
         $view->setVar('duree',$caractéristiques['duree']);
         return $view;
-            
-            
-            
-            
     }
+
+    /**
+     * Déconnecte l'utilisateur du site, la deconnexion se fait avec le session
+     */
     public function deconnexion($pdo) {
         $_SESSION['connecte'] = false;
+        //$_SESSION['nomPage'] = "";
         session_destroy();
+        session_start();
         return $this->index($pdo);
      }
+
+     /**
+     * Renvoie sur la page connexion si l'utilisateur va sur une autre page sans être connecté
+     */
     public function renvoi($pdo) {
         $view = new View("SaeWeb/EurekaYASM/views/connexion");
         return $view;
     }
+
+    /**
+     * Renvoie au forum si la page demandé à l'utilisateur n'est pas trouvée
+     */
     public function pageNTrouve($pdo) {
         $pageNTrouve = HttpHelper::getParam('pageNTrouve');
         $view = $this->toForum($pdo);

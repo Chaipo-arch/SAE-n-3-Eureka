@@ -14,7 +14,7 @@ if ($_SESSION['role'] == "Etudiant") {
 <html lang="fr">
 	<head>
 		<meta charset="utf-8">
-		<title>Etudiants</title>
+		<title>Eureka - Etudiants</title>
 
 		<!-- Bootstrap CSS -->
 		<link href="bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">
@@ -37,11 +37,11 @@ if ($_SESSION['role'] == "Etudiant") {
 	</br>
 	<div class="container separation">
 		<div class="col-md-12">
-			<div class= "row centre">
-				<form action="index.php" method="get">
+			<form action="index.php" method="get">
+				<div class= "row centre">
 					<div class="col-md-3 centre">
 						<input name="action" type="hidden" value="recherche">
-						<input name="controller" type="hidden" value="Entreprise">
+						<input name="controller" type="hidden" value="Etudiant">
 						<select name="filiere" type="submit">
 							<?php if ($_SESSION['role'] != "Etudiant") { ?>
 								
@@ -71,25 +71,49 @@ if ($_SESSION['role'] == "Etudiant") {
 					<div class="col-md-6 centre">
 						<input class="form-control mr-sm-1" name="recherche" type="search submit" placeholder="Search" aria-label="Search">
 					</div>
-				</form>
-			</div>
+				</div>
+			</form>
+			<?php if($_SESSION['role'] == 'Admin'){ ?>
+				<div class="col-md-12 centre">
+					<form class="form my-1 my-lg-1" action="index.php" method="get">
+						<input name="action" type="hidden" value="ajouterEtudiant">
+						<input name="controller" type="hidden" value="Admin">
+						<input class="btn btn-form-control mr-sm-1 btn-outline-dark" type="submit" value="+">
+					</form>	
+				</div>
+			<?php } ?>
 		</div>
 		</br>
-	
+		<form action="index.php" method="POST">
+   								<input type="hidden" name="controlleur" value="Etudiant">
+								<input type="hidden" name="action" value="afficherSouhait">
+								<input type="submit" value="Voir souhaits">
+							</form>
 		<?php 
+
 		if(isset($etudiants)) {
 			var_dump($etudiants);
 			foreach($etudiants as $etudiant) {
-				var_dump($etudiant);?>
+				if($_SESSION['filiere'] != "Toutes" && $_SESSION['filiere']== $etudiant['field'] )?>
 				<p>
 				<div class="col-12">
 					<div class="card mb-4 shadow-sm d-flex flex-row">
-						<img src="<?php echo  ""; ?>">
 						<div class="card-body d-flex flex-column justify-content-between">
 							<p class="card-text">
-							<?php echo  "";?>
+							<?php echo  $etudiant['nom']. " ". $etudiant['prenom'];?>
 							</p>
-							<?php echo "" ;?>
+							<form action="index.php" method="POST">
+								<input name="controller" type="hidden" value="Etudiant">
+								<input  name="action" type="hidden" value="afficherSouhait">
+								<input type="hidden" name="idUserS" value="<?php echo $etudiant['id'] ;?>">
+								<?php 
+								/*$i = 0;
+								foreach($etudiant['souhait'] as $souhait) {?>
+									<input type="hidden" name="souhait<?php echo $i ;?>" value="<?php echo $souhait;?>">
+								<?php $i = $i+1;} */?>
+								
+								<input type="submit" value="Voir souhaits">
+							</form>
 						</div>
 					</div>
 				</div>

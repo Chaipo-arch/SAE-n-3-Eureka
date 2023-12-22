@@ -21,15 +21,22 @@ class AdminController {
         $this->forumService = $forumService;
     }
 
+    /** 
+     * Cette fonction n'est pas censé être appelé si tout de même appelé envoie vers la page précédente
+    */
     public function index($pdo) {
         header('Location: index.php');
-        exit();;
+        exit();
     }
 
     public function ajouterEntreprise($pdo) {
-        // TODO utilité de créer un controller dans un controller 
-        $en = new EntrepriseController(new EntrepriseService,new FiliereService, new UserService);
-        return $en->index($pdo);
+        $view = new View("SaeWeb/EurekaYASM/views/ajoutEntreprise");
+        return $view;
+    }
+
+    public function ajouterEtudiant($pdo) {
+        $view = new View("SaeWeb/EurekaYASM/views/ajoutEtudiant");
+        return $view;
     }
 
     public function modifierEntreprise($pdo) {
@@ -37,12 +44,30 @@ class AdminController {
         return $en->index($pdo);
     }
 
+    public function modifierEtudiant($pdo) {
+        $view = new View("SaeWeb/EurekaYASM/views/ajoutEtudiant");
+        return $view;
+    }
+
+    /** 
+     * Renvoie vers le forum avec les accés admin les caractéristiques du forum
+    */
     public function toForum($pdo) {
         $view = new View("SaeWeb/EurekaYASM/views/forumA");
         $caractéristiques = $this->forumService->getForumCaracteristiques($pdo);
         $view->setVar('date',$caractéristiques['date']);
         $view->setVar('dateLimite',$caractéristiques['dateLimite']);
         $view->setVar('duree',$caractéristiques['duree']);
+        return $view;
+    }
+
+    public function SupprimerEtudiant($pdo) {
+        $view = new View("SaeWeb/EurekaYASM/views/ajoutEtudiant");
+        return $view;
+    }
+
+    public function SupprimerEntreprise($pdo) {
+        $view = new View("SaeWeb/EurekaYASM/views/ajoutEtudiant");
         return $view;
     }
     /** 
