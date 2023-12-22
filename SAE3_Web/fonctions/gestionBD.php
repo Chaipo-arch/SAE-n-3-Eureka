@@ -13,7 +13,7 @@ $connexion;
 	
 		// connexion à la BD
 		try{ // Bloc try bd injoignable			
-			$connexion = new PDO('mysql:host='.$PARAM_hote.';dbname='.$PARAM_nom_bd, $PARAM_utilisateur, $PARAM_mot_passe);
+			$connexion = new PDO('mysql:host='.$PARAM_hote.';dbname='.$PARAM_nom_bd, $PARAM_utilisateur, $PARAM_mot_passe); //TODO port non utiliser ?
 			$connexion->exec('SET NAMES utf8'); // Réglage de la connexion en utf8
 			return true ; //La connexion est établie
 		}catch ( Exception $e ) {

@@ -16,14 +16,24 @@
 		header('Location: ../index.php');
 		exit();
 	} 
-	if (isset($_SESSION['nbBTN'])){
+	/* if (isset($_SESSION['nbBTN'])){
 		for($i = 0; $i < $_SESSION['nbBTN']; $i++){
 			if (isset($_POST('txt'.$i))) {
 				//header('Location: modifierEntreprise.php');
 				$_SESSION['nom'] = $_POST['txt'.$i];
 			}
 		}
+	} */
+	
+	//$_SERVER['REQUEST_METHOD'] === 'POST' && 
+	if (isset($_POST['id_entreprise'])) {
+		$entreprise_id = $_POST['id_entreprise'];
+		echo "L'entreprise choisi est : ";
+		echo $entreprise_id;
+		$_SESSION['idEntrepriseAModifier'] = $entreprise_id;
+
 	}
+
 
 	$rechercheUtilisateur = "";
 	
@@ -68,14 +78,14 @@
 
     <!-- Home -->
 
-    <section class="bg-dark d-flex flex-column justify-content-center align-items-center container custom-size">
+   <!--  <section class="bg-dark d-flex flex-column justify-content-center align-items-center container custom-size">
 
         <p class="display-1 text-white text-center">Eureka</p>
-        <!-- <p class="lead text-center text-white">Bienvenue cher ""ROLE"" sur le site de EUREKA, 
+        <p class="lead text-center text-white">Bienvenue cher ""ROLE"" sur le site de EUREKA, 
 			EUREKA est un forum permettant de mettre en relation diverse entreprise avec des etudiants
-		</p> -->
+		</p>
 
-    </section>
+    </section> -->
 
     <!-- Grille Responsive -->
 
@@ -145,23 +155,33 @@
 					echo '</p>';
 
 					echo $ligne['presentation'];
-					echo '<div class="btn-group mt-2">';
-					echo '<form action="Forum.php" method="post">';
-					echo '<button type="button" class="btn btn-sm btn-outline-secondary ml-1">
-					Modifier
-					</button>';
-					echo '<input type="hidden" name="txt'.$indexIncrement.'" value="'.$indexIncrement.'" /> ';
+					echo '<div class="row btn-group mt-2">';
+
+					echo '<div class=" col-md-4 col-sm-4 col-4">';
+					echo '<form action="modifierEntreprise.php" method="post">';
+					echo '<input type="hidden" name="id_entreprise" value="'.$ligne['Id'].'"/>';
+					echo '<button type="submit" class="btn btn-sm btn-outline-secondary ml-1">Modifier</button>';
 					echo '</form>';
+					echo '</div>';
+
+					echo '<div class="col-md-4 col-sm-4 col-4">';
+					echo '<button type="button"  class="btn btn-sm btn-outline-secondary ml-1">
+					Supprimmer
+					</button>';
+					echo '</div>';
+
 					echo '<button type="button"  class="btn btn-sm btn-outline-secondary ml-1">
 					Rendez vous
 					</button>';
-					$indexIncrement+=1;
+					//$indexIncrement+=1;
 					echo '</div>
 					</div>
 					</div>
 					</div>';
+
+					//echo $ligne['Id'];
                 } 
-				$_SESSION['nbBTN'] = $indexIncrement;
+				//$_SESSION['nbBTN'] = $indexIncrement;
 				
 			?>
 			
