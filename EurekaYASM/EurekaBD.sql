@@ -38,33 +38,24 @@ CREATE Table Utilisateur(
 
 Drop Table if EXISTs Entreprise;
 CREATE Table Entreprise(
-    id int(15) AUTO_INCREMENT ,
+    id int(15) AUTO_INCREMENT,
     Designation Varchar(100),
     activity_sector Varchar(100),
     logo TEXT,
     presentation Text,
+    id_lieu int(15),
+    FOREIGN KEY (id_lieu) REFERENCES Lieu(id),
     PRIMARY Key(id)
-);
-
-Drop Table if EXISTs souhaitEntreprise;
-CREATE Table souhaitEntreprise(
-    
-    DesignationDuPoste Varchar(50),
-    id_entreprise int(15),
-    id_filiere int(15),
-    FOREIGN KEY (id_entreprise) REFERENCES Entreprise(id),
-    FOREIGN KEY (id_filiere) REFERENCES filiere(id),
-    PRIMARY Key(id_entreprise,id_filiere) 
 );
 
 Drop Table if EXISTs souhaitEtudiant;
 CREATE Table souhaitEtudiant(
     id int(15) AUTO_INCREMENT,
     id_entreprise int(15),
-    id_utilisateur int(15),
+    id_Utilisateur int(15),
     
     FOREIGN KEY (id_entreprise) REFERENCES Entreprise(id),
-    FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id),
+    FOREIGN KEY (id_Utilisateur) REFERENCES Utilisateur(id),
     PRIMARY Key(id) 
 );
 
@@ -76,9 +67,6 @@ CREATE Table Lieu(
     ville Varchar(25),
     cp int(5),
     adresse  Varchar(50),
-    id_entreprise int(15),
-   
-    FOREIGN KEY (id_entreprise) REFERENCES Entreprise(id),
     PRIMARY KEY (id)
     
  
@@ -111,10 +99,9 @@ CREATE Table RDV(
 Drop Table if EXISTs Forum;
 CREATE Table Forum(
     id int(15) AUTO_INCREMENT,
-    Heure_debut Time,
-    Heure_fin Time,
-    duree Time,
+    p_duree_par_default Time,
     date_limite dateTime,
+    date_debut dateTime,
     PRIMARY KEY (id)
     
  
@@ -138,20 +125,20 @@ DROP PROCEDURE IF EXISTS connexion;
 
 DELIMITER //
 CREATE PROCEDURE connexion(
-    IN p_nom_utilisateur VARCHAR(25),
+    IN p_nom_Utilisateur VARCHAR(25),
     IN p_mot_de_passe TEXT
 )
 BEGIN
     DECLARE compte_existant INT;
     START TRANSACTION;   
     SELECT COUNT(*) INTO compte_existant
-    FROM utilisateur
-    WHERE Username = p_nom_utilisateur AND password = p_mot_de_passe;
+    FROM Utilisateur
+    WHERE Username = p_nom_Utilisateur AND password = p_mot_de_passe;
 
     IF compte_existant < 1 THEN 
-        SELECT FALSE AS est_utilisateur;
+        SELECT FALSE AS est_Utilisateur;
     ELSE 
-        SELECT id,id_role FROM utilisateur WHERE BINARY Username = p_nom_utilisateur AND BINARY password = p_mot_de_passe;
+        SELECT id,id_role FROM Utilisateur WHERE BINARY Username = p_nom_Utilisateur AND BINARY password = p_mot_de_passe;
     END IF;
     COMMIT;
 END//
@@ -161,7 +148,7 @@ CALL connexion('assssqsa','asa');
 
 
 DROP PROCEDURE IF EXISTS CreateUser;
--- Renvoie un boolean correspondant au succés de l'ajout d'un utilisateur
+-- Renvoie un boolean correspondant au succés de l'ajout d'un Utilisateur
 DELIMITER //
 CREATE PROCEDURE CreateUser(
   IN p_Username VARCHAR(30),
@@ -174,7 +161,7 @@ CREATE PROCEDURE CreateUser(
 BEGIN
     DECLARE log_identique INT;      
     SELECT COUNT(*) INTO log_identique
-    FROM utilisateur
+    FROM Utilisateur
     WHERE Username = p_Username AND password = p_mot_de_passe;
     
     START TRANSACTION; 
@@ -203,9 +190,8 @@ BEGIN
     FROM Utilisateur
     WHERE Utilisateur.id = p_id;
 
-
     START TRANSACTION;   
-    DELETE FROM utilisateur WHERE Utilisateur.id = p_id;
+    DELETE FROM Utilisateur WHERE Utilisateur.id = p_id;
     COMMIT;
 END//
 DELIMITER ;
@@ -254,7 +240,9 @@ CREATE PROCEDURE AjoutEntreprise(
 BEGIN
     DECLARE entreprise_existante INT;
     DECLARE lieu_existante INT;
-    DECLARE entrepriseID INT(15);
+    DECLARE lieuid INT(15);
+    DECLARE Entrepriseid INT(15);
+
     SELECT COUNT(*) INTO lieu_existante
     FROM lieu
     WHERE p_ville = lieu.ville AND p_cp = lieu.cp AND p_adresse = lieu.adresse;
@@ -264,16 +252,19 @@ BEGIN
     
     START TRANSACTION;   
     IF entreprise_existante < 1 THEN 
-        INSERT INTO Entreprise(designation,activity_sector,logo,presentation) Value(p_designation,p_activity_sector,p_logo,p_presentation);
+        INSERT INTO Entreprise(designation,activity_sector,logo,presentation,id_lieu) Value(p_designation,p_activity_sector,p_logo,p_presentation,NULL);
         SELECT TRUE;
         IF lieu_existante < 1 THEN
-            SELECT max(id) INTO entrepriseID FROM entreprise;
-            SET entrepriseID = entrepriseID;
-            INSERT INTO Lieu(ville,cp,adresse,id_entreprise) Value(p_ville,p_cp,p_adresse,entrepriseID);
+            
+            INSERT INTO Lieu(ville,cp,adresse) Value(p_ville,p_cp,p_adresse);
+            SELECT max(id) INTO lieuid FROM lieu;
+            SELECT max(id) INTO Entrepriseid FROM lieu;
+            UPDATE Entreprise SET id_lieu = lieuid WHERE id = entrepriseid;
         ELSE 
+            SELECT id INTO lieuid FROM lieu WHERE p_designation = Entreprise.designation AND logo = p_logo AND presentation = p_presentation;
             UPDATE Lieu
-            SET id_entreprise = entrepriseID
-            WHERE ville = p_ville AND cp = p_cp AND adresse = p_adresse;
+            SET id_entreprise = entrepriseid
+            WHERE ;
         END IF;    
     ELSE 
         SELECT FALSE;
@@ -281,7 +272,6 @@ BEGIN
     COMMIT;
 END//
 DELIMITER ;
-
 
 -- procédure qui affiche la liste des entreprise en fonction de leur désignation
 DROP PROCEDURE IF EXISTS displayEntrepriseByDesignationByFiliere;
@@ -292,27 +282,24 @@ CREATE PROCEDURE displayEntrepriseByDesignationByFiliere(
     IN p_Filiere VARCHAR(20)
 )
 BEGIN
-    START TRANSACTION;
      IF p_Filiere != 'Toutes' THEN
-        SELECT Entreprise.Id, Entreprise.Designation, Entreprise.activity_sector, Entreprise.logo, Entreprise.presentation, Filiere.field as Filiere 
+        SELECT Entreprise.id, Entreprise.Designation, Entreprise.activity_sector, Entreprise.logo, Entreprise.presentation, Filiere.field as Filiere 
         FROM Entreprise 
-        JOIN Intervenants ON Entreprise.Id = Intervenants.id_entreprise 
-        JOIN FiliereInterventions ON Intervenants.Id = FiliereInterventions.id_intervenant
-        JOIN Filiere ON Filiere.Id = FiliereInterventions.id_filiere
+        JOIN Intervenants ON Entreprise.id = Intervenants.id_entreprise 
+        JOIN FiliereInterventions ON Intervenants.id = FiliereInterventions.id_intervenant
+        JOIN Filiere ON Filiere.id = FiliereInterventions.id_filiere
         WHERE Designation LIKE CONCAT('%', p_designation, '%')  AND Filiere.field = p_Filiere
         ORDER BY Designation ASC;
    
     ELSE
-     SELECT Entreprise.Id, Entreprise.Designation, Entreprise.activity_sector, Entreprise.logo, Entreprise.presentation, Filiere.field as Filiere 
+     SELECT Entreprise.id, Entreprise.Designation, Entreprise.activity_sector, Entreprise.logo, Entreprise.presentation, Filiere.field as Filiere 
         FROM Entreprise 
-        JOIN Intervenants ON Entreprise.Id = Intervenants.id_entreprise 
-        JOIN FiliereInterventions ON Intervenants.Id = FiliereInterventions.id_intervenant
-        JOIN Filiere ON Filiere.Id = FiliereInterventions.id_filiere
+        JOIN Intervenants ON Entreprise.id = Intervenants.id_entreprise 
+        JOIN FiliereInterventions ON Intervenants.id = FiliereInterventions.id_intervenant
+        JOIN Filiere ON Filiere.id = FiliereInterventions.id_filiere
         WHERE Designation LIKE CONCAT('%', p_designation, '%')
         ORDER BY Designation ASC;
     END IF;
-     
-    COMMIT;
 END//
 DELIMITER ;
 
@@ -323,10 +310,7 @@ DROP PROCEDURE IF EXISTS displayAllRole;
 DELIMITER //
 CREATE PROCEDURE displayAllRole()
 BEGIN
-    START TRANSACTION;
     SELECT * FROM role ;
-    
-    COMMIT;
 END//
 DELIMITER ;
 
@@ -336,10 +320,7 @@ DROP PROCEDURE IF EXISTS displayAllFiliere;
 DELIMITER //
 CREATE PROCEDURE displayAllFiliere()
 BEGIN
-    START TRANSACTION;
     SELECT DISTINCT field FROM filiere ;
-    
-    COMMIT;
 END//
 DELIMITER ;
 
@@ -349,10 +330,8 @@ DROP PROCEDURE IF EXISTS nombreEtudiantSansSouhait;
 DELIMITER //
 CREATE PROCEDURE nombreEtudiantSansSouhait()
 BEGIN
-    START TRANSACTION;
-    SELECT * FROM Utilisateur WHERE id != (SELECT id_utilisateur FROM souhaitEtudiant ) 	AND id_role = (SELECT id FROM role WHERE Designation = 'Etudiant');
-    
-    COMMIT;
+    SELECT * FROM Utilisateur WHERE id != (SELECT id_Utilisateur FROM souhaitEtudiant ) 	
+    AND id_role = (SELECT id FROM role WHERE Designation = 'Etudiant');
 END//
 DELIMITER ;
 
@@ -364,12 +343,10 @@ CREATE PROCEDURE DisplayFiliereOfStudent(
 	IN p_id_etudiant INT    
 )
 BEGIN
-    START TRANSACTION;
     SELECT filiere.year FROM Utilisateur 
     JOIN filiere 
-    ON utilisateur.id_filiere = filiere.id 
+    ON Utilisateur.id_filiere = filiere.id 
     WHERE id_role = p_id_etudiant;
-    COMMIT;
 END//
 DELIMITER ;
 
@@ -377,12 +354,11 @@ DROP PROCEDURE IF EXISTS getSouhait;
 
 DELIMITER //
 CREATE PROCEDURE getSouhait(
-	IN p_utilisateur INT(15)
+	IN p_Utilisateur INT(15)
 )
 BEGIN
-    START TRANSACTION;
-    SELECT DISTINCT souhaitEtudiant.id_entreprise FROM Utilisateur JOIN souhaitEtudiant ON souhaitEtudiant.id_Utilisateur = p_utilisateur;
-    COMMIT;
+    SELECT DISTINCT souhaitEtudiant.id_entreprise FROM Utilisateur 
+    JOIN souhaitEtudiant ON souhaitEtudiant.id_Utilisateur = p_Utilisateur;
 END//
 DELIMITER ;
 
@@ -390,11 +366,11 @@ DROP PROCEDURE IF EXISTS setSouhait;
 DELIMITER //
 CREATE PROCEDURE setSouhait(
 	 IN p_entreprise INT(15),
-     IN p_utilisateur INT(15)
+     IN p_Utilisateur INT(15)
 )
 BEGIN
     START TRANSACTION;
-    INSERT INTO souhaitEtudiant (id_entreprise,id_Utilisateur) VALUES (p_entreprise,p_utilisateur);
+    INSERT INTO souhaitEtudiant (id_entreprise,id_Utilisateur) VALUES (p_entreprise,p_Utilisateur);
     COMMIT;
 END//
 DELIMITER ;
@@ -403,7 +379,7 @@ DROP PROCEDURE IF EXISTS deleteSouhait;
 DELIMITER //
 CREATE PROCEDURE deleteSouhait(
 	 IN p_entreprise INT(15),
-     IN p_utilisateur INT(15)
+     IN p_Utilisateur INT(15)
 )
 BEGIN
     START TRANSACTION;
@@ -416,13 +392,178 @@ DROP PROCEDURE IF EXISTS displayEtudiantEtSouhait;
 DELIMITER //
 CREATE PROCEDURE displayEtudiantEtSouhait()
 BEGIN
-    START TRANSACTION;
-    SELECT Utilisateur.id,nom,prenom,souhaitEtudiant.Entreprise.Designation,filiere.field 
+    SELECT Utilisateur.id,nom,prenom,Entreprise.Designation,filiere.field 
     FROM Utilisateur 
     JOIN souhaitEtudiant ON souhaitEtudiant.id_Utilisateur = Utilisateur.id 
     JOIN Entreprise ON Entreprise.id = souhaitEtudiant.id_Entreprise
     JOIN filiere ON filiere.id = Utilisateur.id_Filiere 
-    WHERE Utilisateur.id_role = 3;
+    WHERE Utilisateur.id_role = 3
+    ORDER BY nom ASC;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS EditEntreprise;
+DELIMITER //
+CREATE PROCEDURE EditEntreprise(
+    IN p_id INT(15),
+    IN p_designation VARCHAR(100),
+    IN p_activity_sector VARCHAR(100),
+    IN p_logo TEXT,
+    IN p_presentation TEXT,
+    IN p_ville VARCHAR(25),
+    IN p_cp INT(5),
+    IN p_adresse VARCHAR(50)    
+)
+BEGIN
+    DECLARE entrepriseExistante INT(15);
+    DECLARE lieuxDifferent INT(15);
+
+    SELECT COUNT(*) INTO entrepriseExistante 
+    FROM entreprise
+    WHERE entreprise.id = p_id;
+
+    
+    SELECT COUNT(*) INTO lieuxExistant 
+    FROM lieu 
+    WHERE ville = p_ville
+    AND cp = p_cp
+    AND adresse = p_adresse;
+   
+
+    IF entrepriseExistante = 1 THEN 
+        UPDATE Entreprise
+        SET designation = p_designation 
+        SET activity_sector = p_activity_sector
+        SET logo = p_logo
+        SET presentation = p_presentation
+    END IF;
+
+    IF lieuxExistant = 1 THEN 
+        UPDATE Lieu
+        SET designation = p_designation 
+        SET activity_sector = p_activity_sector
+        SET logo = p_logo
+        SET presentation = p_presentation
+    END IF;
+
+    
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS DeleteEntreprise;
+DELIMITER //
+CREATE PROCEDURE DeleteEntreprise(
+    IN p_id INT(15)  
+)
+BEGIN
+    START TRANSACTION;
+    DELETE FROM Entreprise 
+    WHERE entreprise.id = p_id; 
     COMMIT;
 END//
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS EditForum;
+DELIMITER //
+CREATE PROCEDURE EditForum(
+    IN p_date DateTime,
+    IN p_duree_par_default TIME,
+    IN p_date_limite DateTime   
+)
+BEGIN
+    START TRANSACTION;
+    UPDATE Forum 
+    SET date = p_date 
+    SET duree_par_default = p_duree_par_default
+    SET date_debut = p_date_debut;
+    COMMIT;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS DisplayForum;
+DELIMITER //
+CREATE PROCEDURE DisplayForum()
+BEGIN
+    SELECT duree_par_default,date_limite,date_debut FROM Forum;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS DisplayUser;
+DELIMITER //
+CREATE PROCEDURE DisplayUser()
+BEGIN
+    SELECT * FROM Utilisateur LIMIT 20;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS DisplayUser;
+DELIMITER //
+CREATE PROCEDURE DisplayUser()
+BEGIN
+    SELECT * FROM Utilisateur LIMIT 20;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS displayEntrepriseByid;
+DELIMITER //
+CREATE PROCEDURE displayEntrepriseByid(
+    IN p_id INT(15) 
+)
+BEGIN
+    SELECT 
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS EditIntervenant;
+DELIMITER //
+CREATE PROCEDURE EditIntervenant(
+    IN p_id INT 
+    IN p_name VARCHAR(25),
+    IN p_id_entreprise INT,
+    IN p_date_limite DateTime   
+)
+BEGIN
+    START TRANSACTION;
+    UPDATE Forum 
+    SET date = p_date 
+    SET duree_par_default = p_duree_par_default
+    SET date_debut = p_date_debut;
+    COMMIT;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS CreateIntervenant;
+DELIMITER //
+CREATE PROCEDURE CreateIntervenant(
+    IN p_date DateTime,
+    IN p_duree_par_default TIME,
+    IN p_date_limite DateTime   
+)
+BEGIN
+
+    START TRANSACTION;
+    INSERT INTO Intervenants(date,duree_par_default,date_limite)
+    VALUES (p_date,p_duree_par_default,p_date_limite);
+    COMMIT;
+END//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS DeleteIntervenant;
+DELIMITER //
+CREATE PROCEDURE DeleteIntervenant(
+    IN p_id INT  
+)
+BEGIN
+    START TRANSACTION;
+    DELETE FROM Intervenants WHERE id = p_id;
+    COMMIT;
+END//
+DELIMITER ;
+
+-- procedure pour avoir les Utilisateur par nom prenom
+-- procedure pour diplay les étudiants 
+-- procedure pour avoir la liste des des étudiant par intervenant
+-- gerer filiere dans le jdd
+
+
+
