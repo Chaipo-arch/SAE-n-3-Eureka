@@ -21,6 +21,7 @@ class EtudiantController {
         $view = new View("SaeWeb/EurekaYASM/views/etudiant");
         $filieres = $this->getFilieres($pdo);
         $etudiants = $this->callLogique($pdo, null);
+        var_dump($etudiants);
         /*$etudiantWithSouhaits = array();
         foreach($etudiants as $etudiant) {
             $etudiant['souhait'] = $this->EtudiantService->getSouhaitE($pdo,$etudiant['id']);
@@ -28,6 +29,7 @@ class EtudiantController {
             var_dump($etudiant);
         }
         $etudiants = $etudiantWithSouhaits;*/
+        var_dump($etudiants);
         $view->setVar('filieres',$filieres);
         $_SESSION['nomPage'] = "Etudiant";
         $view->setVar('etudiants',$etudiants);
@@ -77,6 +79,7 @@ class EtudiantController {
     public function afficherSouhait($pdo) {
         $view = new View("SaeWeb/EurekaYASM/views/entreprise");
         $idUser = HttpHelper::getParam('idUserS');
+        var_dump($_POST);
         $souhaits = $this->EtudiantService->getSouhaitE($pdo,$idUser);
         $entreprises = array();
         foreach($souhaits as $souhait) {
