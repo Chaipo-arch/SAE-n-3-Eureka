@@ -514,10 +514,12 @@ BEGIN
 END//
 DELIMITER ;
 
+
+
 DROP PROCEDURE IF EXISTS EditIntervenant;
 DELIMITER //
 CREATE PROCEDURE EditIntervenant(
-    IN p_id INT 
+    IN p_id INT, 
     IN p_name VARCHAR(25),
     IN p_id_entreprise INT,
     IN p_date_limite DateTime   
@@ -525,9 +527,7 @@ CREATE PROCEDURE EditIntervenant(
 BEGIN
     START TRANSACTION;
     UPDATE Forum 
-    SET date = p_date 
-    SET duree_par_default = p_duree_par_default
-    SET date_debut = p_date_debut;
+    SET date = p_date ,duree_par_default = p_duree_par_default,date_debut = p_date_debut;
     COMMIT;
 END//
 DELIMITER ;
@@ -564,6 +564,7 @@ DELIMITER ;
 -- procedure pour diplay les étudiants 
 -- procedure pour avoir la liste des des étudiant par intervenant
 -- gerer filiere dans le jdd
+
 
 
 
