@@ -135,7 +135,18 @@
 							<input type="text" name="nomIntervenant" value="<?php echo $intervenant['name'] ;?>" required >
 							<br/>
 							<label for="first-name">Filiere demandé</label>
-							<input type="text" name="filiereDemande" value="<?php echo $intervenant['field'] ;?>" required>
+							<select name="filiere" class="form-control">
+								<!-- option-->
+								<?php 
+									$filieres = displayAllFiliere();					
+									foreach($filieres as $filiere) { ?>
+										<option
+										<?php if(isset($_POST['filiere'] ) && $_POST['filiere'] == $filiere['field']) {  echo " selected ";}?>
+										> 
+										<?php  echo $filiere['field'] ; ?>
+										</option>
+									<?php }  ?>
+							</select>
 							<br/>
 							<input name="action" type="hidden" value="modificationIntervenant">
 							<input name="idIntervenant" type="hidden" value="<?php echo $intervenant[0]; ?>">

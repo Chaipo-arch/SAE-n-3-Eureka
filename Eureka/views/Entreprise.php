@@ -77,7 +77,6 @@ if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GE
 	$entreprises = rechercheEntreprise($pdo,$saisies,$_SESSION['filiere']);
 }
 
-var_dump($entreprises);
 
 ?>
 <!DOCTYPE html>
@@ -139,7 +138,7 @@ var_dump($entreprises);
 						</div>
 						</div>
 					</form>
-					<?php } else { echo "Souhaits de ". $_SESSION['AffichageSouhaitEtu']['nom']. " ". $_SESSION['AffichageSouhaitEtu']['prenom'].": ";} ?>
+					<?php } else { echo "<div class='col-12 centre'><h1>Souhaits de ". $_SESSION['AffichageSouhaitEtu']['nom']. " ". $_SESSION['AffichageSouhaitEtu']['prenom'].": </h1></div>";} ?>
 					<!-- affichage de l'ajout d'entreprise si admin !-->
 					<?php if($_SESSION['role'] == 'Admin'){ ?>
 						<div class="col-md-12 centre">
@@ -229,7 +228,7 @@ var_dump($entreprises);
 						</div>
 					</div>
 					
-			<?php } } else { echo "</br><div class='col-12 centre'><h1>Aucune Entreprise actuellement</h1></div>";} ?>
+			<?php } } else { echo "</br><div class='col-12 centre'><h2>Aucune Entreprise actuellement</h2></div>";} ?>
 	</div>
 	
     <?php footerHelper();

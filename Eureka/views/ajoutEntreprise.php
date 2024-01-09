@@ -1,5 +1,4 @@
 <?php
-var_dump($_POST);
 	session_start();
 	// test si on est bien passé par la page de login sinon on retourne sur index.php
 	if (!isset($_SESSION['connecte'])) {
