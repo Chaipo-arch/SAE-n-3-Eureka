@@ -9,21 +9,15 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
   header('Location: ../index.php');
   exit();
 }
-$host = 'localhost';
-$port = '3306';
-$db = 'eureka';
-$user = 'root';
-$pass = 'root';
-$charset = 'utf8mb4';
-$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
-    $options = [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false,
-        PDO::ATTR_PERSISTENT => true
-    ];
-
-$pdo = new PDO($dsn, $user, $pass, $options);
+require('../fonctions/gestionBD.php');
+	
+	// Connexion à la BD
+	if (!connecteBD($erreur)) {
+		// Pas de connexion à la BD, renvoie vers l'index
+		header('Location: ../index.php');
+		exit();
+	} 
+$pdo = getPDO();
 if($_SESSION['role'] == 'Etudiant')  {
   getSouhait($pdo,$_SESSION['IdUser']);
 }
@@ -58,18 +52,18 @@ if($_SESSION['role'] == 'Etudiant')  {
             <div class ="col-md-4 centre">
                 
                 Date</br>
-                <?php echo $caracteristiques['date'] ; ?> 
+                <?php if(isset($caracteristiques['date']) && $caracteristiques['date'] != "") { echo $caracteristiques['date'] ;} else { echo "Date non définie" ;} ?> 
                 
             
             </div>
             <div class ="col-md-4 centre">
                 Durée par défaut (minutes)</br>
-                <?php echo $caracteristiques['duree'] ; ?> 
+                <?php if(isset($caracteristiques['duree']) && $caracteristiques['duree'] != "") { echo $caracteristiques['duree'] ;} else { echo "Durée non définie"; } ?> 
                 
             </div>
             <div class ="col-md-4 centre">
                 Date Limite (rendez Vous)</br>
-                <?php echo $caracteristiques['dateLimite'] ; ?> 
+                <?php if(isset($caracteristiques['dateLimite']) && $caracteristiques['dateLimite'] != "") { echo $caracteristiques['dateLimite'] ;} else { echo "Date limite non définie"; }?> 
             </div>
             </br>
         </div>

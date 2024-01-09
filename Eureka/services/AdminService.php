@@ -94,3 +94,8 @@
         
 
     }
+    function deleteUser($pdo,$idE) {
+        $maRequete = $pdo->prepare("DELETE utilisateur FROM utilisateur WHERE utilisateur.id = :idE");
+        $maRequete->bindParam(':idE', $idE);
+        $maRequete->execute();
+    }

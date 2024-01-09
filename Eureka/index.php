@@ -1,37 +1,29 @@
 <?php
+$problemeDonnees = false;
+$tentativeConnection = false;
+require('fonctions/gestionBD.php');
+	
+// Connexion à la BD
+if (!connecteBD($erreur)) {
+    $problemeDonnees = true;
+} 
 session_start();
 include("services/UserService.php");
-if (isset($_SESSION['connecte']) && $_SESSION['connecte']) {
+if (isset($_SESSION['connecte']) && $_SESSION['connecte'] && !$problemeDonnees) {
     //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
     header('Location: views/forum.php');
     exit();
 }
 
-$problemeDonnees = false;
-$tentativeConnection = false;
-    $host = 'localhost';
-    $port = '3306';
-    $db = 'eureka';
-    $user = 'root';
-    $pass = 'root';
-    $charset = 'utf8mb4';
-$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
-        $options = [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-            PDO::ATTR_PERSISTENT => true
-        ];
-
-$pdo = new PDO($dsn, $user, $pass, $options);
-if (isset($_POST['identifiant']) && isset($_POST['pwd'])) {
+$pdo = getPDO();
+if (isset($_POST['identifiant']) && isset($_POST['pwd']) && !$problemeDonnees) {
     $identifiant = htmlspecialchars($_POST['identifiant']);
     $pwd = htmlspecialchars($_POST['pwd']);
-    if(!verifUtilisateur($pdo,$identifiant,$pwd)) {
+    if(!verifUtilisateur($identifiant,$pwd)) {
         $tentativeConnection = true;
     } // TODO ajouter try catch
 }
-if(isset($_SESSION['connecte']) && $_SESSION['connecte']) {
+if(isset($_SESSION['connecte']) && $_SESSION['connecte'] && !$problemeDonnees)  {
     header('Location: views/forum.php');
     exit();
 

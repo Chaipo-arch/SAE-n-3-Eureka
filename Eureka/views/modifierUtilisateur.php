@@ -6,7 +6,11 @@
 		header('Location: ../index.php');
 		exit();
 	}
-	
+	if ($_SESSION['role'] != "Admin") {
+		//On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+		header('Location: forum.php');
+		exit();
+	}
 	// Intégration des fonctions qui seront utilisées pour les acces à la BD
 	require('../fonctions/gestionBD.php');
 	
@@ -18,7 +22,7 @@
 	} 
 
 	
-	if (isset($_POST['action']) && $_POST['action'] == "Modification") {
+	if (isset($_POST['action']) && $_POST['action'] == "modification") {
 		include("../services/AdminService.php");
 		$userId = $_POST['idEtudiant'];
 		$nom = $_POST['nom'];
@@ -26,8 +30,13 @@
 		$username = $_POST['username'];
 		$mdp = $_POST['mdp'];
 		$role = $_POST['role'];
+		var_dump($role);
+		$idRole = getIdRole(getPDO(),$role);
+		var_dump($idRole);
 		//$_SESSION['idEntrepriseAModifier'] = $entreprise_id;
-		modifUtilisateur(getPDO(),$nom,$prenom,$username,$mdp, $role, $userId);
+		if($idRole != null) {
+			modifUtilisateur(getPDO(),$nom,$prenom,$username,$mdp, $idRole, $userId);
+		}
 
 	}
 	if (isset($_POST['idEtudiant'])) {
@@ -35,6 +44,8 @@
 		include("../services/ForumService.php");
 		//$intervenants = getIntervenants();
 		$utilisateur = getInfoEtudiant(getPdo(),$userId);
+		$role = getRole(getPDO(),$utilisateur['id_role']);
+		var_dump($role);
 		var_dump($utilisateur);
 	}
 ?>
@@ -43,7 +54,7 @@
 <html lang="fr">
 	<head>
 		<meta charset="utf-8">
-		<title>Modifier Utilisateur - Eureka</title>
+		<title>Eureka - Modifier Utilisateur (ADMIN)</title>
 		<!-- Bootstrap CSS -->
 		<link href="../bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">
 
@@ -72,15 +83,6 @@
             <h2 class="h2center">Modifier Utilisateur</h2>
           </div>
         </div>
-
-			
-
-			
-
-        
-		  
-
-
 			<details>
 			<summary>Modifier Informations Utilisateur</summary>
 				<form action="modifierUtilisateur.php" method="post">
@@ -102,18 +104,20 @@
 							<input type="text" name="mdp" value="<?php echo $utilisateur['password'] ;?>" required>
 							<br/>
 							<label for="first-name">Role*</label>
-							<select name="role" type="submit">
+							<select name="role"  class="form-control">
 								<!-- option-->
 								<?php 
-									$roles = displayAllRole();									
-									foreach($roles as $role) { ?>
+									$roles = displayAllRole();		
+									var_dump($roles);						
+									foreach($roles as $roleUti) { ?>
 										<option
-										<?php if(isset($_POST['role'] ) && $role == $role['designation']) {  echo " selected ";}?>
+										<?php if(isset($role ) && $role == $roleUti['designation']) {  echo " selected ";}?>
 										> 
-										<?php  echo $role['designation'] ; ?>
+										<?php  echo $roleUti['designation'] ; ?>
 										</option>
 									<?php }  ?>
 							</select>
+							
 							<br/>
 							<!--<label for="first-name">Filiere</label>
 							<select name="filiere" type="submit">-->

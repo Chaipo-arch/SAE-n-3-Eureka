@@ -6,7 +6,11 @@
 		header('Location: ../index.php');
 		exit();
 	}
-	
+	if ($_SESSION['role'] != "Admin") {
+		//On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+		header('Location: forum.php');
+		exit();
+	}
 	// Intégration des fonctions qui seront utilisées pour les acces à la BD
 	require('../fonctions/gestionBD.php');
 	

@@ -6,7 +6,11 @@
 		header('Location: ../index.php');
 		exit();
 	}
-	
+	if ($_SESSION['role'] != "Admin") {
+        //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+        header('Location: forum.php');
+        exit();
+    }
 	// Intégration des fonctions qui seront utilisées pour les acces à la BD
 	require('../fonctions/gestionBD.php');
 	
@@ -15,8 +19,18 @@
 		// Pas de connexion à la BD, renvoie vers l'index
 		header('Location: ../index.php');
 		exit();
-	} 
-   
+	}  
+    if (isset($_POST['action']) && $_POST['action'] == "supprimerUtilisateur") {
+        include("../services/AdminService.php");
+        $idUser = htmlspecialchars($_POST['idUser']);
+        $role = htmlspecialchars($_POST['roleDelete']);
+        if($role == 3) {
+            deleteEtudiant(getPDO(), $idUser);
+        } else {
+            deleteUser(getPDO(), $idUser);
+        }
+	   
+    }
     if(isset($_POST["modif"])){
         modifyUsers($_POST["username"],$_POST["prenom"],$_POST["nom"],$_POST["password"],$_POST["role"],$_POST["filiere"],$_POST['id']);
         $_POST["modif"] == null;
@@ -27,6 +41,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <title>Eureka - Gestion Utilisateur (ADMIN)</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,25 +67,33 @@
 	<div class="container separation">
 		<div class="col-md-12">
             <form action="GestionUtilisateur.php" method="post">
-    
-                <select name="role" id="roles">
-                    <option value="0">tous</option>
-                    <?php 
+                <div class= "row centre">
+					<div class="col-md-3 centre">
+                        <select name="role" id="roles" >
+                            <option value="0">Tous</option>
+                            <?php 
 
-		                $allRole = displayAllRole();
-                        foreach($allRole as $role){
-                            if(isset($_POST["role"]) && $role["id"] == $_POST["role"]){
-                                 echo '<option selected value='.$role["id"].'>'.$role["designation"].'</option>';
-                            }else{
-                                echo '<option value='.$role["id"].'>'.$role["designation"].'</option>';
-                            }
+		                        $allRole = displayAllRole();
+                                foreach($allRole as $role){
+                                    if (isset($_POST["role"]) && $role["id"] == $_POST["role"]){
+                                         echo '<option selected value='.$role["id"].'>'.$role["designation"].'</option>';
+                                    } else {
+                                        echo '<option value='.$role["id"].'>'.$role["designation"].'</option>';
+                                    }
             
-                        }
+                                }
         
-                    ?>
-                    <input type="text" name="recherche" <?php if(isset($_POST['recherche'])) { echo 'value="'.$_POST['recherche'].'"'; } ?>>
-                    <input type="submit">
-                </select>
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-6 centre">
+                        <input type="text submit" class = "form-control" name="recherche" <?php if(isset($_POST['recherche'])) { echo 'value="'.$_POST['recherche'].'"'; } ?>>
+                    </div>
+                    <div class="col-md-2 centre">
+                        <input type="submit" value="Rechercher">
+                    </div>
+                </div>
+                    
             </form>
             <div class="col-md-12 centre">
 				<form class="form my-1 my-lg-1" action="ajoutUtilisateur.php" method="Post">
@@ -166,12 +189,12 @@
                                 <input name="codeUtilisateur"  hidden>
                                 <input name="pagination" value="<?php echo $numeroDeLaPage?>" hidden>
                                 <input type="hidden" name="recherche" <?php if(isset($_POST['recherche'])) { echo 'value="'.$_POST['recherche'].'"'; } ?>>
-                                <input type="submit" value="<?php echo $numeroDeLaPage?>" class="page-link" disabled>
+                                <input type="submit" value="<?php echo $numeroDeLaPage?>" class="page-link pageActu" disabled>
                             </form>
                         </li>
                         <?php if(($nombreDePage-2) >= $numeroDeLaPage){?>
                         <li class="page-item">
-                            <form action="pGestionUtilisateur.php" method="POST">
+                            <form action="GestionUtilisateur.php" method="POST">
                                 <input name="codeUtilisateur"  hidden>
                                 <input name="pagination" value="<?php echo $numeroDeLaPage + 1?>" hidden>
                                 <input type="hidden" name="recherche" <?php if(isset($_POST['recherche'])) { echo 'value="'.$_POST['recherche'].'"'; } ?>>
@@ -231,6 +254,7 @@
             <div class="card-header" id="username">
              '.$uses["Username"].'
             </div>
+            
             <form action="modifierUtilisateur.php" method="post">
             <div  class="card-body">
             Nom d\'utilisateur :  <div class="card-text" name="username" id="username'.$uses["id"].'" value="'.$uses["Username"].'">'.$uses["Username"].' </div><br>
@@ -249,6 +273,7 @@
                 }
             }
             echo'</select><select disabled name="filiere" id="filiere'.$uses["id_filiere"].'" value="'.$uses["id_filiere"].'">';
+            
             foreach($allFiliere as $filiere){
                 if($filiere["id"] == $uses["id_filiere"]){
                     echo '<option selected value='.$filiere["id"].'>'.$filiere["field"].'</option>';
@@ -260,16 +285,37 @@
             echo'</select>
             <button type="button submit" value="modifier" id="modif'.$uses["id"].'"><i class="fa-solid fa-pen"></i></button>
             <input type="submit" id="valideLaModif'.$uses["id"].'" value="modif" name="modif" hidden>
-            </div>
-            </form>
-          </div>
+            
+            </form>';
           
-          <br>';
-           
-        }
+          
 
-   
-    
+
+          ?><?php if($uses['id_role'] == 3) { ?>
+            <form action="Entreprise.php" method="POST">
+			    <input name="controller" type="hidden" value="Etudiant">
+				<input  name="action" type="hidden" value="afficherSouhait">
+				<input type="hidden" name="idUserS" value="<?php echo $uses['id'] ;?>">
+				<input type="submit" value="Voir souhaits">
+			</form>
+            <?php } ?>
+           <form action="GestionUtilisateur.php" method="post">
+                <div class="btn-group mt-2 col-md-12">
+                    <input name="idUser" type="hidden" value="<?php echo $uses['id'] ; ?>">
+                    <input name="roleDelete" type="hidden" value="<?php echo $uses["id_role"] ; ?>">
+                    <input name="action" type="hidden" value="supprimerUtilisateur">
+                    <button type="button submit" class="btn btn-sm btn-outline-secondary">
+                        Supprimer utilisateur
+                    </button>
+                                        
+                </div>
+            </form>
+            </br>
+          </div>
+          </div>
+          </br>
+        <?php } 
+        
 if(isset($_POST["ajoutUser"])&& $_POST["ajoutUser"]=="true"){
     addUsers($_POST["username"],$_POST["prenom"],$_POST["nom"],$_POST["password"],$_POST["role"],null);
 } 

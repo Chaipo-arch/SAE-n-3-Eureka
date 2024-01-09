@@ -57,7 +57,19 @@ $connexion;
 					}		
 					$_SESSION['connecte']= true ; 			// Stockage dans les variables de session que l'on est connecté (sera utilisé sur les autres pages)
 					$_SESSION['IdUser']= $ligne->id ;// Stockage dans les variables de session de l'Id du client
-					$_SESSION['role']= $ligne->id_role;
+					switch ($ligne->id_role) {
+						case 1:
+							$_SESSION['role'] = "Admin";
+							break;
+						case 3:
+							$_SESSION['role'] = "Etudiant";
+							break;
+						case 2:
+							$_SESSION['role'] = "Gestionnaire";
+							break;
+						default :
+							throw new Exception();
+					}
 					$connecte=true;
 				}
 			}
@@ -233,7 +245,7 @@ $connexion;
 
     }
 
-    function displayAllUsers($page ){
+    function displayAllUsers($page){
 		global $connexion;
 		$page = $page * 10;
 		$maRequete = $connexion->prepare("SELECT * FROM Utilisateur LIMIT 10 OFFSET :page;");
@@ -279,16 +291,13 @@ $connexion;
 
 	function modifUtilisateur($connexion, $nom, $prenom , $username, $mdp, $role,  $idE) {
 		global $connexion;
-		/* $maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(a,a,a,
-		a,a,12345,a)"); */
-
 		$maRequete = $connexion->prepare("UPDATE utilisateur SET nom = :nom ,  prenom = :prenom, Username = :username, password = :password, id_role = :idRole WHERE id = :idE");
 
 		$maRequete->bindParam(':nom', $nom);
 		$maRequete->bindParam(':prenom', $prenom);
 		$maRequete->bindParam(':username', $username);
-		$maRequete->bindParam(':mdp', $mdp);
-		$maRequete->bindParam(':idRole', $mdp);
+		$maRequete->bindParam(':password', $mdp);
+		$maRequete->bindParam(':idRole', $role);
 		$maRequete->bindParam(':idE', $idE);
 
 
@@ -297,6 +306,35 @@ $connexion;
 		} else {
 			return false;
 		}
+	}
+	function getIdRole($connexion, $idRole) {
+		global $connexion;
+
+		$maRequete = $connexion->prepare("SELECT id FROM role WHERE designation = :role");
+
+		$maRequete->bindParam(':role', $idRole);
+		
+		if($maRequete->execute()){
+			$idR = $maRequete->fetch();
+		} else {
+			return null;
+		}
+		return $idR[0] ;
+	}
+
+	function getRole($connexion, $idRole) {
+		global $connexion;
+
+		$maRequete = $connexion->prepare("SELECT designation FROM role WHERE id = :idrole");
+
+		$maRequete->bindParam(':idrole', $idRole);
+		
+		if($maRequete->execute()){
+			$idR = $maRequete->fetch();
+		} else {
+			return null;
+		}
+		return $idR[0] ;
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////
 

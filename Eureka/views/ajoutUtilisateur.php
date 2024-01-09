@@ -7,6 +7,11 @@ var_dump($_POST);
 		header('Location: ../index.php');
 		exit();
 	}
+  if ($_SESSION['role'] != "Admin") {
+    //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+    header('Location: forum.php');
+    exit();
+}
 	
 	// Intégration des fonctions qui seront utilisées pour les acces à la BD
 	require('../fonctions/gestionBD.php');
@@ -76,7 +81,7 @@ var_dump($_POST);
 <html lang="fr">
 	<head>
 		<meta charset="utf-8">
-		<title>Connexion Eureka</title>
+		<title>Eureka - Ajouter Utilisateur (ADMIN)</title>
 
 		<!-- Bootstrap CSS -->
 		<link href="../bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">
@@ -96,7 +101,7 @@ var_dump($_POST);
         
       </header>
       
-      <form class="formAjoutEntreprise" action="ajoutEtudiant.php" method="post">
+      <form class="formAjoutEntreprise" action="ajoutUtilisateur.php" method="post">
 
         <div class="row caseCentrer">
           
@@ -123,10 +128,32 @@ var_dump($_POST);
             <input type="text" name="mdp" required>
             <br/>
             <label for="first-name">Role*</label>
-            <input type="text" name="role" required>
-            <br/>
+            <select name="role"  class="form-control">
+								<!-- option-->
+								<?php 
+									$roles = displayAllRole();							
+									foreach($roles as $roleUti) { ?>
+										<option
+										<?php if(isset($_POST['role'] ) && $_POST['role'] == $roleUti['designation']) {  echo " selected ";}?>
+										> 
+										<?php  echo $roleUti['designation'] ; ?>
+										</option>
+									<?php }  ?>
+							</select>
+              </br>
             <label for="first-name">Filiere (Si etudiant)*</label>
-            <input type="text" name="filiere" required>
+            <select name="filiere" class="form-control">
+								<!-- option-->
+								<?php 
+									$filieres = displayAllFiliere();					
+									foreach($filieres as $filiere) { ?>
+										<option
+										<?php if(isset($_POST['filiere'] ) && $_POST['filiere'] == $filiere['field']) {  echo " selected ";}?>
+										> 
+										<?php  echo $filiere['field'] ; ?>
+										</option>
+									<?php }  ?>
+							</select>
             <br/>
             <!-- <label for="image">Importer une image :</label><br>
             <input type="file" name="image"><br><br>    -->
@@ -135,7 +162,7 @@ var_dump($_POST);
 
           <div class="row caseCentrer">
             <div class=" col-md-4 col-sm-3 col-3">
-              <a href="Forum.php" class="btn btn-outline-primary tailleMoyenne">Retour</a>
+              <a href="GestionUtilisateur.php" class="btn btn-outline-primary tailleMoyenne">Retour</a>
             </div>
             <div class=" col-md-8 col-sm-9 col-9 boutonDroite">
               <input name="action" type="hidden" value="ajout">

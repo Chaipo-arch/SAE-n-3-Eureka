@@ -10,27 +10,21 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
     header('Location: ../index.php');
     exit();
 }
-$host = 'localhost';
-$port = '3306';
-$db = 'eureka';
-$user = 'root';
-$pass = 'root';
-$charset = 'utf8mb4';
-$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
-    $options = [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false,
-        PDO::ATTR_PERSISTENT => true
-    ];
-
-$pdo = new PDO($dsn, $user, $pass, $options);
+require('../fonctions/gestionBD.php');
+	
+	// Connexion à la BD
+	if (!connecteBD($erreur)) {
+		// Pas de connexion à la BD, renvoie vers l'index
+		header('Location: ../index.php');
+		exit();
+	} 
+$pdo = getPDO();
 if(isset($_POST['action'])&& $_POST['action'] == "supprimerEntreprise" && $_SESSION['role'] == "Admin") {
 	$idE = $_POST['idEntreprise'];
 	deleteEntreprise($pdo, $idE);
 
 }
-if(isset($_GET['action'])&& $_GET['action'] == "deleteSouhaitEtudiant") {
+if(isset($_GET['action']) && $_GET['action'] == "deleteSouhaitEtudiant") {
 	$idE = $_GET['idEntreprise'];
 	deleteSouhait($pdo, $idE, $_SESSION['IdUser']);
     getSouhait($pdo, $_SESSION['IdUser']);
@@ -150,7 +144,7 @@ if(isset($_GET['action'])&& $_GET['action'] == "afficherSouhait") {
 			if(isset($entreprises)) {
 				foreach($entreprises as $entreprise) {
 					?>
-					<p>
+					
 					<div class="col-12">
 						<div class="card mb-4 shadow-sm d-flex flex-row">
 							<img src="<?php echo $entreprise['logo'] ; ?>">
@@ -223,7 +217,7 @@ if(isset($_GET['action'])&& $_GET['action'] == "afficherSouhait") {
 							</div>
 						</div>
 					</div>
-					</p>
+					
 			<?php } }?>
 	</div>
 	

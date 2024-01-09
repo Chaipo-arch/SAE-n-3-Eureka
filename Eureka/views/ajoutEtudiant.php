@@ -7,7 +7,11 @@ var_dump($_POST);
 		header('Location: ../index.php');
 		exit();
 	}
-	
+	if ($_SESSION['role'] != "Admin") {
+    //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+    header('Location: forum.php');
+    exit();
+}
 	// Intégration des fonctions qui seront utilisées pour les acces à la BD
 	require('../fonctions/gestionBD.php');
 	
@@ -76,7 +80,7 @@ var_dump($_POST);
 <html lang="fr">
 	<head>
 		<meta charset="utf-8">
-		<title>Connexion Eureka</title>
+		<title>Eureka - Ajouter Etudiant (ADMIN)</title>
 
 		<!-- Bootstrap CSS -->
 		<link href="../bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">

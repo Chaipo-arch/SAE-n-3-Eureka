@@ -38,7 +38,7 @@
 							</div>
 						<?php } else { ?>
 							<div class= "col-md-2 col-3 col-xs-6  d-flex justify-content-center">
-								<a class="nav-link active onglet rounded" href="index.php?controller=Planning">Mon Planning</a>
+								<a class="nav-link active onglet rounded" href="index.php?controller=Planning" disabled>Mon Planning</a>
 							</div>
 						<?php } ?>
 						<div class= "col-md-2 col-3  col-xs-6  d-flex justify-content-center">
