@@ -321,6 +321,8 @@ $_POST["recherche"] = "";
 			    <input name="controller" type="hidden" value="Etudiant">
 				<input  name="action" type="hidden" value="afficherSouhait">
 				<input type="hidden" name="idUserS" value="<?php echo $uses['id'] ;?>">
+                <input type="hidden" name="nomUser" value="<?php echo $uses['nom'] ;?>">
+                <input type="hidden" name="prenomUser" value="<?php echo $uses['prenom'] ;?>">
 				<input type="submit" value="Voir souhaits">
 			</form>
             <?php } 

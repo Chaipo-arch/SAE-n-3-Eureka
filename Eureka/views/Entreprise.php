@@ -61,7 +61,11 @@ if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GE
 		$idUser = $_POST['idUserS'];
 	}
 	
-	$_SESSION['idESouhait'] = $idUser ;
+	$_SESSION['AffichageSouhaitEtu']['id'] = $idUser ;
+	$_SESSION['AffichageSouhaitEtu']['nom'] = $_POST['nomUser'] ;
+	$_SESSION['AffichageSouhaitEtu']['prenom'] = $_POST['prenomUser'] ;
+	var_dump($_SESSION['AffichageSouhaitEtu']);
+	var_dump($_POST);
 	$entreprises = getSouhaitEtudiantEntier($pdo,$idUser);
 	
 	/*foreach($souhaits as $souhait) {
@@ -69,11 +73,11 @@ if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GE
 	}*/
 }else {
 
-	$_SESSION['idESouhait'] = null;
+	$_SESSION['AffichageSouhaitEtu'] = null;
 	$entreprises = rechercheEntreprise($pdo,$saisies,$_SESSION['filiere']);
 }
 
-
+var_dump($entreprises);
 
 ?>
 <!DOCTYPE html>
@@ -100,7 +104,7 @@ if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GE
 		<div class="container separation">
 		
 			<div class="col-md-12">
-					<?php if (!isset($_SESSION['idESouhait'])) { ?>
+					<?php if (!isset($_SESSION['AffichageSouhaitEtu'])) { ?>
 					<form action="Entreprise.php" method="get">
 						<div class= "row centre">
 						<div class="col-md-3 centre">
@@ -135,7 +139,7 @@ if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GE
 						</div>
 						</div>
 					</form>
-					<?php } ?>
+					<?php } else { echo "Souhaits de ". $_SESSION['AffichageSouhaitEtu']['nom']. " ". $_SESSION['AffichageSouhaitEtu']['prenom'].": ";} ?>
 					<!-- affichage de l'ajout d'entreprise si admin !-->
 					<?php if($_SESSION['role'] == 'Admin'){ ?>
 						<div class="col-md-12 centre">
@@ -148,7 +152,7 @@ if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GE
 			</div>
 		
 			<?php 
-			if(isset($entreprises)) {
+			if(isset($entreprises) && !empty($entreprises)) {
 				foreach($entreprises as $entreprise) {
 					?>
 					
@@ -225,7 +229,7 @@ if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GE
 						</div>
 					</div>
 					
-			<?php } } else { echo "aucune Entreprise ";} ?>
+			<?php } } else { echo "</br><div class='col-12 centre'><h1>Aucune Entreprise actuellement</h1></div>";} ?>
 	</div>
 	
     <?php footerHelper();
