@@ -1,0 +1,414 @@
+
+
+
+/* 
+============================================================================================
+CSS Du site Eureka
+============================================================================================
+ */
+
+/* Importation de la police Google */
+@import url('https://fonts.googleapis.com/css?family=Righteous&display=swap');
+
+
+/* 
+============================================================================================
+Zone de Test
+============================================================================================
+ */
+
+.test{
+  border: 10px solid black;
+}
+
+
+
+
+
+ 
+
+/* 
+============================================================================================
+Css Global
+============================================================================================
+ */
+
+ html {
+  height: 100%;
+}
+
+
+
+body {
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+ /*  background: linear-gradient(#141e30, #243b55); */
+  height: 100vh;
+}
+
+h1 {
+	/* D�finition des titres (des pages) */
+	color:#3900EC;		/* Couleur police */
+	font-size: 2em; 	/* Double de la police normale */
+	font-weight:bold;	/* En gras */
+}
+
+
+h2 {
+	/* D�finition des titres de niveau 2 */
+	color:white;		/* Couleur police */
+	font-size: 1.8em; 	/* 1,8 fois la police normale */
+}
+
+
+.center{
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Assure que la div occupe juste l'espace de l'image */
+    width: fit-content;
+    height: fit-content;
+}
+
+
+
+
+ /* 
+============================================================================================
+Css de la Page : Accueil
+============================================================================================
+ */
+
+ #logoIUT{ /* Largeur du logo de l'IUT en bas � droite */
+	width:100px;
+}
+
+
+ /* 
+============================================================================================
+Css de la Page : login.php
+============================================================================================
+ */
+
+
+
+ .login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  padding: 40px;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0,0,0,.6);
+  border-radius: 10px;
+}
+
+.login-box h2 {
+  margin: 0 0 30px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+}
+
+.login-box .user-box {
+  position: relative;
+}
+
+.login-box .user-box input {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 30px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+}
+
+.login-box .user-box label {
+  position: absolute;
+  top:0;
+  left: 0;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: .5s;
+}
+
+.login-box .user-box input:focus ~ label,
+.login-box .user-box input:valid ~ label {
+  top: -20px;
+  left: 0;
+  color: #03e9f4;
+  font-size: 12px;
+}
+
+
+
+ /* 
+============================================================================================
+Css de la Page : ajoutEntreprise.php
+============================================================================================
+ */
+
+ .titreCentrer {
+  /* border: 10px solid black; */
+  text-align: center;
+}
+
+.caseCentrer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.boutonDroite{
+  text-align: right;
+}
+
+
+.tailleMoyenne{
+  font-size: 22px; /* Taille de la police */
+  padding: 15px 25px; /* Espacement intérieur du bouton */
+}
+
+
+ /* 
+============================================================================================
+Css de la Page : modifEntreprise.php
+============================================================================================
+ */
+
+ /* Style de base pour les éléments dépliables */
+details {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* Style pour le titre dépliable */
+summary {
+  cursor: pointer;
+  padding: 5px;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Style pour le contenu dépliable */
+details[open] {
+  background-color: #e9e9e9;
+  padding: 5px;
+}
+
+
+ /* 
+============================================================================================
+Css de la Page : ?.php
+============================================================================================
+ */
+
+.h1center {
+	/* D�finition des titres (des pages) */
+	color:black;		/* Couleur police */
+	font-size: 2em; 	/* Double de la police normale */
+	font-weight:bold;	/* En gras */
+  text-align:center;
+}
+
+.h2center {
+	/* D�finition des titres (des pages) */
+	color:black;		/* Couleur police */
+	font-size: 3em; 	/* Double de la police normale */
+	font-weight:bold;	/* En gras */
+  text-align:center;
+}
+
+
+
+.ligne { /* Pour les lignes ou on veut un d�grad� */
+	background: linear-gradient(white,#00B3EC);
+	padding:5px;				/* Marge int�rieure */
+	margin : 2px; 				/* Marge ext�rieure */
+	text-align:center;  		/* Centrage du texte */
+}
+
+.entete { /* Pour les lignes ou on veut une bordure */
+	background-color:#00B3EC;	/* couleur de fond des lignes */
+	padding:5px;				/* Marge int�rieure */
+	margin : 2px; 				/* Marge ext�rieure */
+	text-align:center;  		/* Centrage du texte */
+}
+
+
+
+
+
+
+
+
+/* .texte{ 
+	font-size: 1.3em; 	
+	color:#3900EC!important;
+	font-weight:bold;
+	
+} */
+
+.imgCompte { /* Taille image compte */
+	height:100px;
+}
+
+.imgCompteHorizontal { /* Taille pour image dans comptes */
+	width:150px;
+}
+
+.enVert{/* texte en vert */
+	color:green!important;
+}
+
+.enRouge{ /* texte en rouge */
+	color:red!important;
+}
+
+#imageHaut{ /* Hauteur du logo */
+	height:120px;
+	border-radius: 5px; /* Arrondi image */
+}
+
+
+/* @media(max-width:767px){
+	.texte{ 
+		font-size: 0.8em; 	
+		color:#3900EC;
+	}
+} */
+
+.aligneDroite{
+	text-align:right;
+}
+
+
+
+/* 
+====================================================================== */
+
+
+
+
+
+
+
+
+
+
+/* ================================================================================ */
+
+*, ::before, ::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100vh;
+}
+
+.accueil {
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-size: 10px 50px; */
+  /* background-position: left; */
+}
+
+
+.custom-size {
+  background: url(https://images.unsplash.com/photo-1488554378835-f7acf46e6c98?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1351&q=80);
+  background-size: contain;
+  height: 120px; /* Hauteur personnalisée */
+}
+
+
+
+/* ================================================================= */
+/* AJOUT ENTREPRISE  */
+
+.formAjoutEntreprise {
+  width: 70%;
+  margin: 25px auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  font-weight: bold;
+}
+
+.TextDescriptif {
+  font-weight: bold;
+}
+
+input[type="text"],
+textarea {
+  width: calc(100%);
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* input[type="file"] {
+  margin-bottom: 15px;
+} */
+
+/* input[type="submit"] {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+} */
+
+/* input[type="submit"]:hover {
+  background-color: #45a049;
+} */
+
+/* Pour rendre le champ de fichier plus stylisé */
+/* input[type="file"] {
+  position: relative;
+  overflow: hidden;
+} */
+
+/* input[type="file"]:before {
+  content: 'Choisir un fichier';
+  display: inline-block;
+  background: #4caf50;
+  color: white;
+  padding: 8px 20px;
+  outline: none;
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: 4px;
+} */
+
+/* input[type="file"]:hover:before {
+  background: #45a049;
+} */
+
+/* input[type="file"]::-webkit-file-upload-button {
+  visibility: hidden;
+} */
+
+.erreur {
+  border-color: red!important;
+}
+
+.messErreur{
+  color : red;
+}
