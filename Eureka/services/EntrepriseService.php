@@ -36,9 +36,9 @@
         $maRequete = $connexion->prepare("SELECT * FROM entreprise JOIN lieu ON entreprise.id = lieu.id_entreprise WHERE entreprise.id = :idEn");
         $maRequete->bindParam(':idEn', $idE);
         if ($maRequete->execute()) {
-            $tableauRetourF = $maRequete->fetchAll();
+            $tableauRetourF = $maRequete->fetch();
         }
-        return $tableauRetourF[0];
+        return $tableauRetourF;
 
     }
 

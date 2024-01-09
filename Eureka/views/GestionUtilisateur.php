@@ -1,4 +1,5 @@
 <?php
+$_POST["recherche"] = "";
 	session_start();
 	// test si on est bien passé par la page de login sinon on retourne sur index.php
 	if (!isset($_SESSION['connecte'])) {
@@ -6,8 +7,7 @@
 		header('Location: ../index.php');
 		exit();
 	}
-	if ($_SESSION['role'] != "Admin") {
-        //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+	if ($_SESSION['role'] == "Etudiant") {
         header('Location: forum.php');
         exit();
     }
@@ -70,19 +70,36 @@
                 <div class= "row centre">
 					<div class="col-md-3 centre">
                         <select name="role" id="roles" >
-                            <option value="0">Tous</option>
+                            
                             <?php 
-
-		                        $allRole = displayAllRole();
-                                foreach($allRole as $role){
-                                    if (isset($_POST["role"]) && $role["id"] == $_POST["role"]){
-                                         echo '<option selected value='.$role["id"].'>'.$role["designation"].'</option>';
-                                    } else {
-                                        echo '<option value='.$role["id"].'>'.$role["designation"].'</option>';
+                                if($_SESSION['role'] == 'Admin' ){
+                                    echo '<option value="0">Tous</option>';
+                                    $allRole = displayAllRole(); 
+                                    foreach($allRole as $role){
+                                        if (isset($_POST["role"]) && $role["id"] == $_POST["role"] || isset($_SESSION['roleAffichage']) && $_SESSION['roleAffichage'] == $role["id"]){
+                                            
+                                            if (isset($_SESSION['roleAffichage']) && !isset($_POST["role"])) {
+                                                $_POST["role"] = $_SESSION['roleAffichage'] ;
+                                            } else {
+                                                $_SESSION['roleAffichage'] = $_POST["role"];
+                                            }
+                                             echo '<option selected value='.$role["id"].'>'.$role["designation"].'</option>';
+                                        } else {
+                                            echo '<option value='.$role["id"].'>'.$role["designation"].'</option>';
+                                        }
+                
                                     }
-            
+                                } else {
+                                    echo '<option selected value=3>Étudiant</option>';
+                                    $allRole =array() ;
+                                    $role['id'] = 3;
+                                    $role['designation'] = "Étudiant";
+                                    $allRole[] = $role;
+                                    $_POST['role'] = $role['id'];
+                                    if(!isset($_POST['recherche'])) {
+                                        $_POST['recherche'] = "";
+                                    }
                                 }
-        
                             ?>
                         </select>
                     </div>
@@ -95,11 +112,13 @@
                 </div>
                     
             </form>
+           <?php  if($_SESSION['role'] == 'Admin' ){ ?>
             <div class="col-md-12 centre">
 				<form class="form my-1 my-lg-1" action="ajoutUtilisateur.php" method="Post">
 					<input class="btn btn-form-control mr-sm-1 btn-outline-dark" type="submit" value="+">
 				</form>	
 			</div>
+            <?php } ?>
         </div>
         <div id="myModal" class="modal">
             <div class="modal-content">
@@ -107,6 +126,7 @@
     
             </div>
         </div>
+        <?php  if($_SESSION['role'] == 'Admin' ){ ?>
         <div class="row">
             <div class="col-4">
                 <form action="GestionUtilisateur.php" method="post">
@@ -115,6 +135,7 @@
             </div>
 
         </div>
+        <?php } ?>
     <br>
 <?php
         
@@ -251,54 +272,59 @@
 		
         foreach ($allUsers as $uses){
             echo'<div class="card text-center" id="id'.$uses["id"].'">
-            <div class="card-header" id="username">
-             '.$uses["Username"].'
-            </div>
-            
-            <form action="modifierUtilisateur.php" method="post">
-            <div  class="card-body">
-            Nom d\'utilisateur :  <div class="card-text" name="username" id="username'.$uses["id"].'" value="'.$uses["Username"].'">'.$uses["Username"].' </div><br>
-            Nom :  <div class="card-text" name="nom" id="nom'.$uses["id"].'" value="'.$uses["nom"].'">'.$uses["nom"].' </div><br>
-            Prenom : <div class="card-text" name="prenom" id="prenom'.$uses["id"].'">'.$uses["prenom"].'</div><br>
-            Mot de passe : <div class="card-text" name="password" id="password'.$uses["id"].'">'.$uses["password"].'</div><br>
-            
-            <input type="hidden" name="idEtudiant" id="id" value="'.$uses["id"].'">
-            <input type="hidden" name="filiere" id="filiere'.$uses["id_filiere"].'" value="'.$uses["id_filiere"].'">
-            <select  name="role" disabled id="idRole'.$uses["id_filiere"].'" value="'.$uses["id_role"].'">';
-            foreach($allRole as $role){
-                if($role["id"] == $uses["id_role"]){
-                    echo '<option selected value='.$role["id"].'>'.$role["designation"].'</option>';
-                }else{
-                    echo '<option value='.$role["id"].'>'.$role["designation"].'</option>';
-                }
-            }
-            echo'</select><select disabled name="filiere" id="filiere'.$uses["id_filiere"].'" value="'.$uses["id_filiere"].'">';
-            
-            foreach($allFiliere as $filiere){
-                if($filiere["id"] == $uses["id_filiere"]){
-                    echo '<option selected value='.$filiere["id"].'>'.$filiere["field"].'</option>';
-                }else{
-                    echo '<option value='.$filiere["id"].'>'.$filiere["field"].'</option>';
-                }
+                <div class="card-header" id="username">
+                '.$uses["Username"].'
+                </div>
                 
-            }
-            echo'</select>
-            <button type="button submit" value="modifier" id="modif'.$uses["id"].'"><i class="fa-solid fa-pen"></i></button>
-            <input type="submit" id="valideLaModif'.$uses["id"].'" value="modif" name="modif" hidden>
             
-            </form>';
-          
+                <div  class="card-body">
+                    <form action="modifierUtilisateur.php" method="post">
+                        Nom d\'utilisateur :  <div class="card-text" name="username" id="username'.$uses["id"].'" value="'.$uses["Username"].'">'.$uses["Username"].' </div><br>
+                        Nom :  <div class="card-text" name="nom" id="nom'.$uses["id"].'" value="'.$uses["nom"].'">'.$uses["nom"].' </div><br>
+                        Prenom : <div class="card-text" name="prenom" id="prenom'.$uses["id"].'">'.$uses["prenom"].'</div><br>';
+                        if($_SESSION['role'] == 'Admin' ){
+                            echo 'Mot de passe : <div class="card-text" name="password" id="password'.$uses["id"].'">'.$uses["password"].'</div><br>';
+                        }
+                        echo '<input type="hidden" name="idEtudiant" id="id" value="'.$uses["id"].'">
+                        <input type="hidden" name="filiere" id="filiere'.$uses["id_filiere"].'" value="'.$uses["id_filiere"].'">
+                        <select  name="role" disabled id="idRole'.$uses["id_filiere"].'" value="'.$uses["id_role"].'">';
+                        foreach($allRole as $role){
+                            if($role["id"] == $uses["id_role"]){
+                                echo '<option selected value='.$role["id"].'>'.$role["designation"].'</option>';
+                            }else{
+                                echo '<option value='.$role["id"].'>'.$role["designation"].'</option>';
+                            }
+                        }
+                        echo'</select> ';/*<select disabled name="filiere" id="filiere'.$uses["id_filiere"].'" value="'.$uses["id_filiere"].'">';
+                        
+                       /*foreach($allFiliere as $filiere){
+                            if($filiere["id"] == $uses["id_filiere"]){
+                                echo '<option selected value='.$filiere["id"].'>'.$filiere["field"].'</option>';
+                            }else{
+                                echo '<option value='.$filiere["id"].'>'.$filiere["field"].'</option>';
+                            }
+                            
+                        }
+                         echo'</select>*/
+                        if($_SESSION['role'] == 'Admin' ){
+                        echo' <button type="button submit" value="modifier" id="modif'.$uses["id"].'"><i class="fa-solid fa-pen"></i></button>
+                        <input type="submit" id="valideLaModif'.$uses["id"].'" value="modif" name="modif" hidden>';
+                        
+                   
+                        }
+                         echo '</form>';?>
           
 
 
-          ?><?php if($uses['id_role'] == 3) { ?>
+          <?php if($uses['id_role'] == 3) { ?>
             <form action="Entreprise.php" method="POST">
 			    <input name="controller" type="hidden" value="Etudiant">
 				<input  name="action" type="hidden" value="afficherSouhait">
 				<input type="hidden" name="idUserS" value="<?php echo $uses['id'] ;?>">
 				<input type="submit" value="Voir souhaits">
 			</form>
-            <?php } ?>
+            <?php } 
+            if($_SESSION['role'] == 'Admin' ){?>
            <form action="GestionUtilisateur.php" method="post">
                 <div class="btn-group mt-2 col-md-12">
                     <input name="idUser" type="hidden" value="<?php echo $uses['id'] ; ?>">
@@ -310,6 +336,7 @@
                                         
                 </div>
             </form>
+            <?php } ?>
             </br>
           </div>
           </div>

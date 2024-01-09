@@ -89,7 +89,7 @@
 <html lang="fr">
 	<head>
 		<meta charset="utf-8">
-		<title>Modifier Entrerpise</title>
+		<title>Eureka - Modifier Entreprise (ADMIN)</title>
 		<!-- Bootstrap CSS -->
 		<link href="../bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">
 
@@ -164,7 +164,18 @@
 							<input type="text" name="nomIntervenant"  required >
 							<br/>
 							<label for="first-name">Filiere demandé</label>
-							<input type="text" name="filiereDemande" required>
+							<select name="filiere" class="form-control">
+								<!-- option-->
+								<?php 
+									$filieres = displayAllFiliere();					
+									foreach($filieres as $filiere) { ?>
+										<option
+										<?php if(isset($_POST['filiere'] ) && $_POST['filiere'] == $filiere['field']) {  echo " selected ";}?>
+										> 
+										<?php  echo $filiere['field'] ; ?>
+										</option>
+									<?php }  ?>
+							</select>
 							<br/>
 							<input name="action" type="hidden" value="ajoutIntervenant">
 							<input name="idEntreprise" type="hidden" value="<?php echo $entreprise_id; ?>">
@@ -220,7 +231,7 @@
 
 						<div class="row caseCentrer">
 							<div class=" col-md-4 col-sm-3 col-3">
-							<a href="Forum.php" class="btn btn-outline-primary tailleMoyenne">Retour</a>
+							<a href="Entreprise.php?retour=true" class="btn btn-outline-primary tailleMoyenne">Retour</a>
 							</div>
 							<div class=" col-md-8 col-sm-9 col-9 boutonDroite">
 							
@@ -236,7 +247,7 @@
 			<!-- <input type="reset" value="Reset all info" tabindex="-1"> -->
 			</details>
 			<div class=" col-md-4 col-sm-3 col-3">
-				<a href="Forum.php" class="btn btn-outline-primary tailleMoyenne">Retour</a>
+				<a href="Entreprise.php?retour=true" class="btn btn-outline-primary tailleMoyenne">Retour</a>
 			</div>
 			
 			

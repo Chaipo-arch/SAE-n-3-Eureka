@@ -24,6 +24,9 @@ require('../fonctions/gestionBD.php');
 		exit();
 	} 
 $pdo = getPDO();
+if(isset($_POST['action'])&& $_POST['action'] == "affichageSansSouhait") {
+	
+}
 if(isset($_POST['action'])&& $_POST['action'] == "supprimerEtudiant" && $_SESSION['role'] == "Admin") {
 	$idE = $_POST['idUserS'];
 	deleteEtudiant($pdo, $idE);
@@ -107,8 +110,14 @@ $filieres = getFilieres($pdo);
 					</div>
 				</div>
 			</form>
+			<form action="etudiant.php" method="get">
+				<div class="col-md-2 centre">
+					<input type="submit" value="Voir étudiant sans souhait">
+					<input name="action" type="hidden" value="affichageSansSouhait">
+				</div>
+			</form>
 			<?php if($_SESSION['role'] == 'Admin'){ ?>
-				<div class="col-md-12 centre">
+				<div class="col-md-10 centre">
 					<form class="form my-1 my-lg-1" action="ajoutEtudiant.php" method="get">
 						<input name="action" type="hidden" value="ajouterEtudiant">
 						<input name="controller" type="hidden" value="Admin">

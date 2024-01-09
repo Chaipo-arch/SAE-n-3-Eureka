@@ -145,7 +145,7 @@ var_dump($_POST);
 
           <div class="row caseCentrer">
             <div class=" col-md-4 col-sm-3 col-3">
-              <a href="Forum.php" class="btn btn-outline-primary tailleMoyenne">Retour</a>
+              <a href="Entreprise.php?retour=true" class="btn btn-outline-primary tailleMoyenne">Retour</a>
             </div>
             <div class=" col-md-8 col-sm-9 col-9 boutonDroite">
               <input name="action" type="hidden" value="ajout">

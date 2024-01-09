@@ -73,14 +73,6 @@ $dateLimite = $caracteristiques['dateLimite'];
                 
                 </div>
             </form>
-            <div class ="col-md-4 centre">
-                <form action="GestionUtilisateur.php" method="post">
-                    <input type="submit"  value="Gérer utilisateurs">
-                </form>
-            </div>
-            
-            
-        
             <a  href="forum.php">Retour</a>
         </div>
         <?php footerHelper(); ?>
