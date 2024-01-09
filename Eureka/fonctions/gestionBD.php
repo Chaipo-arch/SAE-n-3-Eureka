@@ -192,6 +192,112 @@ $connexion;
 
 
 	}
+
+	function recherche($recherche, $page){
+		global $connexion; 
+		$page = $page * 10;
+        $maRequete = $connexion->prepare('SELECT * FROM Utilisateur WHERE Username LIKE :recherche OR nom LIKE :recherche OR prenom LIKE :recherche LIMIT 10 OFFSET :page');
+		$maRequete->bindValue(':recherche',  '%'.$recherche . '%', PDO::PARAM_STR);
+		$maRequete->bindParam(':page', $page, PDO::PARAM_INT);
+		$maRequete->execute();
+
+
+        return $maRequete;
+	}
+
+	function rechercheByRole($recherche, $role, $page){
+		global $connexion; 
+		$page = $page * 10;
+        $maRequete = $connexion->prepare('SELECT * FROM Utilisateur WHERE (Username LIKE :recherche OR nom LIKE :recherche OR prenom LIKE :recherche) AND id_role =:role LIMIT 10 OFFSET :page');
+		$maRequete->bindValue(':recherche',  '%'.$recherche . '%', PDO::PARAM_STR);
+		$maRequete->bindParam(':role', $role);
+		$maRequete->bindParam(':page', $page, PDO::PARAM_INT);
+		$maRequete->execute();
+
+
+        return $maRequete;
+	}
+	function modifyUsers( $username , $nom , $prenom , $motDePasse , $role , $filiere,$id){
+		global $connexion; 
+        $maRequete = $connexion->prepare("Update Utilisateur set username=:username,nom=:nom,prenom=:prenom,password=:motDePasse, id_role=:role, id_filiere=:filiere WHERE id=:id");
+        $maRequete->bindParam(':username', $username);
+        $maRequete->bindParam(':nom', $nom);
+        $maRequete->bindParam(':prenom', $prenom);
+        $maRequete->bindParam(':motDePasse', $motDePasse);
+        $maRequete->bindParam(':role', $role);
+        $maRequete->bindParam(':filiere', $filiere);
+		$maRequete->bindParam(':id', $id);
+        $maRequete->execute();
+
+        return $maRequete;
+
+    }
+
+    function displayAllUsers($page ){
+		global $connexion;
+		$page = $page * 10;
+		$maRequete = $connexion->prepare("SELECT * FROM Utilisateur LIMIT 10 OFFSET :page;");
+		$maRequete->bindParam(':page', $page, PDO::PARAM_INT); // Ajout de PDO::PARAM_INT pour indiquer que c'est un entier
+		$maRequete->execute();
+		
+		return $maRequete->fetchAll();
+		
+    }
+	function displayNBLigne($recherche){
+		global $connexion; 
+        $maRequete = $connexion->prepare("SELECT CEIL(COUNT(*) / 10) AS total_pages FROM Utilisateur WHERE username LIKE :recherche OR nom LIKE :recherche OR prenom LIKE :recherche;");
+		$maRequete->bindValue(':recherche',  '%'.$recherche . '%', PDO::PARAM_STR);
+		$maRequete->execute();
+
+		return $maRequete->fetchAll();
+	}
+    function displayAllRole(){
+		global $connexion; 
+        $maRequete = $connexion->prepare("select * FROM role"); 
+        $maRequete->execute();
+
+        return $maRequete->fetchAll();
+    }
+
+	function displayAllFiliere(){
+		global $connexion; 
+        $maRequete = $connexion->prepare("select * FROM filiere"); 
+        $maRequete->execute();
+
+        return $maRequete->fetchAll();
+	}
+
+	function displayNbLigneWithRole($recherche, $role){
+		global $connexion; 
+		$maRequete = $connexion->prepare("SELECT CEIL(COUNT(*) / 10) AS total_pages FROM Utilisateur WHERE (username LIKE :recherche OR nom LIKE :recherche OR prenom LIKE :recherche) AND id_role = :role;");
+		$maRequete->bindValue(':recherche', '%' . $recherche . '%', PDO::PARAM_STR);
+		$maRequete->bindParam(":role", $role);
+		$maRequete->execute();
+	
+		return $maRequete->fetchAll();
+	}
+
+	function modifUtilisateur($connexion, $nom, $prenom , $username, $mdp, $role,  $idE) {
+		global $connexion;
+		/* $maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(a,a,a,
+		a,a,12345,a)"); */
+
+		$maRequete = $connexion->prepare("UPDATE utilisateur SET nom = :nom ,  prenom = :prenom, Username = :username, password = :password, id_role = :idRole WHERE id = :idE");
+
+		$maRequete->bindParam(':nom', $nom);
+		$maRequete->bindParam(':prenom', $prenom);
+		$maRequete->bindParam(':username', $username);
+		$maRequete->bindParam(':mdp', $mdp);
+		$maRequete->bindParam(':idRole', $mdp);
+		$maRequete->bindParam(':idE', $idE);
+
+
+		if($maRequete->execute()){
+			return true;
+		} else {
+			return false;
+		}
+	}
 	/////////////////////////////////////////////////////////////////////////////////////////////
 
 ?>

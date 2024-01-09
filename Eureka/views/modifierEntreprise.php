@@ -55,7 +55,11 @@
 	}
 	if (isset($_POST['action']) && $_POST['action'] == "Modification") {
 		include("../services/AdminService.php");
+		$designation= $_POST['Designation'];
+		$activite= $_POST['secteurActivite'];
+		$nom= $_POST['nomIntervenant'];
 		$entreprise_id = $_POST['idEntreprise'];
+		modifIntervenant(null,$nom,$id,$idIntervenant);
 		//$_SESSION['idEntrepriseAModifier'] = $entreprise_id;
 
 	}

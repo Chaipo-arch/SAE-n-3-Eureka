@@ -156,8 +156,10 @@ if(isset($_GET['action'])&& $_GET['action'] == "afficherSouhait") {
 							<img src="<?php echo $entreprise['logo'] ; ?>">
 							<div class="card-body d-flex flex-column justify-content-between">
 								<p class="card-text">
+									Nom entreprise : 
 									<?php echo $entreprise['Designation'] ;?>
 								</p>
+									Presentation : 
 									<?php echo $entreprise['presentation'] ;?>
 								<div class="btn-group mt-2">
 									<button type="button" class="btn btn-sm btn-outline-secondary">
