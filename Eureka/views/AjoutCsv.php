@@ -75,9 +75,9 @@ $pdo = new PDO($dsn, $user, $pass, $options);
 
                     if (filter_var($data[0], FILTER_VALIDATE_EMAIL)) {
                         echo "L'adresse email est valide / ";
-                        if (preg_match('/^[a-z]+$/', $data[1]) && !preg_match('/\s/', $data[1])){
+                        if (preg_match('/^[a-zA-ZéèêàâiïIAÉÈÊÀÂ]+$/', $data[1]) && !preg_match('/\s/', $data[1])){
                             echo "succes nom / ";
-                            if (preg_match('/^[a-z]+$/', $data[2]) && !preg_match('/\s/', $data[1])){
+                            if (preg_match('/^[a-zA-ZéèêàâiïIAÉÈÊÀÂ]+$/', $data[2]) && !preg_match('/\s/', $data[1])){
                                 echo "succes prenom / ";
 
                                 /* $estDifferent = true;
