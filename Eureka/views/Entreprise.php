@@ -54,18 +54,23 @@ if(!isset($_GET['recherche'])) {
 } else {
 	$saisies = $_GET['recherche'];
 }
-if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GET['retour'])  && isset($_SESSION['idESouhait']) ) {
-	if(isset($_SESSION['idESouhait'])) {
-		$idUser = $_SESSION['idESouhait'];
+// 2 cas  Soit on affiche les souhaits d'un étudiants donc les entreprises que demande un étudiant
+// OU On affiche les entreprises dans le cadre d'une recherche d'entreprise
+
+// 1er cas : 2 cas d'apparition à partir de la page GestionUtilisateur on demandé de voir le souhait d'un étudiant
+// OU On revient sur cette page aprés avoir modifié ou ajouté une entreprise 
+if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GET['retour'])  && isset($_SESSION['AffichageSouhaitEtu']) ) {
+
+	if(isset($_SESSION['AffichageSouhaitEtu'])&& $_POST['action'] != "afficherSouhait") {
+		$idUser = $_SESSION['AffichageSouhaitEtu']['id'];
 	} else {
 		$idUser = $_POST['idUserS'];
 	}
-	
-	$_SESSION['AffichageSouhaitEtu']['id'] = $idUser ;
-	$_SESSION['AffichageSouhaitEtu']['nom'] = $_POST['nomUser'] ;
-	$_SESSION['AffichageSouhaitEtu']['prenom'] = $_POST['prenomUser'] ;
-	var_dump($_SESSION['AffichageSouhaitEtu']);
-	var_dump($_POST);
+	if(!isset($_SESSION['AffichageSouhaitEtu']) || $_POST['action'] == "afficherSouhait"  ) {
+		$_SESSION['AffichageSouhaitEtu']['id'] = $idUser ;
+		$_SESSION['AffichageSouhaitEtu']['nom'] = $_POST['nomUser'] ;
+		$_SESSION['AffichageSouhaitEtu']['prenom'] = $_POST['prenomUser'] ;
+	}
 	$entreprises = getSouhaitEtudiantEntier($pdo,$idUser);
 	
 	/*foreach($souhaits as $souhait) {
@@ -157,7 +162,7 @@ if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GE
 					
 					<div class="col-12">
 						<div class="card mb-4 shadow-sm d-flex flex-row">
-							<img src="<?php echo $entreprise['logo'] ; ?>">
+							<img src="../images/<?php echo $entreprise['logo'] ; ?>">
 							<div class="card-body d-flex flex-column justify-content-between">
 								<p class="card-text">
 									Nom entreprise : 
@@ -228,7 +233,7 @@ if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GE
 						</div>
 					</div>
 					
-			<?php } } else { echo "</br><div class='col-12 centre'><h2>Aucune Entreprise actuellement</h2></div>";} ?>
+			<?php } } else { echo "</br><div class='col-12 centre'><h2>Aucune Entreprise </h2></div>";} ?>
 	</div>
 	
     <?php footerHelper();

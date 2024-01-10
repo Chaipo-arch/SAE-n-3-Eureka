@@ -1,7 +1,5 @@
 <?php
 session_start();
-var_dump($_SESSION);
-var_dump($_SESSION);
 include("../services/UserService.php");
 include("../services/ForumService.php");
 if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
@@ -42,6 +40,7 @@ if($_SESSION['role'] == 'Etudiant')  {
   
    <div class="container separation">
       <div class="col-md-12">
+        
         <?php 
         if(isset($pageNTrouve)) {
           ?>
@@ -49,6 +48,9 @@ if($_SESSION['role'] == 'Etudiant')  {
         <?php } else {
           $caracteristiques = getForumCaracteristiques($pdo);?>
           <div class="row">
+          <div class ="col-md-12 centre">
+          <h1> Bienvenue sur le site Eureka</h1>
+         </div>
             <div class ="col-md-4 centre">
                 
                 Date</br>

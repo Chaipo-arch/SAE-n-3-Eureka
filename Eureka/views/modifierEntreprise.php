@@ -135,7 +135,7 @@
 							<input type="text" name="nomIntervenant" value="<?php echo $intervenant['name'] ;?>" required >
 							<br/>
 							<label for="first-name">Filiere demandé</label>
-							<select name="filiere" class="form-control">
+							<select name="filiereDemande" class="form-control">
 								<!-- option-->
 								<?php 
 									$filieres = displayAllFiliere();					

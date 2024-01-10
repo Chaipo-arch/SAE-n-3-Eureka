@@ -1,6 +1,7 @@
 <?php
-$_POST["recherche"] = "";
+    
 	session_start();
+    
 	// test si on est bien passé par la page de login sinon on retourne sur index.php
 	if (!isset($_SESSION['connecte'])) {
 		//Pas de session en cours, on est pas passé par le login password
@@ -60,7 +61,6 @@ $_POST["recherche"] = "";
     <?php 
 		include("../fonctions/viewHelper.php");
 		headerHelper();
-
 		?>
 	</br>
 		
@@ -80,6 +80,7 @@ $_POST["recherche"] = "";
                                             
                                             if (isset($_SESSION['roleAffichage']) && !isset($_POST["role"])) {
                                                 $_POST["role"] = $_SESSION['roleAffichage'] ;
+                                                $_POST["recherche"] = "";
                                             } else {
                                                 $_SESSION['roleAffichage'] = $_POST["role"];
                                             }
@@ -96,6 +97,7 @@ $_POST["recherche"] = "";
                                     $role['designation'] = "Étudiant";
                                     $allRole[] = $role;
                                     $_POST['role'] = $role['id'];
+                                    
                                     if(!isset($_POST['recherche'])) {
                                         $_POST['recherche'] = "";
                                     }
@@ -120,12 +122,7 @@ $_POST["recherche"] = "";
 			</div>
             <?php } ?>
         </div>
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close" id="closeModalBtn">&times;</span>
-    
-            </div>
-        </div>
+        
         <?php  if($_SESSION['role'] == 'Admin' ){ ?>
         <div class="row">
             <div class="col-4">
@@ -261,6 +258,7 @@ $_POST["recherche"] = "";
             if(isset($_POST["recherche"]) && trim($_POST["recherche"]) && isset($_POST["role"]) && $_POST["role"] != 0) {
                 $allUsers = rechercheByRole($_POST["recherche"], $_POST["role"], $numeroDeLaPage);
             }else if (isset($_POST["role"]) && $_POST["role"] != 0){
+                
                 $allUsers = rechercheByRole($_POST["recherche"], $_POST["role"], $numeroDeLaPage);
             }
             else if(isset($_POST["recherche"]) && trim($_POST["recherche"])) {

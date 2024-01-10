@@ -25,7 +25,7 @@
 						</div>
 						<?php if($_SESSION['role'] == 'Admin' ||$_SESSION['role'] == 'Gestionnaire') { ?>
 							<div class= "col-md-2 col-3 col-xs-6  d-flex justify-content-center">
-								<a class="nav-link active onglet rounded" href="GestionUtilisateur.php">souhaits Etudiants</a>
+								<a class="nav-link active onglet rounded" href="GestionUtilisateur.php">Gestion Utilisateur</a>
 							</div>
 						<?php } else { ?>
 							<div class= "col-md-2 col-3 col-xs-6  d-flex justify-content-center">
