@@ -1,5 +1,4 @@
 <?php
-var_dump($_POST);
 	session_start();
 	// test si on est bien passé par la page de login sinon on retourne sur index.php
 	if (!isset($_SESSION['connecte'])) {
@@ -7,11 +6,6 @@ var_dump($_POST);
 		header('Location: ../index.php');
 		exit();
 	}
-  if ($_SESSION['role'] != "Admin") {
-    //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
-    header('Location: forum.php');
-    exit();
-}
 	
 	// Intégration des fonctions qui seront utilisées pour les acces à la BD
 	require('../fonctions/gestionBD.php');
@@ -24,7 +18,7 @@ var_dump($_POST);
 	} 
 
   if (isset($_POST['nomEtudiant']) && isset($_POST['prenomEtudiant']) && isset($_POST['username'])
-  && isset($_POST['mdp']) && isset($_POST['role']) && isset($_POST['filiere'])){
+  && isset($_POST['mdp']) && isset($_POST['role']) ){
 
     //echo "Test debug";
     //htmlspecialchars($identifiantSaisi);
@@ -39,23 +33,26 @@ var_dump($_POST);
 
 
     $mdp=htmlspecialchars($_POST['mdp']);
-
+    
     
     $role=htmlspecialchars($_POST['role']);
     include("../services/AdminService.php");
-    $role = getRoleId(getPDO(),$role);
+    $roleId = getRoleId(getPDO(),$role);
     
     $filiere=htmlspecialchars($_POST['filiere']);
     include("../services/FiliereService.php");
-    $filiere = getIdFiliere(getPDO(),$filiere);
     
     
-    var_dump($role);
-    if($role != null) {
-        if(AjoutUtilisateur($connexion,$nom,$prenom,$username,$mdp,$role,$filiere)){
-            header('Location: Forum.php');
+    var_dump($roleId);
+    
+    $mdpValide = preg_match('/^\S{8,30}$/',$mdp);
+    $nomValide = preg_match('/^[a-z]+$/',$nom) && !preg_match('/\s/',$nom);
+    $prenomValide = preg_match('/^[a-z]+$/',$prenom)&& !preg_match('/\s/',$nom);
+    $usernameValide = filter_var($username, FILTER_VALIDATE_EMAIL);
+    if($role != null && $mdpValide && $nomValide && $prenomValide ) {
+        if(AjoutUtilisateur($connexion,$nom,$prenom,$username,$mdp,$roleId,$filiere)){
+            header('Location: GestionUtilisateur.php');
           } else {
-            var_dump($role);
             echo " l'ajout n'a pas était effectué";
           }
     }
@@ -81,7 +78,7 @@ var_dump($_POST);
 <html lang="fr">
 	<head>
 		<meta charset="utf-8">
-		<title>Eureka - Ajouter Utilisateur (ADMIN)</title>
+		<title>Connexion Eureka</title>
 
 		<!-- Bootstrap CSS -->
 		<link href="../bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">
@@ -115,45 +112,56 @@ var_dump($_POST);
 
 
           <div>
-            <label for="first-name">Nom de L'etudiant*</label>
-            <input type="text" name="nomEtudiant"  required >
+            <label for="first-name">Nom de L'etudiant* (en minuscule) <?php if(isset($nom) && !$nomValide){ echo '<div class="messErreur">le nom ne doit contenir aucune majuscule</div>';}?></label></label>
+            <input type="text" name="nomEtudiant" <?php if(isset($nom)){echo 'value="'.$nom.'"';} if(isset($nom) && (!$nomValide)){echo 'class="erreur"';} ?> required >
             <br/>
-            <label for="first-name">Prenom de L'etudiant*</label>
-            <input type="text" name="prenomEtudiant" required>
+            <label for="first-name">Prenom de L'etudiant* (en minuscule) <?php if(isset($prenom) && !$prenomValide){ echo '<div class="messErreur">le prenom ne doit contenir aucune majuscule</div>';}?></label>
+            <input type="text" name="prenomEtudiant" <?php 
+            if(isset($prenom) && (!$prenomValide)){echo 'class="erreur"';} 
+            if(isset($prenom)){echo 'value="'.$prenom.'"';}?> required>
             <br/>
-            <label for="first-name">Username*</label>
-            <input type="text" name="username" required>
+            <label for="first-name">Username* (le nom d'utilisateur est l'adresse mail d'un étudiant)
+            <?php if(isset($username) && !$usernameValide){ echo '<div class="messErreur">votre nom d\'utilisateur ne respecte pas le format mail</div>';}?>  
+            </label>
+           
+            <input type="text" name="username" <?php if(isset($username) && (!$usernameValide)){echo 'class="erreur"';} if(isset($username)){echo 'value="'.$username.'"';}?> required>
             <br/>
-            <label for="first-name">Mot de Passe*</label>
-            <input type="text" name="mdp" required>
+
+            <label for="first-name">Mot de Passe* (le mot de passe doit être compris entre 8 et 30 caractére sans espace) <?php if(isset($mdp) && (strlen($mdp)<8)){
+              echo '<div class="messErreur">le mot de passe doit avoir au minimum 8 caractére</div>';
+            }else if(isset($mdp) && (strlen($mdp) >30)){
+              echo '<div class="messErreur">le mot de passe doit avoir au maximum 30 caractére</div>';
+            }else if(isset($mdpValide) && !$mdpValide){
+                echo '<div class="messErreur">le mot de passe ne doit contenir aucun caractére espace</div>';
+            }?></label>
+            <input type="text"<?php if(isset($mdp) && (!$mdpValide)){echo 'class="erreur"';}?> <?php if(isset($mdp)){echo 'value="'.$mdp.'"';}?> name="mdp" required>
+            
             <br/>
             <label for="first-name">Role*</label>
-            <select name="role"  class="form-control">
-								<!-- option-->
-								<?php 
-									$roles = displayAllRole();							
-									foreach($roles as $roleUti) { ?>
-										<option
-										<?php if(isset($_POST['role'] ) && $_POST['role'] == $roleUti['designation']) {  echo " selected ";}?>
-										> 
-										<?php  echo $roleUti['designation'] ; ?>
-										</option>
-									<?php }  ?>
-							</select>
-              </br>
-            <label for="first-name">Filiere (Si etudiant)*</label>
-            <select name="filiere" class="form-control">
-								<!-- option-->
-								<?php 
-									$filieres = displayAllFiliere();					
-									foreach($filieres as $filiere) { ?>
-										<option
-										<?php if(isset($_POST['filiere'] ) && $_POST['filiere'] == $filiere['field']) {  echo " selected ";}?>
-										> 
-										<?php  echo $filiere['field'] ; ?>
-										</option>
-									<?php }  ?>
-							</select>
+            <select id="role" name="role" required>
+              <?php
+              $allRole = displayAllRole();
+               foreach($allRole as $role){
+                if(isset($_POST["role"]) && $role["id"] == $_POST["role"]){
+                     echo '<option selected value='.$role["id"].'>'.$role["designation"].'</option>';
+                }else{
+                    echo '<option value='.$role["id"].'>'.$role["designation"].'</option>';
+                }
+              }
+              ?>
+            </select>
+
+            <br/>
+            <br>
+            <label for="first-name" id="filiere" hidden>Filiere (Si etudiant)*</label>
+            <select type="text" id="filiere2" name="filiere" hidden>
+            <?php $filieres = displayAllFiliere();
+            foreach($filieres as $fil){
+              echo '<option value="'.$fil["id"].'">'.$fil["field"].'</option>';
+            }
+            ?>
+            </select>
+            <br>
             <br/>
             <!-- <label for="image">Importer une image :</label><br>
             <input type="file" name="image"><br><br>    -->
@@ -162,7 +170,7 @@ var_dump($_POST);
 
           <div class="row caseCentrer">
             <div class=" col-md-4 col-sm-3 col-3">
-              <a href="GestionUtilisateur.php" class="btn btn-outline-primary tailleMoyenne">Retour</a>
+              <a href="Forum.php" class="btn btn-outline-primary tailleMoyenne">Retour</a>
             </div>
             <div class=" col-md-8 col-sm-9 col-9 boutonDroite">
               <input name="action" type="hidden" value="ajout">
@@ -176,5 +184,6 @@ var_dump($_POST);
         </fieldset>
       </form>
     </div>
+    <script src="../js/ajoutUser.js" ></script>
     </body>
 </html>

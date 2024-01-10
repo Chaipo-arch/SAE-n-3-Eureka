@@ -66,6 +66,11 @@ $dateLimite = $caracteristiques['dateLimite'];
                         <input type="text" name="dateLimite" value="<?php if(isset($dateLimite)) { echo $dateLimite;}?>">
                     </div>
                     </br>
+                    <div class ="col-md-6 centre">
+                        Date Limite (rendez Vous)</br>
+                        <input type="text" name="dateLimite" value="<?php if(isset($dateLimite)) { echo $dateLimite;}?>">
+                    </div>
+                    </br>
                     <div class ="col-md-12 centre">
                         </br>
                     <input type="submit"  value="Modifier Caractéristiques forum">
