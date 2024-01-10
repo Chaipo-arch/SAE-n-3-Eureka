@@ -23,12 +23,15 @@ require('../fonctions/gestionBD.php');
 	} 
 $pdo = getPDO();
 if(isset($_POST['edition'])) {
-    ModifierForumCaracteristiques($pdo,$_POST['date'],$_POST['dateLimite'],$_POST['duree']);
+    ModifierForumCaracteristiques($pdo,htmlspecialchars($_POST['date']),htmlspecialchars($_POST['dateLimite']),htmlspecialchars($_POST['duree']),
+    htmlspecialchars($_POST['debut']),htmlspecialchars($_POST['fin']));
 }
 $caracteristiques = getForumCaracteristiques($pdo);
 $date = $caracteristiques['date'];
 $duree = $caracteristiques['duree'];
 $dateLimite = $caracteristiques['dateLimite'];
+$debut = $caracteristiques['Heure_debut'];
+$fin = $caracteristiques['Heure_fin'];
 
 ?>
 <html>
@@ -48,7 +51,9 @@ $dateLimite = $caracteristiques['dateLimite'];
         <div class="container separation">
             <form action="forumA.php" method="post">
                 <div class="row">
-                
+                    <div class ="col-md-12 centre">
+                        <h2>Forum (ADMIN)</h2></br>
+                    </div>
                     <div class ="col-md-4 centre">
                         <input type="hidden" name="controller" value="Admin">
                         <input type="hidden" name="action" value="modifierForum">
@@ -67,8 +72,13 @@ $dateLimite = $caracteristiques['dateLimite'];
                     </div>
                     </br>
                     <div class ="col-md-6 centre">
-                        Date Limite (rendez Vous)</br>
-                        <input type="text" name="dateLimite" value="<?php if(isset($dateLimite)) { echo $dateLimite;}?>">
+                        Heure Debut </br>
+                        <input type="text" name="debut" value="<?php if(isset($debut)) { echo $debut;}?>">
+                    </div>
+                    </br>
+                    <div class ="col-md-6 centre">
+                        Heure Fin </br>
+                        <input type="text" name="fin" value="<?php if(isset($fin)) { echo $fin;}?>">
                     </div>
                     </br>
                     <div class ="col-md-12 centre">
@@ -78,6 +88,11 @@ $dateLimite = $caracteristiques['dateLimite'];
                 
                 </div>
             </form>
+            <div class ="col-md-12 centre">
+                <form action="GestionFiliere.php" method="post">
+                    
+                </form>
+            </div>
             <a  href="forum.php">Retour</a>
         </div>
         <?php footerHelper(); ?>

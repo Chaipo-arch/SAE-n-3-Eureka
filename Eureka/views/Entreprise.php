@@ -61,12 +61,12 @@ if(!isset($_GET['recherche'])) {
 // OU On revient sur cette page aprés avoir modifié ou ajouté une entreprise 
 if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GET['retour'])  && isset($_SESSION['AffichageSouhaitEtu']) ) {
 
-	if(isset($_SESSION['AffichageSouhaitEtu'])&& $_POST['action'] != "afficherSouhait") {
+	if(isset($_SESSION['AffichageSouhaitEtu'])) {
 		$idUser = $_SESSION['AffichageSouhaitEtu']['id'];
 	} else {
 		$idUser = $_POST['idUserS'];
 	}
-	if(!isset($_SESSION['AffichageSouhaitEtu']) || $_POST['action'] == "afficherSouhait"  ) {
+	if(!isset($_SESSION['AffichageSouhaitEtu'])   ) {
 		$_SESSION['AffichageSouhaitEtu']['id'] = $idUser ;
 		$_SESSION['AffichageSouhaitEtu']['nom'] = $_POST['nomUser'] ;
 		$_SESSION['AffichageSouhaitEtu']['prenom'] = $_POST['prenomUser'] ;
@@ -77,7 +77,6 @@ if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GE
 		$entreprises[] = getEntreprise($pdo,$souhait);
 	}*/
 }else {
-
 	$_SESSION['AffichageSouhaitEtu'] = null;
 	$entreprises = rechercheEntreprise($pdo,$saisies,$_SESSION['filiere']);
 }
@@ -108,7 +107,10 @@ if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GE
 		<div class="container separation">
 		
 			<div class="col-md-12">
-					<?php if (!isset($_SESSION['AffichageSouhaitEtu'])) { ?>
+				<?php if (!isset($_SESSION['AffichageSouhaitEtu'])) { ?>
+					<div class="col-md-12 centre">
+						<h2><?php echo $_SESSION['role'];?></br>Entreprise Disponible<h2></br>
+					</div>
 					<form action="Entreprise.php" method="get">
 						<div class= "row centre">
 						<div class="col-md-3 centre">
@@ -143,9 +145,9 @@ if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GE
 						</div>
 						</div>
 					</form>
-					<?php } else { echo "<div class='col-12 centre'><h1>Souhaits de ". $_SESSION['AffichageSouhaitEtu']['nom']. " ". $_SESSION['AffichageSouhaitEtu']['prenom'].": </h1></div>";} ?>
+				<?php } else { echo "<div class='col-12 centre'><h1>Souhaits de ". $_SESSION['AffichageSouhaitEtu']['nom']. " ". $_SESSION['AffichageSouhaitEtu']['prenom'].": </h1></div>";} ?>
 					<!-- affichage de l'ajout d'entreprise si admin !-->
-					<?php if($_SESSION['role'] == 'Admin'){ ?>
+				<?php if($_SESSION['role'] == 'Admin'){ ?>
 						<div class="col-md-12 centre">
 							<form class="form my-1 my-lg-1" action="ajoutEntreprise.php" method="Post">
 								<input class="btn btn-form-control mr-sm-1 btn-outline-dark" type="submit" value="+">

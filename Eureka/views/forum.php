@@ -49,7 +49,7 @@ if($_SESSION['role'] == 'Etudiant')  {
           $caracteristiques = getForumCaracteristiques($pdo);?>
           <div class="row">
           <div class ="col-md-12 centre">
-          <h1> Bienvenue sur le site Eureka</h1>
+          <h1> Bienvenue sur le site Eureka <?php echo $_SESSION['role'] ; ?></h1>
          </div>
             <div class ="col-md-4 centre">
                 

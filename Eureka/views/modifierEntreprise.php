@@ -22,16 +22,12 @@
 	} 
 
 	if (isset($_POST['action']) && $_POST['action'] == "ajoutIntervenant") {
-		
+		var_dump($_POST);
 		include("../services/AdminService.php");
-		$filiere= $_POST['filiereDemande'];
 		$nom= $_POST['nomIntervenant'];
 		include("../services/FiliereService.php");
-		$id = getIdFiliere(getPDO(),$filiere);
-		var_dump($id);
-		if($id != null) {
-			ajoutIntervenant(null,$nom,$id,$_POST['idEntreprise']);
-		}
+		ajoutIntervenant(null,$nom,$_POST['idEntreprise']);
+		
 		//$_SESSION['idEntrepriseAModifier'] = $entreprise_id;
 
 	}
@@ -39,13 +35,8 @@
 		var_dump($_POST);
 		include("../services/AdminService.php");
 		$idIntervenant= $_POST['idIntervenant'];
-		$filiere= $_POST['filiereDemande'];
 		$nom= $_POST['nomIntervenant'];
-		include("../services/FiliereService.php");
-		$id = getIdFiliere(getPDO(),$filiere);
-		if($id != null) {
-			modifIntervenant(null,$nom,$id,$idIntervenant);
-		}
+		modifIntervenant(null,$nom,$idIntervenant);
 		//$_SESSION['idEntrepriseAModifier'] = $entreprise_id;
 
 	}
@@ -57,13 +48,18 @@
 		//$_SESSION['idEntrepriseAModifier'] = $entreprise_id;
 
 	}
-	if (isset($_POST['action']) && $_POST['action'] == "Modification") {
+	if (isset($_POST['action']) && $_POST['action'] == "modification") {
 		include("../services/AdminService.php");
-		$designation= $_POST['Designation'];
+		$designation= $_POST['nomEntreprise'];
 		$activite= $_POST['secteurActivite'];
-		$nom= $_POST['nomIntervenant'];
+		$logo= "a";
+		$presentation= $_POST['presentation'];
+		$ville= $_POST['ville'];
+		$adresse= $_POST['adresse'];
+		$cp= $_POST['cp'];
+		
 		$entreprise_id = $_POST['idEntreprise'];
-		modifIntervenant(null,$nom,$id,$idIntervenant);
+		modifEntreprise(null,$designation,$activite,$logo,$presentation,$entreprise_id,$ville,$adresse,$cp);
 		//$_SESSION['idEntrepriseAModifier'] = $entreprise_id;
 
 	}
@@ -133,21 +129,7 @@
 							
 							<label for="first-name">Nom de L'intervenant</label>
 							<input type="text" name="nomIntervenant" value="<?php echo $intervenant['name'] ;?>" required >
-							<br/>
-							<label for="first-name">Filiere demandé</label>
-							<select name="filiereDemande" class="form-control">
-								<!-- option-->
-								<?php 
-									$filieres = displayAllFiliere();					
-									foreach($filieres as $filiere) { ?>
-										<option
-										<?php if(isset($_POST['filiere'] ) && $_POST['filiere'] == $filiere['field']) {  echo " selected ";}?>
-										> 
-										<?php  echo $filiere['field'] ; ?>
-										</option>
-									<?php }  ?>
-							</select>
-							<br/>
+							
 							<input name="action" type="hidden" value="modificationIntervenant">
 							<input name="idIntervenant" type="hidden" value="<?php echo $intervenant[0]; ?>">
 							<input name="idEntreprise" type="hidden" value="<?php echo $entreprise_id; ?>">
@@ -155,11 +137,15 @@
 							
 							<br/>
 						</form>
+						<form action="modifierFiliereDemande.php" method="post">
+							<input name="idIntervenant" type="hidden" value="<?php echo $intervenant[0]; ?>">
+							<input type="submit" class="btn btn-outline-primary tailleMoyenne "  value="Voir filiere Demandé">
+						</form>
 						<form action="modifierEntreprise.php" method="post">
 						<input name="action" type="hidden" value="supprimerIntervenant">
 							<input name="idIntervenant" type="hidden" value="<?php echo $intervenant[0]; ?>">
 							<input name="idEntreprise" type="hidden" value="<?php echo $entreprise_id; ?>">
-							<input type="submit" class="btn btn-outline-primary tailleMoyenne " name="bouttonAjout" value="Supprimer <?php echo $intervenant['name'] ;?>">
+							<input type="submit" class="btn btn-outline-primary tailleMoyenne "  value="Supprimer <?php echo $intervenant['name'] ;?>">
 						</form>
 					<?php }
 				?>
@@ -174,20 +160,7 @@
 							<label for="first-name">Nom de L'intervenant</label>
 							<input type="text" name="nomIntervenant"  required >
 							<br/>
-							<label for="first-name">Filiere demandé</label>
-							<select name="filiere" class="form-control">
-								<!-- option-->
-								<?php 
-									$filieres = displayAllFiliere();					
-									foreach($filieres as $filiere) { ?>
-										<option
-										<?php if(isset($_POST['filiere'] ) && $_POST['filiere'] == $filiere['field']) {  echo " selected ";}?>
-										> 
-										<?php  echo $filiere['field'] ; ?>
-										</option>
-									<?php }  ?>
-							</select>
-							<br/>
+							
 							<input name="action" type="hidden" value="ajoutIntervenant">
 							<input name="idEntreprise" type="hidden" value="<?php echo $entreprise_id; ?>">
 							<input type="submit" class="btn btn-outline-primary tailleMoyenne " name="bouttonAjout" value="Ajouter">
@@ -241,9 +214,6 @@
 						
 
 						<div class="row caseCentrer">
-							<div class=" col-md-4 col-sm-3 col-3">
-							<a href="Entreprise.php?retour=true" class="btn btn-outline-primary tailleMoyenne">Retour</a>
-							</div>
 							<div class=" col-md-8 col-sm-9 col-9 boutonDroite">
 							
 								<input name="action" type="hidden" value="modification">

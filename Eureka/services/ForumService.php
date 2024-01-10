@@ -8,6 +8,8 @@
             $caracteristiques['date'] = "";
             $caracteristiques['dateLimite'] = $ligne['date_limite'];;
             $caracteristiques['duree'] = $ligne['duree'];
+            $caracteristiques['Heure_debut'] = $ligne['Heure_debut'];
+            $caracteristiques['Heure_fin'] = $ligne['Heure_fin'];
         }
         return $caracteristiques;
     }

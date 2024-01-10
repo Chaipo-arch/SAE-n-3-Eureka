@@ -93,6 +93,16 @@ $connexion;
 		}
         return $tableauRetourF;
 	}
+	function getIntervenantFiliere($connexion,$idIntervenant) {
+		global $connexion;
+		$maRequete = $connexion->prepare("SELECT * FROM filiere JOIN filiereinterventions ON filiere.id = filiereinterventions.id_filiere WHERE id_intervenant = :idI");
+		$maRequete->bindParam(':idI', $idIntervenant);
+		$tableauRetourF = array();
+		if ($maRequete->execute()) {
+            $tableauRetourF = $maRequete->fetchAll();	
+		}
+        return $tableauRetourF;
+	}
 
 
 
@@ -134,25 +144,31 @@ $connexion;
 
 	}
 
-	function AjoutIntervenant($connexion,$nom,$filiere, $entreprise){
+	function AjoutIntervenant($connexion,$nom, $entreprise){
 		global $connexion;
 		/* $maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(a,a,a,
 		a,a,12345,a)"); */
-
+		$filiere= 1;
 		$maRequeteInsertion = $connexion->prepare("INSERT INTO intervenants (name,id_entreprise,id_filiere) VALUES (:nom , :entreprise, :filiere)");
 
 		$maRequeteInsertion->bindParam(':nom', $nom);
 		$maRequeteInsertion->bindParam(':entreprise', $entreprise);
 		$maRequeteInsertion->bindParam(':filiere', $filiere);
 		if($maRequeteInsertion->execute()){
+			return true;
 		} else {
 			return false;
 		}
-		$id = $connexion->lastInsertId();
+
+
+	}
+
+	function AjoutFiliereIntervenant($connexion,$filiere, $idIntervenant){
+		global $connexion;
 		$maRequeteInsertion = $connexion->prepare("INSERT INTO filiereinterventions(id_filiere,id_intervenant) VALUES(:filiere , :idIn)");
 
 		$maRequeteInsertion->bindParam(':filiere', $filiere);
-		$maRequeteInsertion->bindParam(':idIn', $id);
+		$maRequeteInsertion->bindParam(':idIn', $idIntervenant);
 
 		if($maRequeteInsertion->execute()){
 			return true;
@@ -163,19 +179,64 @@ $connexion;
 
 	}
 
-	function modifIntervenant($connexion, $nomIntervenant, $idFiliere , $idIntervenant) {
+	function modifIntervenant($connexion, $nomIntervenant , $idIntervenant) {
 		global $connexion;
 		/* $maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(a,a,a,
 		a,a,12345,a)"); */
 
-		$maRequeteInsertion = $connexion->prepare("UPDATE intervenants SET name = :nom , id_filiere = :idFiliere WHERE id = :idIn");
+		$maRequeteInsertion = $connexion->prepare("UPDATE intervenants SET name = :nom WHERE id = :idIn");
 
 		$maRequeteInsertion->bindParam(':nom', $nomIntervenant);
-		$maRequeteInsertion->bindParam('idFiliere', $idFiliere);
 		$maRequeteInsertion->bindParam(':idIn', $idIntervenant);
 
 		
 		if($maRequeteInsertion->execute()){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	function modifEntreprise($connexion, $designation , $activite , $logo, $presentation, $id,$ville,$adresse,$cp) {
+		global $connexion;
+		/* $maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(a,a,a,
+		a,a,12345,a)"); */
+
+		$maRequete = $connexion->prepare("UPDATE entreprise SET Designation = :designation , activity_sector =:activity, logo=:logo , presentation=:presentation WHERE id = :idE");
+		$maRequete->bindParam(':designation', $designation);
+		$maRequete->bindParam(':activity', $activite);
+		$maRequete->bindParam(':logo', $logo);
+		$maRequete->bindParam(':presentation', $presentation);
+		$maRequete->bindParam(':idE', $id);
+		
+		if($maRequete->execute()){
+			
+		} else {
+			return false;
+		}
+		$maRequete = $connexion->prepare("UPDATE lieu SET ville= :ville, adresse = :adresse, cp = :cp WHERE id_entreprise =:idE ");
+		$maRequete->bindParam(':ville', $ville);
+		$maRequete->bindParam(':adresse', $adresse);
+		$maRequete->bindParam(':cp', $cp);
+		$maRequete->bindParam(':idE', $id);
+		if($maRequete->execute()){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	function deleteIntervenantFiliere($connexion, $idFiliere , $idIntervenant) {
+		global $connexion;
+		/* $maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(a,a,a,
+		a,a,12345,a)"); */
+
+		$maRequete = $connexion->prepare("DELETE FROM filiereinterventions WHERE id_intervenant = :idIn AND id_filiere = :idFiliere" );
+
+		$maRequete->bindParam('idFiliere', $idFiliere);
+		$maRequete->bindParam(':idIn', $idIntervenant);
+
+		
+		if($maRequete->execute()){
 			return true;
 		} else {
 			return false;

@@ -5,10 +5,12 @@
     /**
      * Permet de modifier les caractéristiques du forum
      */
-     function ModifierForumCaracteristiques($pdo,$date,$dateLimite,$duree) {
+     function ModifierForumCaracteristiques($pdo,$date,$dateLimite,$duree,$debut, $fin) {
         try {
-        $maRequete = $pdo->prepare("CALL editForum(:date,:duree,:dateLimite)");
-        $maRequete->bindParam(':date', $date);
+        //$maRequete = $pdo->prepare("CALL editForum(:date,:duree,:dateLimite)");
+        $maRequete = $pdo->prepare("UPDATE forum SET Heure_debut = :debut ,  Heure_fin = :fin ,duree = :duree, date_limite = :dateLimite");
+        $maRequete->bindParam(':debut', $debut);
+        $maRequete->bindParam(':fin', $fin);
         $maRequete->bindParam(':duree', $duree);
         $maRequete->bindParam(':dateLimite', $dateLimite);
         $maRequete->execute();
