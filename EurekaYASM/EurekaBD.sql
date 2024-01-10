@@ -377,6 +377,7 @@ BEGIN
 END//
 DELIMITER ;
 
+
 DROP PROCEDURE IF EXISTS deleteSouhait;
 DELIMITER //
 CREATE PROCEDURE deleteSouhait(
@@ -425,7 +426,7 @@ BEGIN
     WHERE entreprise.id = p_id;
 
     
-    SELECT COUNT(*) INTO lieuxExistant 
+    SELECT COUNT(*) INTO lieuxDifferent 
     FROM lieu 
     WHERE ville = p_ville
     AND cp = p_cp
@@ -434,18 +435,12 @@ BEGIN
 
     IF entrepriseExistante = 1 THEN 
         UPDATE Entreprise
-        SET designation = p_designation 
-        SET activity_sector = p_activity_sector
-        SET logo = p_logo
-        SET presentation = p_presentation
+        SET designation = p_designation, activity_sector = p_activity_sector,logo = p_logo,presentation = p_presentation;
     END IF;
 
-    IF lieuxExistant = 1 THEN 
+    IF lieuxDifferent = 1 THEN 
         UPDATE Lieu
-        SET designation = p_designation 
-        SET activity_sector = p_activity_sector
-        SET logo = p_logo
-        SET presentation = p_presentation
+        SET designation = p_designation,activity_sector = p_activity_sector,logo = p_logo,presentation = p_presentation;
     END IF;
 
     
@@ -475,9 +470,7 @@ CREATE PROCEDURE EditForum(
 BEGIN
     START TRANSACTION;
     UPDATE Forum 
-    SET date = p_date 
-    SET duree_par_default = p_duree_par_default
-    SET date_debut = p_date_debut;
+    SET date = p_date ,duree_par_default = p_duree_par_default,date_debut = p_date_debut;
     COMMIT;
 END//
 DELIMITER ;
@@ -512,7 +505,7 @@ CREATE PROCEDURE displayEntrepriseByid(
     IN p_id INT(15) 
 )
 BEGIN
-    SELECT 
+    SELECT * from entreprise where id = p_id;
 END//
 DELIMITER ;
 
