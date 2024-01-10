@@ -255,7 +255,7 @@ CREATE PROCEDURE AjoutEntreprise(
 )
 BEGIN
     DECLARE entreprise_existante INT;
-    DECLARE lieu_existante INT;
+    DECLARE lieu_existant INT;
     DECLARE lieuid INT(15);
     DECLARE Entrepriseid INT(15);
 
@@ -268,20 +268,14 @@ BEGIN
     
     START TRANSACTION;   
     IF entreprise_existante < 1 THEN 
-        INSERT INTO Entreprise(designation,activity_sector,logo,presentation,id_lieu) Value(p_designation,p_activity_sector,p_logo,p_presentation,NULL);
+        INSERT INTO Entreprise(designation,activity_sector,logo,presentation) Value(p_designation,p_activity_sector,p_logo,p_presentation);
         SELECT TRUE;
-        IF lieu_existante < 1 THEN
-            
+        IF lieu_existante < 1 THEN            
             INSERT INTO Lieu(ville,cp,adresse) Value(p_ville,p_cp,p_adresse);
-            SELECT max(id) INTO lieuid FROM lieu;
-            SELECT max(id) INTO Entrepriseid FROM lieu;
-            UPDATE Entreprise SET id_lieu = lieuid WHERE id = entrepriseid;
-        ELSE 
-            SELECT id INTO lieuid FROM lieu WHERE p_designation = Entreprise.designation AND logo = p_logo AND presentation = p_presentation;
-            UPDATE Lieu
-            SET id_entreprise = entrepriseid
-            WHERE ;
-        END IF;    
+        END IF; 
+        SELECT id INTO lieuid FROM lieu WHERE p_designation = Entreprise.designation AND logo = p_logo AND presentation = p_presentation;
+        INSERT INTO lieuEntreprise(id_entreprise,id_lieu)
+        VALUES(Entrepriseid,lieuid);        
     ELSE 
         SELECT FALSE;
     END IF;
