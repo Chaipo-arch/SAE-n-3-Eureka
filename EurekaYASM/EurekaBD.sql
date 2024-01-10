@@ -119,6 +119,17 @@ CREATE Table FiliereInterventions(
     FOREIGN KEY(id_filiere) REFERENCES filiere(id),
     FOREIGN KEY(id_intervenant) REFERENCES Intervenants(id)
 );
+
+Drop Table if EXISTs lieuEntreprise;
+CREATE Table lieuEntreprise(
+    id int(15) AUTO_INCREMENT,
+    id_entreprise int(15),
+    id_lieu int(15),
+    
+    FOREIGN KEY (id_entreprise) REFERENCES Entreprise(id),
+    FOREIGN KEY (id_lieu) REFERENCES Lieu(id),
+    PRIMARY Key(id) 
+);
 -- Fin de la création des table
 
 -- Fin de la création des table
