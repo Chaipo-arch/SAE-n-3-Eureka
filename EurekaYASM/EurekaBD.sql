@@ -259,7 +259,7 @@ BEGIN
     DECLARE lieuid INT(15);
     DECLARE Entrepriseid INT(15);
 
-    SELECT COUNT(*) INTO lieu_existante
+    SELECT COUNT(*) INTO lieu_existant
     FROM lieu
     WHERE p_ville = lieu.ville AND p_cp = lieu.cp AND p_adresse = lieu.adresse;
     SELECT COUNT(*) INTO entreprise_existante
@@ -270,7 +270,7 @@ BEGIN
     IF entreprise_existante < 1 THEN 
         INSERT INTO Entreprise(designation,activity_sector,logo,presentation) Value(p_designation,p_activity_sector,p_logo,p_presentation);
         SELECT TRUE;
-        IF lieu_existante < 1 THEN            
+        IF lieu_existant < 1 THEN            
             INSERT INTO Lieu(ville,cp,adresse) Value(p_ville,p_cp,p_adresse);
         END IF; 
         SELECT id INTO lieuid FROM lieu WHERE p_designation = Entreprise.designation AND logo = p_logo AND presentation = p_presentation;
@@ -309,7 +309,6 @@ BEGIN
     END IF;
 END//
 DELIMITER ;
-
 
 -- procédure qui affiche la liste des roles
 DROP PROCEDURE IF EXISTS displayAllRole;
