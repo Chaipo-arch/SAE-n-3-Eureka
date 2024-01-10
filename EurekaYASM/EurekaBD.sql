@@ -25,7 +25,7 @@ CREATE Table role(
 Drop Table if EXISTs Utilisateur;
 CREATE Table Utilisateur(
     id int(15) AUTO_INCREMENT,
-    Username Varchar(30),
+    Username Varchar(30) UNIQUE,
     nom Varchar(40),
     prenom Varchar(25),
     password TEXT,
@@ -33,6 +33,7 @@ CREATE Table Utilisateur(
     id_filiere int(15),
     FOREIGN KEY (id_role) REFERENCES role(id),
     FOREIGN KEY (id_filiere) REFERENCES filiere(id),
+    CONSTRAINT CT_UN UNIQUE(Username),
     PRIMARY Key(id) 
 );
 
