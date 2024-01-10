@@ -36,7 +36,16 @@ CREATE Table Utilisateur(
     CONSTRAINT CT_UN UNIQUE(Username),
     PRIMARY Key(id) 
 );
-
+Drop Table if EXISTs Lieu;
+CREATE Table Lieu(
+    id int(15) AUTO_INCREMENT,
+    ville Varchar(25),
+    cp int(5),
+    adresse  Varchar(50),
+    PRIMARY KEY (id)
+    
+ 
+);
 Drop Table if EXISTs Entreprise;
 CREATE Table Entreprise(
     id int(15) AUTO_INCREMENT,
@@ -62,16 +71,7 @@ CREATE Table souhaitEtudiant(
 
 
 
-Drop Table if EXISTs Lieu;
-CREATE Table Lieu(
-    id int(15) AUTO_INCREMENT,
-    ville Varchar(25),
-    cp int(5),
-    adresse  Varchar(50),
-    PRIMARY KEY (id)
-    
- 
-);
+
 
 Drop Table if EXISTs Intervenants;
 CREATE Table Intervenants(
@@ -119,6 +119,8 @@ CREATE Table FiliereInterventions(
     FOREIGN KEY(id_filiere) REFERENCES filiere(id),
     FOREIGN KEY(id_intervenant) REFERENCES Intervenants(id)
 );
+-- Fin de la création des table
+
 -- Fin de la création des table
 
 SET GLOBAL FOREIGN_KEY_CHECKS=0;
