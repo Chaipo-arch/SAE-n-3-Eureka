@@ -103,6 +103,8 @@ CREATE Table Forum(
     p_duree_par_default Time,
     date_limite dateTime,
     date_debut dateTime,
+    heure_debut dateTime,
+    heure_Fin dateTime,
     PRIMARY KEY (id)
     
  
@@ -295,9 +297,6 @@ BEGIN
     ELSE
      SELECT Entreprise.id, Entreprise.Designation, Entreprise.activity_sector, Entreprise.logo, Entreprise.presentation, Filiere.field as Filiere 
         FROM Entreprise 
-        JOIN Intervenants ON Entreprise.id = Intervenants.id_entreprise 
-        JOIN FiliereInterventions ON Intervenants.id = FiliereInterventions.id_intervenant
-        JOIN Filiere ON Filiere.id = FiliereInterventions.id_filiere
         WHERE Designation LIKE CONCAT('%', p_designation, '%')
         ORDER BY Designation ASC;
     END IF;
