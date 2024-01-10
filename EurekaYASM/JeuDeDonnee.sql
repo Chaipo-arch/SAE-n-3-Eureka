@@ -642,8 +642,8 @@ INSERT INTO RDV (Heure_debut, Heure_fin, dateRDV, id_souhait, id_intervenant) VA
 ('11:30:00', '12:30:00', '2023-01-17', 3, 3);
 
 -- Insérer des données dans la table 'Forum'
-INSERT INTO Forum (Heure_debut, Heure_fin, duree, date_limite) VALUES
-('08:00:00', '17:00:00', '09:00:00', '2023-01-20');
+INSERT INTO Forum(p_duree_par_default ,date_limite,date_debut,heure_debut,heure_Fin ) VALUES
+('08:00:00', '0000-00-00 08:00:00', '0000-00-00 08:00:00', '0000-00-00 08:00:00', '0000-00-00 08:00:00');
 
 -- Insérer des données dans la table 'filiereInterventions'
 INSERT INTO filiereInterventions (id_filiere, id_intervenant) VALUES
