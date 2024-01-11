@@ -8,7 +8,7 @@
      function ModifierForumCaracteristiques($pdo,$date,$dateLimite,$duree,$debut, $fin) {
         try {
         //$maRequete = $pdo->prepare("CALL editForum(:date,:duree,:dateLimite)");
-        $maRequete = $pdo->prepare("UPDATE forum SET Heure_debut = :debut ,  Heure_fin = :fin ,duree = :duree, date_limite = :dateLimite");
+        $maRequete = $pdo->prepare("UPDATE forum SET heure_debut = :debut ,  heure_Fin = :fin ,p_duree_par_default = :duree, date_limite = :dateLimite");
         $maRequete->bindParam(':debut', $debut);
         $maRequete->bindParam(':fin', $fin);
         $maRequete->bindParam(':duree', $duree);

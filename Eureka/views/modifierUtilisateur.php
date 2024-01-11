@@ -30,9 +30,7 @@
 		$username = $_POST['username'];
 		$mdp = $_POST['mdp'];
 		$role = $_POST['role'];
-		var_dump($role);
 		$idRole = getIdRole(getPDO(),$role);
-		var_dump($idRole);
 		//$_SESSION['idEntrepriseAModifier'] = $entreprise_id;
 		if($idRole != null) {
 			modifUtilisateur(getPDO(),$nom,$prenom,$username,$mdp, $idRole, $userId);
@@ -45,8 +43,6 @@
 		//$intervenants = getIntervenants();
 		$utilisateur = getInfoEtudiant(getPdo(),$userId);
 		$role = getRole(getPDO(),$utilisateur['id_role']);
-		var_dump($role);
-		var_dump($utilisateur);
 	}
 ?>
 
@@ -107,8 +103,7 @@
 							<select name="role"  class="form-control">
 								<!-- option-->
 								<?php 
-									$roles = displayAllRole();		
-									var_dump($roles);						
+									$roles = displayAllRole();							
 									foreach($roles as $roleUti) { ?>
 										<option
 										<?php if(isset($role ) && $role == $roleUti['designation']) {  echo " selected ";}?>
@@ -145,9 +140,6 @@
 						
 
 						<div class="row caseCentrer">
-							<div class=" col-md-4 col-sm-3 col-3">
-							<a href="GestionUtilisateur.php" class="btn btn-outline-primary tailleMoyenne">Retour</a>
-							</div>
 							<div class=" col-md-8 col-sm-9 col-9 boutonDroite">
 							
 								<input name="action" type="hidden" value="modification">

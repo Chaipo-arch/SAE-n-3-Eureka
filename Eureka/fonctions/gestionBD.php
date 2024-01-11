@@ -51,8 +51,8 @@ $connexion;
 			$maRequete->bindParam(':lePWD', $pwd);
 			if ($maRequete->execute()) {
 				$maRequete->setFetchMode(PDO::FETCH_OBJ);
-				while ($ligne=$maRequete->fetch()) {	
-					if(isset($ligne->est_utilisateur) && $ligne->est_utilisateur ==0){
+				while ($ligne=$maRequete->fetch()) {
+					if(isset($ligne->est_Utilisateur) && $ligne->est_Utilisateur ==0){
 						return $connecte;
 					}		
 					$_SESSION['connecte']= true ; 			// Stockage dans les variables de session que l'on est connecté (sera utilisé sur les autres pages)
@@ -113,28 +113,51 @@ $connexion;
 		a,a,12345,a)"); */
 
 		/*$maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(:nomEntreprise,:activiteEntreprise,:logoEntreprise,
-		:presentationEntreprise,:villeEntreprise,:codePostalEntreprise,:adresseEntreprise)");*/
+		:presentationEntreprise,:villeEntreprise,:codePostalEntreprise,:adresseEntreprise)");
+		$maRequeteInsertion->bindParam(':nomEntreprise', $nom);
+		$maRequeteInsertion->bindParam(':activiteEntreprise', $activite);
+		$maRequeteInsertion->bindParam(':logoEntreprise', $logo);
+		$maRequeteInsertion->bindParam(':presentationEntreprise', $presentation);
+		$maRequeteInsertion->bindParam(':villeEntreprise', $ville);	
+		$maRequeteInsertion->bindParam(':codePostalEntreprise', $codePostal);
+		$maRequeteInsertion->bindParam(':adresseEntreprise', $adresse); */
+
 		$maRequeteInsertion = $connexion->prepare("INSERT INTO entreprise (Designation , activity_sector, logo,presentation) 
 		VALUES(:nomEntreprise, :activiteEntreprise , :logoEntreprise , :presentationEntreprise)");
 		$maRequeteInsertion->bindParam(':nomEntreprise', $nom);
 		$maRequeteInsertion->bindParam(':activiteEntreprise', $activite);
 		$maRequeteInsertion->bindParam(':logoEntreprise', $logo);
 		$maRequeteInsertion->bindParam(':presentationEntreprise', $presentation);
-		var_dump($maRequeteInsertion);
 		if($maRequeteInsertion->execute()){
 		} else {
 			return false;
 		}
-		var_dump($maRequeteInsertion);
+
 		$id = $connexion->lastInsertId();
-		$maRequeteInsertion = $connexion->prepare("INSERT INTO lieu (ville, cp, adresse , num_rue ,id_entreprise) 
-		VALUES (:villeEntreprise, :codePostalEntreprise, :adresseEntreprise, :numRue , :idE)");
+
+		
+		$verif = verifLieu($ville,$codePostal,$adresse);
+
+		if($verif == null) {
+
+		
+		$maRequeteInsertion = $connexion->prepare("INSERT INTO lieu (ville, cp, adresse ) 
+		VALUES (:villeEntreprise, :codePostalEntreprise, :adresseEntreprise)");
 		$maRequeteInsertion->bindParam(':villeEntreprise', $ville);	
 		$maRequeteInsertion->bindParam(':codePostalEntreprise', $codePostal);
-		$maRequeteInsertion->bindParam(':numRue', $numRue); 
 		$maRequeteInsertion->bindParam(':adresseEntreprise', $adresse); 
-		$maRequeteInsertion->bindParam(':idE', $id); 
+		if($maRequeteInsertion->execute()){
+		} else {
+			return false;
+		}
+		$idL = $connexion->lastInsertId();
+		} else {
+			$idL = $verif['id'];
+		}
 
+		$maRequeteInsertion = $connexion->prepare("INSERT INTO lieuentreprise(lieuentreprise.id_entreprise, lieuentreprise.id_lieu) VALUES (:idEn,:idLi)");
+		$maRequeteInsertion->bindParam(':idEn', $id);	
+		$maRequeteInsertion->bindParam(':idLi', $idL);
 		if($maRequeteInsertion->execute()){
 			return true;
 		} else {
@@ -178,7 +201,25 @@ $connexion;
 
 
 	}
+	function getLieu($id) {
+		global $connexion;
+		$maRequete = $connexion->prepare("SELECT * FROM lieuentreprise WHERE lieuentreprise.id_entreprise =  :id");
+		$maRequete->bindParam(':id', $id);
+		$maRequete->execute();
+		return $maRequete->fetch();
 
+	}
+	function verifLieu($ville,$codePostal,$adresse) {
+		global $connexion;
+		$maRequeteInsertion = $connexion->prepare("SELECT * FROM lieu 
+		WHERE ville = :villeEntreprise AND cp =  :codePostalEntreprise AND adresse= :adresseEntreprise");
+		$maRequeteInsertion->bindParam(':villeEntreprise', $ville);	
+		$maRequeteInsertion->bindParam(':codePostalEntreprise', $codePostal);
+		$maRequeteInsertion->bindParam(':adresseEntreprise', $adresse); 
+		$maRequeteInsertion->execute();
+		return  $maRequeteInsertion->fetch();
+
+	}
 	function modifIntervenant($connexion, $nomIntervenant , $idIntervenant) {
 		global $connexion;
 		/* $maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(a,a,a,
@@ -196,11 +237,68 @@ $connexion;
 			return false;
 		}
 	}
+
+	function getInfoEntreprise($connexion,$idE) {
+        $tableauRetourF = array();
+		$verif = getLieu($idE);
+		if($verif == null) {
+			$maRequete = $connexion->prepare("SELECT * FROM entreprise WHERE entreprise.id =:idEn");
+			$maRequete->bindParam(':idEn', $idE);
+        	if ($maRequete->execute()) {
+            	$tableauRetourF = $maRequete->fetch();
+        	}
+       		 return $tableauRetourF;
+		}
+        $maRequete = $connexion->prepare("SELECT * FROM entreprise JOIN lieuentreprise ON entreprise.id = lieuentreprise.id_entreprise JOIN lieu ON lieuentreprise.id_lieu = lieu.id  WHERE entreprise.id = :idEn");
+       //$maRequete = $connexion->prepare("SELECT * FROM entreprise WHERE entreprise.id =:idEn");
+        $maRequete->bindParam(':idEn', $idE);
+        if ($maRequete->execute()) {
+            $tableauRetourF = $maRequete->fetch();
+        }
+        
+        return $tableauRetourF;
+
+    }
+
 	function modifEntreprise($connexion, $designation , $activite , $logo, $presentation, $id,$ville,$adresse,$cp) {
 		global $connexion;
 		/* $maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(a,a,a,
 		a,a,12345,a)"); */
+		$verif = getLieu($id);
+		if($verif == null) {
+			$verifExiste = verifLieu($ville,$cp,$adresse);
+			if($verifExiste == null) {
 
+			
+				$maRequeteInsertion = $connexion->prepare("INSERT INTO lieu (ville, cp, adresse ) 
+				VALUES (:villeEntreprise, :codePostalEntreprise, :adresseEntreprise)");
+				$maRequeteInsertion->bindParam(':villeEntreprise', $ville);	
+				$maRequeteInsertion->bindParam(':codePostalEntreprise', $cp);
+				$maRequeteInsertion->bindParam(':adresseEntreprise', $adresse); 
+				if($maRequeteInsertion->execute()){
+				} else {
+					return false;
+				}
+				$idL = $connexion->lastInsertId();
+				$maRequeteInsertion = $connexion->prepare("INSERT INTO lieuentreprise(lieuentreprise.id_entreprise, lieuentreprise.id_lieu) VALUES (:idEn,:idLi)");
+				$maRequeteInsertion->bindParam(':idEn', $id);	
+				$maRequeteInsertion->bindParam(':idLi', $idL);
+				if($maRequeteInsertion->execute()){
+				} else {
+					return false;
+				}
+			} else {
+				$idL = $verifExiste['id'];
+				$maRequeteInsertion = $connexion->prepare("INSERT INTO lieuentreprise(lieuentreprise.id_entreprise, lieuentreprise.id_lieu) VALUES (:idEn,:idLi)");
+				$maRequeteInsertion->bindParam(':idEn', $id);	
+				$maRequeteInsertion->bindParam(':idLi', $idL);
+				if($maRequeteInsertion->execute()){
+				} else {
+					return false;
+				}
+			}
+		
+		}
 		$maRequete = $connexion->prepare("UPDATE entreprise SET Designation = :designation , activity_sector =:activity, logo=:logo , presentation=:presentation WHERE id = :idE");
 		$maRequete->bindParam(':designation', $designation);
 		$maRequete->bindParam(':activity', $activite);
@@ -213,16 +311,19 @@ $connexion;
 		} else {
 			return false;
 		}
-		$maRequete = $connexion->prepare("UPDATE lieu SET ville= :ville, adresse = :adresse, cp = :cp WHERE id_entreprise =:idE ");
-		$maRequete->bindParam(':ville', $ville);
-		$maRequete->bindParam(':adresse', $adresse);
-		$maRequete->bindParam(':cp', $cp);
-		$maRequete->bindParam(':idE', $id);
-		if($maRequete->execute()){
-			return true;
-		} else {
-			return false;
+		if($verif != null) {
+			$maRequete = $connexion->prepare("UPDATE lieu JOIN lieuentreprise ON lieuentreprise.id_lieu = lieu.id SET ville= :ville, adresse = :adresse, cp = :cp WHERE id_entreprise =:idE ");
+			$maRequete->bindParam(':ville', $ville);
+			$maRequete->bindParam(':adresse', $adresse);
+			$maRequete->bindParam(':cp', $cp);
+			$maRequete->bindParam(':idE', $id);
+			if($maRequete->execute()){
+				return true;
+			} else {
+				return false;
+			}
 		}
+		return true;
 	}
 
 	function deleteIntervenantFiliere($connexion, $idFiliere , $idIntervenant) {
@@ -248,8 +349,8 @@ $connexion;
 		/* $maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(a,a,a,
 		a,a,12345,a)"); */
 
-		$maRequeteInsertion = $connexion->prepare("INSERT INTO utilisateur(nom,prenom,Username,password,id_role,id_filiere) 
-		VALUES(:nom, :prenom, :username, :mdp, :role, :filiere)");
+		$maRequeteInsertion = $connexion->prepare("INSERT INTO utilisateur(Username,nom,prenom,password,id_role,id_filiere) 
+		VALUES(:username,:nom, :prenom, :mdp, :role, :filiere)");
 
 		$maRequeteInsertion->bindParam(':nom', $nom);
 		$maRequeteInsertion->bindParam(':prenom', $prenom);

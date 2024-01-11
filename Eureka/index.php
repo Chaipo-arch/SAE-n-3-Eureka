@@ -1,4 +1,5 @@
 <?php
+session_start();
 $problemeDonnees = false;
 $tentativeConnection = false;
 require('fonctions/gestionBD.php');
@@ -7,7 +8,7 @@ require('fonctions/gestionBD.php');
 if (!connecteBD($erreur)) {
     $problemeDonnees = true;
 } 
-session_start();
+
 include("services/UserService.php");
 if (isset($_SESSION['connecte']) && $_SESSION['connecte'] && !$problemeDonnees) {
     //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
@@ -21,7 +22,7 @@ if (isset($_POST['identifiant']) && isset($_POST['pwd']) && !$problemeDonnees) {
     $pwd = htmlspecialchars($_POST['pwd']);
     if(!verifUtilisateur($identifiant,$pwd)) {
         $tentativeConnection = true;
-    } // TODO ajouter try catch
+    } 
 }
 if(isset($_SESSION['connecte']) && $_SESSION['connecte'] && !$problemeDonnees)  {
     header('Location: views/forum.php');

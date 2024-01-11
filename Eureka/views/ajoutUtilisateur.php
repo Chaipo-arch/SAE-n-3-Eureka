@@ -16,7 +16,6 @@
 		header('Location: ../index.php');
 		exit();
 	} 
-
   if (isset($_POST['nomEtudiant']) && isset($_POST['prenomEtudiant']) && isset($_POST['username'])
   && isset($_POST['mdp']) && isset($_POST['role']) ){
 
@@ -43,14 +42,12 @@
     include("../services/FiliereService.php");
     
     
-    var_dump($roleId);
-    
     $mdpValide = preg_match('/^\S{8,30}$/',$mdp);
     $nomValide = preg_match('/^[a-z]+$/',$nom) && !preg_match('/\s/',$nom);
     $prenomValide = preg_match('/^[a-z]+$/',$prenom)&& !preg_match('/\s/',$nom);
     $usernameValide = filter_var($username, FILTER_VALIDATE_EMAIL);
     if($role != null && $mdpValide && $nomValide && $prenomValide ) {
-        if(AjoutUtilisateur($connexion,$nom,$prenom,$username,$mdp,$roleId,$filiere)){
+        if(AjoutUtilisateur($connexion,$nom,$prenom,$username,$mdp,$role,$filiere)){
             header('Location: GestionUtilisateur.php');
           } else {
             echo " l'ajout n'a pas était effectué";
@@ -170,7 +167,7 @@
 
           <div class="row caseCentrer">
             <div class=" col-md-4 col-sm-3 col-3">
-              <a href="Forum.php" class="btn btn-outline-primary tailleMoyenne">Retour</a>
+              <a href="GestionUtilisateur.php" class="btn btn-outline-primary tailleMoyenne">Retour</a>
             </div>
             <div class=" col-md-8 col-sm-9 col-9 boutonDroite">
               <input name="action" type="hidden" value="ajout">

@@ -5,11 +5,11 @@
         $maRequete=$pdo->prepare("SELECT * FROM forum");
         $maRequete->execute();
         while ($ligne=$maRequete->fetch()) {
-            $caracteristiques['date'] = "";
-            $caracteristiques['dateLimite'] = $ligne['date_limite'];;
-            $caracteristiques['duree'] = $ligne['duree'];
-            $caracteristiques['Heure_debut'] = $ligne['Heure_debut'];
-            $caracteristiques['Heure_fin'] = $ligne['Heure_fin'];
+            $caracteristiques['date'] = $ligne['date_debut'];
+            $caracteristiques['dateLimite'] = $ligne['date_limite'];
+            $caracteristiques['duree'] = $ligne['p_duree_par_default'];
+            $caracteristiques['Heure_debut'] = $ligne['heure_debut'];
+            $caracteristiques['Heure_fin'] = $ligne['heure_Fin'];
         }
         return $caracteristiques;
     }

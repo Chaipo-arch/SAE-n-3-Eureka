@@ -31,16 +31,7 @@
 
     }
 
-    function getInfoEntreprise($connexion,$idE) {
-        $tableauRetourF = array();
-        $maRequete = $connexion->prepare("SELECT * FROM entreprise JOIN lieu ON entreprise.id = lieu.id_entreprise WHERE entreprise.id = :idEn");
-        $maRequete->bindParam(':idEn', $idE);
-        if ($maRequete->execute()) {
-            $tableauRetourF = $maRequete->fetch();
-        }
-        return $tableauRetourF;
-
-    }
+    
 
     function RechercheEntreprise($connexion,$chaineCaractere,$filiaire){
         $maRequete = $connexion->prepare("CALL displayEntrepriseByDesignationByFiliere(:laDesignation,:laFiliaire)");

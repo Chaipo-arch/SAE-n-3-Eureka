@@ -1,5 +1,15 @@
 <?php
 session_start();
+var_dump($_SESSION);
+var_dump($_SESSION);
+
+var_dump($_SESSION);
+var_dump($_SESSION);
+var_dump($_SESSION);
+var_dump($_SESSION);
+var_dump($_SESSION);
+var_dump($_SESSION);
+var_dump($_SESSION);
 include("../services/AdminService.php");
 include("../services/EtudiantService.php");
 include("../services/FiliereService.php");
@@ -67,7 +77,7 @@ $filieres = getFilieres($pdo);
 	<body>
 	<?php 
 	include("../fonctions/viewHelper.php");
-	headerHelper();
+	//headerHelper();
     ?>
 	</br>
 	</br>

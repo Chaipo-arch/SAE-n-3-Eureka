@@ -180,7 +180,7 @@
 				<form action="modifierEntreprise.php" method="post">
 					<fieldset>
 						<div>
-							
+							<?php var_dump($entreprise); ?>
 							<label for="first-name">Nom de L'entreprise</label>
 							<input type="text" name="nomEntreprise" value="<?php echo $entreprise['Designation'] ;?>" required >
 							<br/>
@@ -196,15 +196,15 @@
 							<div class="row">
 							
 							<div class="col-md-5 col-sm-12 col-12">
-								<input class="" name="ville" type="text" placeholder="Ville" value="<?php echo $entreprise['ville'] ;?>" required>
+								<input class="" name="ville" type="text" placeholder="Ville" value="<?php if(isset($entreprise['ville'])) {echo $entreprise['ville'] ;} ?>" required>
 							</div>
 
 							<div class="col-md-5 col-sm-8 col-8">
-								<input class="" type="text" name="adresse" placeholder="Adresse" value="<?php echo $entreprise['adresse'] ;?>" required>
+								<input class="" type="text" name="adresse" placeholder="Adresse" value="<?php if(isset($entreprise['adresse'])) {echo $entreprise['adresse'] ; }?>" required>
 							</div>
 
 							<div class="col-md-2 col-sm-4 col-4">
-								<input class="" type="text" name="cp" placeholder="Code Postal ex: 12000" value="<?php echo $entreprise['cp'] ;?>" pattern="[0-9]{5}" required>
+								<input class="" type="text" name="cp" placeholder="Code Postal ex: 12000" value="<?php if(isset($entreprise['cp'] )) {echo $entreprise['cp'] ;}?>" pattern="[0-9]{5}" required>
 							</div>
 							
 							</div>

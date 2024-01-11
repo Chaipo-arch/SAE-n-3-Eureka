@@ -46,7 +46,7 @@ $fin = $caracteristiques['Heure_fin'];
     <body>
         <?php 
         include("../fonctions/viewHelper.php");
-        headerHelper();
+       headerHelper();
         ?>
         <div class="container separation">
             <form action="forumA.php" method="post">
@@ -90,7 +90,7 @@ $fin = $caracteristiques['Heure_fin'];
             </form>
             <div class ="col-md-12 centre">
                 <form action="GestionFiliere.php" method="post">
-                    
+
                 </form>
             </div>
             <a  href="forum.php">Retour</a>

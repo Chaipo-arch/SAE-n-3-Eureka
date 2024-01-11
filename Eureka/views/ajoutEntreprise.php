@@ -48,7 +48,7 @@
     $logo="../images/doxio.jpg";
 
     if(AjoutEntreprise($connexion,$nom,$activite,$presentation,$ville,$adresse,$codePostal,$logo)){
-      header('Location: Forum.php');
+      //header('Location: Forum.php');
     } else {
       echo " l'ajout n'a pas était effectué";
     }
