@@ -292,7 +292,6 @@ BEGIN
         FROM Entreprise 
         WHERE Designation LIKE CONCAT('%', p_designation, '%')  AND Filiere.field = p_Filiere
         ORDER BY Designation ASC;
-   
     ELSE
      SELECT Entreprise.id, Entreprise.Designation, Entreprise.activity_sector, Entreprise.logo, Entreprise.presentation, Filiere.field as Filiere 
         FROM Entreprise 
@@ -434,8 +433,7 @@ BEGIN
 
     IF entrepriseExistante = 1 THEN 
         UPDATE Entreprise
-        SET Entreprise.Designation = p_designation,activity_sector = p_activity_sector,logo = p_logo,presentation = p_presentation 
-        WHERE Entreprise.id = p_id;
+        SET Entreprise.Designation = p_designation,activity_sector = p_activity_sector,logo = p_logo,presentation = p_presentation WHERE Entreprise.id = p_id;
         SELECT id INTO entrepriseExistante FROM Entreprise 
         WHERE entreprise.id = p_id;
         UPDATE lieuEntreprise SET id_entreprise = entrepriseExistante WHERE id_entreprise = p_id; 
@@ -560,3 +558,92 @@ DELIMITER ;
 -- procedure pour diplay les étudiants 
 -- procedure pour avoir la liste des des étudiant par intervenant
 -- gerer filiere dans le jdd
+
+DROP PROCEDURE IF EXISTS getIntervenantPaticipant;
+DELIMITER //
+CREATE PROCEDURE getIntervenantPaticipant(
+    IN p_duree_crenaux INT,
+    IN p_type_generation INT
+)
+BEGIN
+    DECLARE nbSouhait INT(2) DEFAULT 0;
+    DECLARE idIntervenant INT(15); 
+    DECLARE idSouhait INT(15);
+    DECLARE idEtudiant INT(15);
+    DECLARE cursorSouhait CURSOR FOR SELECT id FROM souhaitEtudiant;
+    DECLARE cursorIntervenant CURSOR FOR SELECT id FROM Intervenants;
+    DECLARE cursorEtudiant CURSOR FOR SELECT id FROM Utilisateur WHERE id_role = 3;
+    DECLARE duree_forum_seconde INT(8);
+    DECLARE index_temps_seconde INT(8) DEFAULT 0;
+    DECLARE heure_deb_crenaux INT(8);
+    DECLARE heure_fin_forum_seconde INT(8)
+    OPEN cursorIntervenant;
+    BEGIN
+        SELECT TIME_TO_SEC(heure_debut) INTO heure_debut_forum_seconde FROM Forum 
+        SELECT TIME_TO_SEC(TIMEDIFF(heure_fin, heure_debut))  
+        INTO duree_forum_seconde FROM FORUM;
+        WHILE @@FETCH_STATUS = 0 
+            FETCH FROM cursorIntervenant INTO idIntervenant;
+            SELECT COUNT(*) INTO nbSouhait FROM souhaitEtudiant
+            JOIN entreprise
+            ON souhaitEtudiant.id_Utilisateur = Entreprise.id
+            JOIN Intervenant
+            ON Intervenants.id_entreprise = Entreprise.id
+            WHERE Intervenants.id = idIntervenant;
+            IF nbSouhait * p_duree_crenaux * 60 <= duree_forum_seconde THEN  
+                UPDATE Intervenants SET est_disponible = 1 WHERE id = idIntervenant;
+                IF p_type_generation = 0 THEN
+                    OPEN cursorsouhait;
+                    WHILE @@FETCH_STATUS = 0
+                        FETCH FROM cursorsouhait INTO idSouhait;
+                        SELECT id INTO idSouhait FROM souhaitEtudiant
+                        WHERE id_intervenant = idIntervenant
+                        AND id = idSouhait;
+                        IF idSouhait IS NOT NULL THEN 
+                            SET heure_deb_crenaux = SEC_TO_TIME(index_temps_seconde);
+                            SET index_temps_seconde = index_temps_seconde + p_duree_crenaux; 
+                            SET heure_fin_crenaux = SEC_TO_TIME(index_temps_seconde);        
+                            START TRANSACTION;
+                            INSERT INTO RDV(Heure_debut,Heure_fin,id_souhait)
+                            VALUES(heure_deb_crenaux,heure_fin_crenaux,idSouhait);
+                            COMMIT;                           
+                        END IF;
+                    END;
+                    CLOSE cursorsouhait;
+                END;
+            ELSE 
+                UPDATE Intervenants SET est_disponible = 0 WHERE id = idIntervenant; 
+            END IF;
+        END; 
+    END;
+    CLOSE cursorIntervenant;
+    IF p_type_generation = 1 THEN 
+        OPEN cursorEtudiant;
+        WHILE @@FETCH_STATUS = 0
+            FETCH FROM cursorEtudiant INTO idEtudiant; 
+            OPEN cursorsouhait;
+            WHILE @@FETCH_STATUS = 0
+            FETCH FROM cursorsouhait INTO idSouhait;
+                SELECT id INTO idSouhait FROM souhaitEtudiant
+                JOIN Intervenants 
+                ON id_intervenant = Intervenants.id
+                WHERE id_Utilisateur = idEtudiant
+                AND id = idSouhait
+                AND Intervenants.est_disponible = 1;
+                IF idSouhait IS NOT NULL THEN 
+                    SET heure_deb_crenaux = SEC_TO_TIME(index_temps_seconde);
+                    SET index_temps_seconde = index_temps_seconde + p_duree_crenaux; 
+                    SET heure_fin_crenaux = SEC_TO_TIME(index_temps_seconde);        
+                    START TRANSACTION;
+                    INSERT INTO RDV(Heure_debut,Heure_fin,id_souhait)
+                    VALUES(heure_deb_crenaux,heure_fin_crenaux,idSouhait);
+                    COMMIT;                           
+                END IF; 
+            END;
+            CLOSE cursorEtudiant;
+        END;
+    END IF;
+END//
+DELIMITER ;
+
+
