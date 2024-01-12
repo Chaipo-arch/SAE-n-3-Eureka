@@ -37,7 +37,7 @@
 
             function rechercheEtudiant($connexion,$chaineCaractere,$filiaire){
                 return false;
-                $maRequete = $connexion->prepare("CALL displayEntrepriseByDesignationByFiliere(:laDesignation,:laFiliaire)");
+                $maRequete = $connexion->prepare("SELECT * FROM Utilisateur WHERE (Username LIKE :recherche OR nom LIKE :recherche OR prenom LIKE :recherche)");
                 $maRequete->bindParam(':laDesignation', $chaineCaractere);
                 $maRequete->bindParam(':laFiliaire', $filiaire);
                 $tableauRetourF = array();
@@ -60,4 +60,15 @@
                 }
                 return $souhaits;
         }
+        function getSouhaitEtudiantEntier($connexion,$idEtudiant) {
+            $souhaits= array();
+            $maRequete = $connexion->prepare("SELECT * FROM entreprise JOIN souhaitetudiant ON entreprise.id = souhaitetudiant.id_entreprise WHERE souhaitetudiant.id_utilisateur = :idE ");
+            $maRequete->bindParam(':idE', $idEtudiant);
+            if ($maRequete->execute()) {
+                while ($ligne=$maRequete->fetch()) {	
+                    $souhaits[]= $ligne;
+                }
+            }
+            return $souhaits;
+    }
 

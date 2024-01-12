@@ -1,5 +1,4 @@
 <?php
-var_dump($_POST);
 	session_start();
 	// test si on est bien passé par la page de login sinon on retourne sur index.php
 	if (!isset($_SESSION['connecte'])) {
@@ -7,7 +6,11 @@ var_dump($_POST);
 		header('Location: ../index.php');
 		exit();
 	}
-	
+	if ($_SESSION['role'] != "Admin") {
+    //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+    header('Location: forum.php');
+    exit();
+}
 	// Intégration des fonctions qui seront utilisées pour les acces à la BD
 	require('../fonctions/gestionBD.php');
 	
@@ -45,7 +48,7 @@ var_dump($_POST);
     $logo="../images/doxio.jpg";
 
     if(AjoutEntreprise($connexion,$nom,$activite,$presentation,$ville,$adresse,$codePostal,$logo)){
-      header('Location: Forum.php');
+      //header('Location: Forum.php');
     } else {
       echo " l'ajout n'a pas était effectué";
     }
@@ -71,7 +74,7 @@ var_dump($_POST);
 <html lang="fr">
 	<head>
 		<meta charset="utf-8">
-		<title>Connexion Eureka</title>
+		<title>Eureka - Ajouter Entreprise (ADMIN)</title>
 
 		<!-- Bootstrap CSS -->
 		<link href="../bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">
@@ -141,7 +144,7 @@ var_dump($_POST);
 
           <div class="row caseCentrer">
             <div class=" col-md-4 col-sm-3 col-3">
-              <a href="Forum.php" class="btn btn-outline-primary tailleMoyenne">Retour</a>
+              <a href="Entreprise.php?retour=true" class="btn btn-outline-primary tailleMoyenne">Retour</a>
             </div>
             <div class=" col-md-8 col-sm-9 col-9 boutonDroite">
               <input name="action" type="hidden" value="ajout">

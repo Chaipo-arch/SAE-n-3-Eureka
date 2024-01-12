@@ -1,5 +1,15 @@
 <?php
 session_start();
+var_dump($_SESSION);
+var_dump($_SESSION);
+
+var_dump($_SESSION);
+var_dump($_SESSION);
+var_dump($_SESSION);
+var_dump($_SESSION);
+var_dump($_SESSION);
+var_dump($_SESSION);
+var_dump($_SESSION);
 include("../services/AdminService.php");
 include("../services/EtudiantService.php");
 include("../services/FiliereService.php");
@@ -15,21 +25,18 @@ if ($_SESSION['role'] == "Etudiant") {
     header('Location: forum.php');
     exit();
 }
-$host = 'localhost';
-$port = '3306';
-$db = 'eureka';
-$user = 'root';
-$pass = 'root';
-$charset = 'utf8mb4';
-$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
-    $options = [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false,
-        PDO::ATTR_PERSISTENT => true
-    ];
-
-$pdo = new PDO($dsn, $user, $pass, $options);
+require('../fonctions/gestionBD.php');
+	
+	// Connexion à la BD
+	if (!connecteBD($erreur)) {
+		// Pas de connexion à la BD, renvoie vers l'index
+		header('Location: ../index.php');
+		exit();
+	} 
+$pdo = getPDO();
+if(isset($_POST['action'])&& $_POST['action'] == "affichageSansSouhait") {
+	
+}
 if(isset($_POST['action'])&& $_POST['action'] == "supprimerEtudiant" && $_SESSION['role'] == "Admin") {
 	$idE = $_POST['idUserS'];
 	deleteEtudiant($pdo, $idE);
@@ -48,7 +55,6 @@ $filieres = getFilieres($pdo);
 		$saisies = $_GET['recherche'];
 	}
 	//$etudiants = getStudentWithsouhaits($pdo);
-	var_dump($etudiants);
 	
 ?>
 <!DOCTYPE html>
@@ -71,7 +77,7 @@ $filieres = getFilieres($pdo);
 	<body>
 	<?php 
 	include("../fonctions/viewHelper.php");
-	headerHelper();
+	//headerHelper();
     ?>
 	</br>
 	</br>
@@ -114,8 +120,14 @@ $filieres = getFilieres($pdo);
 					</div>
 				</div>
 			</form>
+			<form action="etudiant.php" method="get">
+				<div class="col-md-2 centre">
+					<input type="submit" value="Voir étudiant sans souhait">
+					<input name="action" type="hidden" value="affichageSansSouhait">
+				</div>
+			</form>
 			<?php if($_SESSION['role'] == 'Admin'){ ?>
-				<div class="col-md-12 centre">
+				<div class="col-md-10 centre">
 					<form class="form my-1 my-lg-1" action="ajoutEtudiant.php" method="get">
 						<input name="action" type="hidden" value="ajouterEtudiant">
 						<input name="controller" type="hidden" value="Admin">
@@ -128,10 +140,9 @@ $filieres = getFilieres($pdo);
 		<?php 
 
 		if(isset($etudiants)&& $etudiants) {
-			var_dump($etudiants);
 			foreach($etudiants as $etudiant) {
-				if($_SESSION['filiere'] != "Toutes" && $_SESSION['filiere']== $etudiant['field'] )?>
-				<p>
+				if($_SESSION['filiere'] == "Toutes" || $_SESSION['filiere']== $etudiant['field'] ) { ?>
+				
 				<div class="col-12">
 					<div class="card mb-4 shadow-sm d-flex flex-row">
 						<div class="card-body d-flex flex-column justify-content-between">
@@ -152,33 +163,34 @@ $filieres = getFilieres($pdo);
 							</form>
 						</div>
 						<div class="row">
-								<?php if ($_SESSION['role'] == "Admin") { ?>
-									<form action="Entreprise.php" method="post">
-										<div class="btn-group mt-2 col-md-12">
-										<input type="hidden" name="idUserS" value="<?php echo $etudiant['id'] ;?>">
+							<?php if ($_SESSION['role'] == "Admin") { ?>
+								<form action="modifierUtilisateur.php" method="post">
+									<div class="btn-group mt-2 col-md-12">
+										<input type="hidden" name="idEtudiant" value="<?php echo $etudiant['id'] ;?>">
 										<input name="action" type="hidden" value="modifierEtudiant">
 										<button type="button submit" class="btn btn-sm btn-outline-secondary">
 											Modifier Etudiant
 										</button>
 									
-										</div>
-									</form>
-									<form action="etudiant.php" method="post">
-										<div class="btn-group mt-2 col-md-12">
+									</div>
+								</form>
+								<form action="etudiant.php" method="post">
+									<div class="btn-group mt-2 col-md-12">
 										<input type="hidden" name="idUserS" value="<?php echo $etudiant['id'] ;?>">
 										<input name="action" type="hidden" value="supprimerEtudiant">
 										<button type="button submit" class="btn btn-sm btn-outline-secondary">
 											Supprimer Etudiant
 										</button>
 									
-										</div>
-									</form>
+									</div>
+								</form>
 								
-								<?php }?>
+							<?php }?>
+						</div>
 					</div>
 				</div>
-				</p>
-		<?php } }?>
+				
+		<?php } } }?>
 	</div>
     <?php footerHelper();
 	 ?>

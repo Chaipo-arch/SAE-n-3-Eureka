@@ -10,28 +10,21 @@ if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
     header('Location: ../index.php');
     exit();
 }
-$host = 'localhost';
-$port = '3306';
-$db = 'eureka';
-$user = 'root';
-$pass = 'root';
-$charset = 'utf8mb4';
-$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
-    $options = [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false,
-        PDO::ATTR_PERSISTENT => true
-    ];
-
-$pdo = new PDO($dsn, $user, $pass, $options);
-
+require('../fonctions/gestionBD.php');
+	
+	// Connexion à la BD
+	if (!connecteBD($erreur)) {
+		// Pas de connexion à la BD, renvoie vers l'index
+		header('Location: ../index.php');
+		exit();
+	} 
+$pdo = getPDO();
 if(isset($_POST['action'])&& $_POST['action'] == "supprimerEntreprise" && $_SESSION['role'] == "Admin") {
 	$idE = $_POST['idEntreprise'];
 	deleteEntreprise($pdo, $idE);
 
 }
-if(isset($_GET['action'])&& $_GET['action'] == "deleteSouhaitEtudiant") {
+if(isset($_GET['action']) && $_GET['action'] == "deleteSouhaitEtudiant") {
 	$idE = $_GET['idEntreprise'];
 	deleteSouhait($pdo, $idE, $_SESSION['IdUser']);
     getSouhait($pdo, $_SESSION['IdUser']);
@@ -61,17 +54,34 @@ if(!isset($_GET['recherche'])) {
 } else {
 	$saisies = $_GET['recherche'];
 }
-if(isset($_GET['action'])&& $_GET['action'] == "afficherSouhait") {
-	$idUser = $_POST['idUserS'];
-	var_dump($_POST);
-	$souhaits = getSouhaitE($pdo,$idUser);
-	$entreprises = array();
-	foreach($souhaits as $souhait) {
-		$entreprises[] = getEntreprise($pdo,$souhait);
+// 2 cas  Soit on affiche les souhaits d'un étudiants donc les entreprises que demande un étudiant
+// OU On affiche les entreprises dans le cadre d'une recherche d'entreprise
+
+// 1er cas : 2 cas d'apparition à partir de la page GestionUtilisateur on demandé de voir le souhait d'un étudiant
+// OU On revient sur cette page aprés avoir modifié ou ajouté une entreprise 
+if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GET['retour'])  && isset($_SESSION['AffichageSouhaitEtu']) ) {
+
+	if(isset($_SESSION['AffichageSouhaitEtu'])) {
+		$idUser = $_SESSION['AffichageSouhaitEtu']['id'];
+	} else {
+		$idUser = $_POST['idUserS'];
 	}
+	if(!isset($_SESSION['AffichageSouhaitEtu'])   ) {
+		$_SESSION['AffichageSouhaitEtu']['id'] = $idUser ;
+		$_SESSION['AffichageSouhaitEtu']['nom'] = $_POST['nomUser'] ;
+		$_SESSION['AffichageSouhaitEtu']['prenom'] = $_POST['prenomUser'] ;
+	}
+	$entreprises = getSouhaitEtudiantEntier($pdo,$idUser);
+	
+	/*foreach($souhaits as $souhait) {
+		$entreprises[] = getEntreprise($pdo,$souhait);
+	}*/
 }else {
+	$_SESSION['AffichageSouhaitEtu'] = null;
 	$entreprises = rechercheEntreprise($pdo,$saisies,$_SESSION['filiere']);
+	//var_dump($entreprises);
 }
+
 
 ?>
 <!DOCTYPE html>
@@ -82,9 +92,8 @@ if(isset($_GET['action'])&& $_GET['action'] == "afficherSouhait") {
 
 		<!-- Bootstrap CSS -->
 		<link href="../bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet"/>
-		<!-- <link href="../css/HeaderCss.css" rel="stylesheet"> -->
-		<link href="../css/monStyle.css" rel="stylesheet">
- 		<link href="../monStyle.css" rel="stylesheet">
+		<link href="../css/HeaderCss.css" rel="stylesheet">
+ 		 <link href="../css/EntrepriseCss.css" rel="stylesheet">
 		<link href="../fontawesome-free-6.2.1-web/css/all.css" rel="stylesheet"/>
 	</head>
 
@@ -99,7 +108,10 @@ if(isset($_GET['action'])&& $_GET['action'] == "afficherSouhait") {
 		<div class="container separation">
 		
 			<div class="col-md-12">
-				
+				<?php if (!isset($_SESSION['AffichageSouhaitEtu'])) { ?>
+					<div class="col-md-12 centre">
+						<h2><?php echo $_SESSION['role'];?></br>Entreprise Disponible<h2></br>
+					</div>
 					<form action="Entreprise.php" method="get">
 						<div class= "row centre">
 						<div class="col-md-3 centre">
@@ -111,10 +123,7 @@ if(isset($_GET['action'])&& $_GET['action'] == "afficherSouhait") {
 								<!-- option-->
 								
 								<?php 
-								var_dump($_GET);
 								if(isset($filieres)) {
-									var_dump($_GET);
-										
 									foreach($filieres as $filiere) { ?>
 										<option
 										<?php if($_SESSION['filiere'] == $filiere['field']) {  echo " selected ";}?>
@@ -128,25 +137,22 @@ if(isset($_GET['action'])&& $_GET['action'] == "afficherSouhait") {
 									}
 								}?>
 							</select>
-						</div>
-						
-						<div class="col-md-6 centre">
-							<input class="form-control mr-sm-1" name="recherche" type="search submit" placeholder="Search" aria-label="Search">
+							
 						</div>
 						<div class="col-md-2 centre">
 							<input type="submit" value="valider">
 						</div>
+						<div class="col-md-6 centre">
+							<input class="form-control mr-sm-1" name="recherche" type="text submit" placeholder="Search" aria-label="Search" value="<?php echo $saisies ; ?>">
+						</div>
 						</div>
 					</form>
+				<?php } else { echo "<div class='col-12 centre'><h1>Souhaits de ". $_SESSION['AffichageSouhaitEtu']['nom']. " ". $_SESSION['AffichageSouhaitEtu']['prenom'].": </h1></div>";} ?>
 					<!-- affichage de l'ajout d'entreprise si admin !-->
-					<?php if($_SESSION['role'] == 'Admin'){ ?>
+				<?php if($_SESSION['role'] == 'Admin'){ ?>
 						<div class="col-md-12 centre">
 							<form class="form my-1 my-lg-1" action="ajoutEntreprise.php" method="Post">
-								<input class="btn btn-form-control mr-sm-1 btn-outline-dark" type="submit" value="+ Ajouter une Entreprise">
-							</form>	
-
-							<form class="form my-1 my-lg-1" action="AjoutCsv.php" method="Post">
-								<input class="btn btn-form-control mr-sm-1 btn-outline-dark" type="submit" value="Button Temporaire">
+								<input class="btn btn-form-control mr-sm-1 btn-outline-dark" type="submit" value="+">
 							</form>	
 						</div>
 					<?php } ?>
@@ -154,17 +160,19 @@ if(isset($_GET['action'])&& $_GET['action'] == "afficherSouhait") {
 			</div>
 		
 			<?php 
-			if(isset($entreprises)) {
+			if(isset($entreprises) && !empty($entreprises)) {
 				foreach($entreprises as $entreprise) {
 					?>
-					<p>
+					
 					<div class="col-12">
 						<div class="card mb-4 shadow-sm d-flex flex-row">
-							<img src="<?php echo $entreprise['logo'] ; ?>">
+							<img src="../images/<?php echo $entreprise['logo'] ; ?>">
 							<div class="card-body d-flex flex-column justify-content-between">
 								<p class="card-text">
+									Nom entreprise : 
 									<?php echo $entreprise['Designation'] ;?>
 								</p>
+									Presentation : 
 									<?php echo $entreprise['presentation'] ;?>
 								<div class="btn-group mt-2">
 									<button type="button" class="btn btn-sm btn-outline-secondary">
@@ -174,12 +182,12 @@ if(isset($_GET['action'])&& $_GET['action'] == "afficherSouhait") {
 									<?php if($_SESSION['role'] == "Etudiant"  ) { 
 											$passage = false;
 											foreach($_SESSION['souhait'] as $souhait) {
-												if($souhait == $entreprise['Id']) {
+												if($souhait == $entreprise['id']) {
 													$passage = true;?>
 									
 													<form action ="Entreprise.php" methode="get">
 														<input name="action" type="hidden" value="deleteSouhaitEtudiant">
-														<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['Id'] ; ?>">
+														<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['id'] ; ?>">
 														<button type="button submit" class="btn btn-sm btn-outline-secondary ml-1">
 															
 															Annuler Rendez Vous
@@ -191,7 +199,7 @@ if(isset($_GET['action'])&& $_GET['action'] == "afficherSouhait") {
 										<?php if (!$passage) {?>
 											<form action ="Entreprise.php" methode="get">
 											<input name="action" type="hidden" value="setSouhaitEtudiant">
-											<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['Id'] ; ?>">
+											<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['id'] ; ?>">
 											<input name="controller" type="hidden" value="Entreprise">
 											
 											<button type="button submit" class="btn btn-sm btn-outline-secondary ml-1">
@@ -205,7 +213,7 @@ if(isset($_GET['action'])&& $_GET['action'] == "afficherSouhait") {
 								<?php if ($_SESSION['role'] == "Admin") { ?>
 									<form action="modifierEntreprise.php" method="post">
 										<div class="btn-group mt-2 col-md-12">
-										<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['Id'] ; ?>">
+										<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['id'] ; ?>">
 
 										<button type="button submit" class="btn btn-sm btn-outline-secondary">
 											Modifier Entreprise
@@ -213,9 +221,9 @@ if(isset($_GET['action'])&& $_GET['action'] == "afficherSouhait") {
 									
 										</div>
 									</form>
-									<form action="Entreprise.php" method="post">
+									<form action="Entreprise.php?retour=true" method="post">
 										<div class="btn-group mt-2 col-md-12">
-										<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['Id'] ; ?>">
+										<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['id'] ; ?>">
 										<input name="action" type="hidden" value="supprimerEntreprise">
 										<button type="button submit" class="btn btn-sm btn-outline-secondary">
 											Supprimer Entreprise
@@ -228,8 +236,8 @@ if(isset($_GET['action'])&& $_GET['action'] == "afficherSouhait") {
 							</div>
 						</div>
 					</div>
-					</p>
-			<?php } }?>
+					
+			<?php } } else { echo "</br><div class='col-12 centre'><h2>Aucune Entreprise </h2></div>";} ?>
 	</div>
 	
     <?php footerHelper();

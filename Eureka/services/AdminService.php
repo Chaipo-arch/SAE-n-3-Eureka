@@ -5,10 +5,12 @@
     /**
      * Permet de modifier les caractéristiques du forum
      */
-     function ModifierForumCaracteristiques($pdo,$date,$dateLimite,$duree) {
+     function ModifierForumCaracteristiques($pdo,$date,$dateLimite,$duree,$debut, $fin) {
         try {
-        $maRequete = $pdo->prepare("CALL editForum(:date,:duree,:dateLimite)");
-        $maRequete->bindParam(':date', $date);
+        //$maRequete = $pdo->prepare("CALL editForum(:date,:duree,:dateLimite)");
+        $maRequete = $pdo->prepare("UPDATE forum SET heure_debut = :debut ,  heure_Fin = :fin ,p_duree_par_default = :duree, date_limite = :dateLimite");
+        $maRequete->bindParam(':debut', $debut);
+        $maRequete->bindParam(':fin', $fin);
         $maRequete->bindParam(':duree', $duree);
         $maRequete->bindParam(':dateLimite', $dateLimite);
         $maRequete->execute();
@@ -93,4 +95,9 @@
         $maRequete->execute();
         
 
+    }
+    function deleteUser($pdo,$idE) {
+        $maRequete = $pdo->prepare("DELETE utilisateur FROM utilisateur WHERE utilisateur.id = :idE");
+        $maRequete->bindParam(':idE', $idE);
+        $maRequete->execute();
     }

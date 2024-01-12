@@ -21,11 +21,11 @@
 						<?php } ?>
 						</div>
 						<div class= "col-md-2 col-3 col-xs-6 d-flex justify-content-center ">
-							<a class="nav-link active onglet rounded" href="Entreprise.php">Entreprises</a>
+							<a class="nav-link active onglet rounded" href="Entreprise.php?">Entreprises</a>
 						</div>
 						<?php if($_SESSION['role'] == 'Admin' ||$_SESSION['role'] == 'Gestionnaire') { ?>
 							<div class= "col-md-2 col-3 col-xs-6  d-flex justify-content-center">
-								<a class="nav-link active onglet rounded" href="etudiant.php?controller=Etudiant">souhaits Etudiants</a>
+								<a class="nav-link active onglet rounded" href="GestionUtilisateur.php">Gestion Utilisateur</a>
 							</div>
 						<?php } else { ?>
 							<div class= "col-md-2 col-3 col-xs-6  d-flex justify-content-center">
@@ -34,11 +34,11 @@
 						<?php } ?>
 						<?php if($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Gestionnaire'){?>
 							<div class= "col-md-2 col-3 col-xs-6  d-flex justify-content-center">
-								<a class="nav-link active onglet rounded" href="index.php?controller=Planning">Planning Etudiants</a>
+								<a class="nav-link active onglet rounded" href="planning.php">Planning Etudiants</a>
 							</div>
 						<?php } else { ?>
 							<div class= "col-md-2 col-3 col-xs-6  d-flex justify-content-center">
-								<a class="nav-link active onglet rounded" href="index.php?controller=Planning">Mon Planning</a>
+								<a class="nav-link active onglet rounded" href="planning.php" disabled>Mon Planning</a>
 							</div>
 						<?php } ?>
 						<div class= "col-md-2 col-3  col-xs-6  d-flex justify-content-center">

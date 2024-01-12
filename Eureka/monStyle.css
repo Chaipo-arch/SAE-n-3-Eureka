@@ -404,3 +404,11 @@ textarea {
 /* input[type="file"]::-webkit-file-upload-button {
   visibility: hidden;
 } */
+
+.erreur {
+  border-color: red!important;
+}
+
+.messErreur{
+  color : red;
+}
