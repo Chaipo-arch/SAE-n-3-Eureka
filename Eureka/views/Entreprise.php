@@ -180,12 +180,12 @@ if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GE
 									<?php if($_SESSION['role'] == "Etudiant"  ) { 
 											$passage = false;
 											foreach($_SESSION['souhait'] as $souhait) {
-												if($souhait == $entreprise['id']) {
+												if($souhait == $entreprise['interId']) {
 													$passage = true;?>
 									
 													<form action ="Entreprise.php" methode="get">
 														<input name="action" type="hidden" value="deleteSouhaitEtudiant">
-														<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['id'] ; ?>">
+														<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['interId'] ; ?>">
 														<button type="button submit" class="btn btn-sm btn-outline-secondary ml-1">
 															
 															Annuler Rendez Vous
@@ -197,7 +197,7 @@ if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GE
 										<?php if (!$passage) {?>
 											<form action ="Entreprise.php" methode="get">
 											<input name="action" type="hidden" value="setSouhaitEtudiant">
-											<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['id'] ; ?>">
+											<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['interId'] ; ?>">
 											<input name="controller" type="hidden" value="Entreprise">
 											
 											<button type="button submit" class="btn btn-sm btn-outline-secondary ml-1">

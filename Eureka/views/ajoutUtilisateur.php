@@ -16,6 +16,7 @@
 		header('Location: ../index.php');
 		exit();
 	} 
+  $pdo = getPDO();
   if (isset($_POST['nomEtudiant']) && isset($_POST['prenomEtudiant']) && isset($_POST['username'])
   && isset($_POST['mdp']) && isset($_POST['role']) ){
 
@@ -54,7 +55,7 @@
           }
     }
   }
-
+  include("../services/FiliereService.php");
 
   /* $nomEntreprise="";
 
@@ -135,7 +136,7 @@
             
             <br/>
             <label for="first-name">Role*</label>
-            <select id="role" name="role" required>
+            <select id="role" name="role" class ="form-control" required>
               <?php
               $allRole = displayAllRole();
                foreach($allRole as $role){
@@ -151,8 +152,8 @@
             <br/>
             <br>
             <label for="first-name" id="filiere" hidden>Filiere (Si etudiant)*</label>
-            <select type="text" id="filiere2" name="filiere" hidden>
-            <?php $filieres = displayAllFiliere();
+            <select type="text" id="filiere2" name="filiere" class ="form-control" required hidden>
+            <?php $filieres = getFilieres($pdo);
             foreach($filieres as $fil){
               echo '<option value="'.$fil["id"].'">'.$fil["field"].'</option>';
             }

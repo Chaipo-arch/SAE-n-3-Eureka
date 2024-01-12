@@ -21,6 +21,7 @@
 		header('Location: ../index.php');
 		exit();
 	}  
+    include("../services/FiliereService.php");
     if (isset($_POST['action']) && $_POST['action'] == "supprimerUtilisateur") {
         include("../services/AdminService.php");
         $idUser = htmlspecialchars($_POST['idUser']);

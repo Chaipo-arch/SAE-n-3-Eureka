@@ -1,5 +1,6 @@
 <?php
 	session_start();
+	include("../services/FiliereService.php");
 	// test si on est bien passé par la page de login sinon on retourne sur index.php
 	if (!isset($_SESSION['connecte'])) {
 		//Pas de session en cours, on est pas passé par le login password
@@ -20,12 +21,11 @@
 		header('Location: ../index.php');
 		exit();
 	} 
-
+	$pdo = getPDO();
 	if (isset($_POST['action']) && $_POST['action'] == "ajoutIntervention") {
 		
 		include("../services/AdminService.php");
 		$filiere= $_POST['filiere'];
-		include("../services/FiliereService.php");
 		$id = getIdFiliere(getPDO(),$filiere);
 		if($id != null) {
 			ajoutFiliereIntervenant(null,$id,$_POST['idIntervenant']);
@@ -37,7 +37,6 @@
 		include("../services/AdminService.php");
 		$idIntervenant= $_POST['idIntervenant'];
 		$idfiliere= $_POST['idFiliere'];
-		include("../services/FiliereService.php");
 		
 			deleteIntervenantFiliere(null,$idfiliere,$idIntervenant);
 		//$_SESSION['idEntrepriseAModifier'] = $entreprise_id;
@@ -55,7 +54,6 @@
 
 
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 	<head>
@@ -126,7 +124,7 @@
 							<select name="filiere" class="form-control">
 								<!-- option-->
 								<?php 
-									$filieres = displayAllFiliere();					
+									$filieres = getFilieres($pdo);					
 									foreach($filieres as $filiere) { ?>
 										<option
 										<?php if(isset($_POST['filiere'] ) && $_POST['filiere'] == $filiere['field']) {  echo " selected ";}?>
@@ -135,6 +133,7 @@
 										</option>
 									<?php }  ?>
 							</select>
+							
 							<br/>
 							<input name="action" type="hidden" value="ajoutIntervention">
 							<input name="idIntervenant" type="hidden" value="<?php echo $intervenantId; ?>">
@@ -145,6 +144,7 @@
 				</details>
 				
 			</details>
+
 			<div class=" col-md-4 col-sm-3 col-3">
 				<a href="Entreprise.php?retour=true" class="btn btn-outline-primary tailleMoyenne">Retour</a>
 			</div>

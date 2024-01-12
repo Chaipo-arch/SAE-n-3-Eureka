@@ -62,7 +62,7 @@
         }
         function getSouhaitEtudiantEntier($connexion,$idEtudiant) {
             $souhaits= array();
-            $maRequete = $connexion->prepare("SELECT * FROM entreprise JOIN souhaitetudiant ON entreprise.id = souhaitetudiant.id_entreprise WHERE souhaitetudiant.id_utilisateur = :idE ");
+            $maRequete = $connexion->prepare("SELECT * FROM entreprise JOIN intervenants ON entreprise.id = intervenants.id_entreprise JOIN souhaitetudiant ON intervenants.id = souhaitetudiant.id_intervenant WHERE souhaitetudiant.id_utilisateur =  :idE ");
             $maRequete->bindParam(':idE', $idEtudiant);
             if ($maRequete->execute()) {
                 while ($ligne=$maRequete->fetch()) {	

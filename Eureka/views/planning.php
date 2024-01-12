@@ -25,7 +25,7 @@ $pdo = getPDO();
 if(isset($_POST['action'])&& $_POST['action'] == "generation") {
 	$duree = $_POST['duree'];
 	$type = $_POST['type'];
-	generationPlanning($pdo,$duree,$type);
+	generationPlanningEntier($pdo,$duree,$type);
 
 }
 

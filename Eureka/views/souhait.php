@@ -34,6 +34,7 @@ if(isset($_GET['action'])&& $_GET['action'] = "deleteSouhaitEtudiant") {
 
 }
 $entreprises = array();
+var_dump($_SESSION);
 foreach($_SESSION['souhait'] as $souhait ) {
             $liste = getEntreprise($pdo,$souhait);
             $entreprises[] = $liste;

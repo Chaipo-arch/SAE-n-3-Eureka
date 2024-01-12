@@ -93,6 +93,20 @@ $connexion;
 		}
         return $tableauRetourF;
 	}
+
+	function ajoutFiliere($connexion,$designation,$annee,$abrev) {
+		global $connexion;
+		$maRequete = $connexion->prepare("INSERT INTO filiere (filiere.year, filiere.field , filiere.abreviation) VALUES(:annee, :desi, :abrev)");
+		$maRequete->bindParam(':annee', $annee);
+		$maRequete->bindParam(':abrev', $abrev);
+		$maRequete->bindParam(':desi', $designation);
+		$tableauRetourF = array();
+		if ($maRequete->execute()) {
+            $tableauRetourF = $maRequete->fetchAll();	
+		}
+        return $tableauRetourF;
+	}
+
 	function getIntervenantFiliere($connexion,$idIntervenant) {
 		global $connexion;
 		$maRequete = $connexion->prepare("SELECT * FROM filiere JOIN filiereinterventions ON filiere.id = filiereinterventions.id_filiere WHERE id_intervenant = :idI");
@@ -435,7 +449,7 @@ $connexion;
 
 	function displayAllFiliere(){
 		global $connexion; 
-        $maRequete = $connexion->prepare("select * FROM filiere"); 
+        $maRequete = $connexion->prepare("select * FROM filiere ORDER BY field"); 
         $maRequete->execute();
 
         return $maRequete->fetchAll();

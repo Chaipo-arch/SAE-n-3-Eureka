@@ -90,7 +90,7 @@ $fin = $caracteristiques['Heure_fin'];
             </form>
             <div class ="col-md-12 centre">
                 <form action="GestionFiliere.php" method="post">
-
+                    <input type="submit"  value="gérer filières">
                 </form>
             </div>
             <a  href="forum.php">Retour</a>

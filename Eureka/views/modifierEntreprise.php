@@ -22,7 +22,6 @@
 	} 
 
 	if (isset($_POST['action']) && $_POST['action'] == "ajoutIntervenant") {
-		var_dump($_POST);
 		include("../services/AdminService.php");
 		$nom= $_POST['nomIntervenant'];
 		include("../services/FiliereService.php");
@@ -32,7 +31,6 @@
 
 	}
 	if (isset($_POST['action']) && $_POST['action'] == "modificationIntervenant") {
-		var_dump($_POST);
 		include("../services/AdminService.php");
 		$idIntervenant= $_POST['idIntervenant'];
 		$nom= $_POST['nomIntervenant'];
@@ -41,7 +39,6 @@
 
 	}
 	if (isset($_POST['action']) && $_POST['action'] == "supprimerIntervenant") {
-		var_dump($_POST);
 		include("../services/AdminService.php");
 		$idIntervenant= $_POST['idIntervenant'];
 		SupprimerIntervenant(getPDO(),$idIntervenant);
@@ -180,7 +177,6 @@
 				<form action="modifierEntreprise.php" method="post">
 					<fieldset>
 						<div>
-							<?php var_dump($entreprise); ?>
 							<label for="first-name">Nom de L'entreprise</label>
 							<input type="text" name="nomEntreprise" value="<?php echo $entreprise['Designation'] ;?>" required >
 							<br/>

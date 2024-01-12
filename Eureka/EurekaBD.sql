@@ -75,12 +75,13 @@ CREATE Table souhaitEtudiant(
 
 Drop Table if EXISTs Intervenants;
 CREATE Table Intervenants(
-    id int(15) AUTO_INCREMENT,
-    name Varchar(25),
-    id_entreprise int(15),
-    id_filiere int(15),
-    FOREIGN KEY (id_entreprise) REFERENCES Entreprise(id),
-    PRIMARY KEY (id)
+   id int(15) AUTO_INCREMENT,
+    id_intervenant int(15),
+    id_Utilisateur int(15),
+    
+    FOREIGN KEY (id_intervenant) REFERENCES intervenants(id),
+    FOREIGN KEY (id_Utilisateur) REFERENCES Utilisateur(id),
+    PRIMARY Key(id) 
     
  
 );
@@ -89,10 +90,7 @@ CREATE Table RDV(
     id int(15) AUTO_INCREMENT,
     Heure_debut Time,
     Heure_fin Time,
-    dateRDV date,
     id_souhait int(30),
-    id_intervenant int(15),
-    FOREIGN KEY (id_intervenant) REFERENCES Intervenants(id),
     FOREIGN KEY (id_souhait) REFERENCES souhaitEtudiant(id),
     PRIMARY KEY (id)
 );
@@ -358,12 +356,13 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS getSouhait;
 
+
 DELIMITER //
 CREATE PROCEDURE getSouhait(
 	IN p_Utilisateur INT(15)
 )
 BEGIN
-    SELECT DISTINCT souhaitEtudiant.id_entreprise FROM Utilisateur 
+    SELECT DISTINCT souhaitEtudiant.id_intervenant FROM Utilisateur 
     JOIN souhaitEtudiant ON souhaitEtudiant.id_Utilisateur = p_Utilisateur;
 END//
 DELIMITER ;
@@ -371,12 +370,12 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS setSouhait;
 DELIMITER //
 CREATE PROCEDURE setSouhait(
-	 IN p_entreprise INT(15),
+	 IN p_intervenant INT(15),
      IN p_Utilisateur INT(15)
 )
 BEGIN
     START TRANSACTION;
-    INSERT INTO souhaitEtudiant (id_entreprise,id_Utilisateur) VALUES (p_entreprise,p_Utilisateur);
+    INSERT INTO souhaitEtudiant (id_intervenant,id_Utilisateur) VALUES (p_intervenant,p_Utilisateur);
     COMMIT;
 END//
 DELIMITER ;
@@ -385,12 +384,12 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS deleteSouhait;
 DELIMITER //
 CREATE PROCEDURE deleteSouhait(
-	 IN p_entreprise INT(15),
+	 IN p_intervenant INT(15),
      IN p_Utilisateur INT(15)
 )
 BEGIN
     START TRANSACTION;
-    DELETE FROM souhaitEtudiant WHERE souhaitEtudiant.id_entreprise = p_entreprise AND souhaitEtudiant.id_Utilisateur;
+    DELETE FROM souhaitEtudiant WHERE souhaitEtudiant.id_intervenant = p_intervenant AND souhaitEtudiant.id_Utilisateur;
     COMMIT;
 END//
 DELIMITER ;
@@ -402,7 +401,7 @@ BEGIN
     SELECT Utilisateur.id,nom,prenom,Entreprise.Designation,filiere.field 
     FROM Utilisateur 
     JOIN souhaitEtudiant ON souhaitEtudiant.id_Utilisateur = Utilisateur.id 
-    JOIN Entreprise ON Entreprise.id = souhaitEtudiant.id_Entreprise
+    JOIN intervenants ON intervenants.id = souhaitEtudiant.id_intervenant
     JOIN filiere ON filiere.id = Utilisateur.id_Filiere 
     WHERE Utilisateur.id_role = 3
     ORDER BY nom ASC;
