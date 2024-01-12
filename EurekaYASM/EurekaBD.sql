@@ -70,10 +70,9 @@ CREATE Table lieuEntreprise(
 Drop Table if EXISTs souhaitEtudiant;
 CREATE Table souhaitEtudiant(
     id int(15) AUTO_INCREMENT,
-    id_entreprise int(15),
+    id_intervenant int(15),
     id_Utilisateur int(15),
-    
-    FOREIGN KEY (id_entreprise) REFERENCES Entreprise(id),
+    FOREIGN KEY (id_intervenant) REFERENCES Entreprise(id),
     FOREIGN KEY (id_Utilisateur) REFERENCES Utilisateur(id),
     PRIMARY Key(id) 
 );
@@ -99,10 +98,7 @@ CREATE Table RDV(
     id int(15) AUTO_INCREMENT,
     Heure_debut Time,
     Heure_fin Time,
-    dateRDV date,
     id_souhait int(30),
-    id_intervenant int(15),
-    FOREIGN KEY (id_intervenant) REFERENCES Intervenants(id),
     FOREIGN KEY (id_souhait) REFERENCES souhaitEtudiant(id),
     PRIMARY KEY (id)
 );
