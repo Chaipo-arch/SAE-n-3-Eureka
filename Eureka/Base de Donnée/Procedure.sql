@@ -482,16 +482,10 @@ CREATE PROCEDURE genPlanning(
     IN id_entreprise
 )
 BEGIN
-    CREATE TEMPORARY TABLE temp_table (
-    heure_debut TIME ,
-    heure_fin TIME ,
-    id_entreprise INT,
-    id_intervenant INT ,
-    id_etudiant INT ,
-    );
-
     DECLARE nbCrenaux INT,
 
-    SELECT SUBTIME(heure_fin , heure_debut) /p_duree FROM forum
+    SELECT TIMESTAMPDIFF(SECOND, heure_debut, heure_fin) / TIME_TO_SEC(p_duree) INTO nbCrenaux FROM forum;
+    SELECT nbCrenaux;
+    END //
 
-
+DELIMITER ;
