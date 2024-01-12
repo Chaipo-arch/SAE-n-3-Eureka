@@ -391,9 +391,14 @@ CREATE PROCEDURE displayEtudiantEtSouhait()
 BEGIN
     SELECT Utilisateur.id,nom,prenom,Entreprise.Designation,filiere.field 
     FROM Utilisateur 
-    JOIN souhaitEtudiant ON souhaitEtudiant.id_Utilisateur = Utilisateur.id 
-    JOIN Entreprise ON Entreprise.id = souhaitEtudiant.id_Entreprise
-    JOIN filiere ON filiere.id = Utilisateur.id_Filiere 
+    JOIN souhaitEtudiant 
+    ON souhaitEtudiant.id_Utilisateur = Utilisateur.id 
+    JOIN Intervenant
+    ON souhaitEtudiant.id_intervenant = Intervenant.id
+    JOIN Entreprise
+    ON Intervenant.id_entreprise = Entreprise.id
+    JOIN filiere 
+    ON filiere.id = Utilisateur.id_Filiere 
     WHERE Utilisateur.id_role = 3
     ORDER BY nom ASC;
 END//
