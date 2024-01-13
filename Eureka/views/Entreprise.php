@@ -180,7 +180,7 @@ if(isset($_POST['action'])&& $_POST['action'] == "afficherSouhait" || isset($_GE
 									<?php if($_SESSION['role'] == "Etudiant"  ) { 
 											$passage = false;
 											foreach($_SESSION['souhait'] as $souhait) {
-												if($souhait == $entreprise['interId']) {
+												if($souhait == $entreprise['id']) {
 													$passage = true;?>
 									
 													<form action ="Entreprise.php" methode="get">
