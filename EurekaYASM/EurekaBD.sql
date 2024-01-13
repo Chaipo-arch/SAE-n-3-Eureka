@@ -18,8 +18,7 @@ CREATE TABLE filiere(
 Drop TABLE if EXISTs role;
 CREATE Table role(
     id int(15) AUTO_INCREMENT,
-    designation Varchar(25) NOT NULL,
-    CONSTRAINT CT_designation UNIQUE(designation),
+    designation Varchar(25),
     PRIMARY key(id)
 );
 
@@ -43,8 +42,6 @@ CREATE Table Lieu(
     cp int(5),
     adresse  Varchar(50),
     PRIMARY KEY (id)
-    
- 
 );
 Drop Table if EXISTs Entreprise;
 CREATE Table Entreprise(
@@ -53,11 +50,13 @@ CREATE Table Entreprise(
     activity_sector Varchar(100),
     logo TEXT,
     presentation Text,
+    id_lieu int(15),
+    FOREIGN KEY (id_lieu) REFERENCES Lieu(id),
     PRIMARY Key(id)
 );
 
-Drop Table if EXISTs lieuEntreprise;
-CREATE Table lieuEntreprise(
+Drop Table if EXISTs lieuEntrprise;
+CREATE Table lieuEntrprise(
     id int(15) AUTO_INCREMENT,
     id_entreprise int(15),
     id_lieu int(15),
@@ -67,12 +66,13 @@ CREATE Table lieuEntreprise(
     PRIMARY Key(id) 
 );
 
+
 Drop Table if EXISTs souhaitEtudiant;
 CREATE Table souhaitEtudiant(
     id int(15) AUTO_INCREMENT,
     id_intervenant int(15),
     id_Utilisateur int(15),
-    FOREIGN KEY (id_intervenant) REFERENCES Entreprise(id),
+    FOREIGN KEY (id_intervenant) REFERENCES Intervenants(id),
     FOREIGN KEY (id_Utilisateur) REFERENCES Utilisateur(id),
     PRIMARY Key(id) 
 );
@@ -84,10 +84,8 @@ CREATE Table Intervenants(
     name Varchar(25),
     id_entreprise int(15),
     id_filiere int(15),
-    dureeRDV TIME,
-    nbEtudiantParIntervention INT(1),
-    duree_pause TIME,
-    nb_pause int(1),
+    est_disponible int(3),
+
     FOREIGN KEY (id_entreprise) REFERENCES Entreprise(id),
     PRIMARY KEY (id)
     
@@ -107,11 +105,11 @@ Drop Table if EXISTs Forum;
 CREATE Table Forum(
     id int(15) AUTO_INCREMENT,
     p_duree_par_default Time,
-    date_limite dateTime,
-    date_debut dateTime,
+    date_limite date,
+    date_forum date,
+    heure_debut Time,
+    heure_fin Time,
     PRIMARY KEY (id)
-    
- 
 );
 
 Drop Table if EXISTs FiliereInterventions;
@@ -125,6 +123,7 @@ CREATE Table FiliereInterventions(
 );
 -- Fin de la création des table
 
+SET GLOBAL FOREIGN_KEY_CHECKS=0;
 
 -- Procedure de connexion en cours de réalisation
 DROP PROCEDURE IF EXISTS connexion;
@@ -245,28 +244,33 @@ CREATE PROCEDURE AjoutEntreprise(
 )
 BEGIN
     DECLARE entreprise_existante INT;
-    DECLARE lieu_existant INT;
+    DECLARE lieu_existante INT;
     DECLARE lieuid INT(15);
-    DECLARE EntrepriseId INT(15);
+    DECLARE Entrepriseid INT(15);
 
-    SELECT COUNT(*) INTO lieu_existant
+    SELECT COUNT(*) INTO lieu_existante
     FROM lieu
     WHERE p_ville = lieu.ville AND p_cp = lieu.cp AND p_adresse = lieu.adresse;
     SELECT COUNT(*) INTO entreprise_existante
     FROM Entreprise
-    WHERE p_designation = Designation AND logo = p_logo AND presentation = p_presentation;
+    WHERE p_designation = Entreprise.designation AND logo = p_logo AND presentation = p_presentation;
     
     START TRANSACTION;   
     IF entreprise_existante < 1 THEN 
-        INSERT INTO Entreprise(Designation,activity_sector,logo,presentation) Value(p_designation,p_activity_sector,p_logo,p_presentation);
+        INSERT INTO Entreprise(designation,activity_sector,logo,presentation,id_lieu) Value(p_designation,p_activity_sector,p_logo,p_presentation,NULL);
         SELECT TRUE;
-        IF lieu_existant < 1 THEN            
+        IF lieu_existante < 1 THEN
+            
             INSERT INTO Lieu(ville,cp,adresse) Value(p_ville,p_cp,p_adresse);
-        END IF; 
-        SELECT MAX(id) INTO EntrepriseId FROM entreprise;
-        SELECT id INTO lieuid FROM lieu WHERE p_ville = lieu.ville AND p_cp = lieu.cp AND p_adresse = lieu.adresse;
-        INSERT INTO lieuEntreprise(id_entreprise,id_lieu)
-        VALUES(EntrepriseId,lieuid);        
+            SELECT max(id) INTO lieuid FROM lieu;
+            SELECT max(id) INTO Entrepriseid FROM lieu;
+            UPDATE Entreprise SET id_lieu = lieuid WHERE id = entrepriseid;
+        ELSE 
+            SELECT id INTO lieuid FROM lieu WHERE p_designation = Entreprise.designation AND logo = p_logo AND presentation = p_presentation;
+            UPDATE Lieu
+            SET id_entreprise = entrepriseid
+            WHERE ;
+        END IF;    
     ELSE 
         SELECT FALSE;
     END IF;
@@ -284,10 +288,14 @@ CREATE PROCEDURE displayEntrepriseByDesignationByFiliere(
 )
 BEGIN
      IF p_Filiere != 'Toutes' THEN
-        SELECT Entreprise.id, Entreprise.Designation, Entreprise.activity_sector, Entreprise.logo, Entreprise.presentation 
+        SELECT Entreprise.id, Entreprise.Designation, Entreprise.activity_sector, Entreprise.logo, Entreprise.presentation, Filiere.field as Filiere 
         FROM Entreprise 
+        JOIN Intervenants ON Entreprise.id = Intervenants.id_entreprise 
+        JOIN FiliereInterventions ON Intervenants.id = FiliereInterventions.id_intervenant
+        JOIN Filiere ON Filiere.id = FiliereInterventions.id_filiere
         WHERE Designation LIKE CONCAT('%', p_designation, '%')  AND Filiere.field = p_Filiere
         ORDER BY Designation ASC;
+   
     ELSE
      SELECT Entreprise.id, Entreprise.Designation, Entreprise.activity_sector, Entreprise.logo, Entreprise.presentation, Filiere.field as Filiere 
         FROM Entreprise 
@@ -307,7 +315,7 @@ DROP PROCEDURE IF EXISTS displayAllRole;
 DELIMITER //
 CREATE PROCEDURE displayAllRole()
 BEGIN
-    SELECT DISTINCT * FROM role ;
+    SELECT * FROM role ;
 END//
 DELIMITER ;
 
@@ -362,12 +370,12 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS setSouhait;
 DELIMITER //
 CREATE PROCEDURE setSouhait(
-	 IN p_entreprise INT(15),
+	 IN p_intervenant INT(15),
      IN p_Utilisateur INT(15)
 )
 BEGIN
     START TRANSACTION;
-    INSERT INTO souhaitEtudiant (id_entreprise,id_Utilisateur) VALUES (p_entreprise,p_Utilisateur);
+    INSERT INTO souhaitEtudiant (id_intervenant,id_Utilisateur) VALUES (p_entreprise,p_Utilisateur);
     COMMIT;
 END//
 DELIMITER ;
@@ -375,12 +383,12 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS deleteSouhait;
 DELIMITER //
 CREATE PROCEDURE deleteSouhait(
-	 IN p_entreprise INT(15),
+	 IN p_Intervenant INT(15),
      IN p_Utilisateur INT(15)
 )
 BEGIN
     START TRANSACTION;
-    DELETE FROM souhaitEtudiant WHERE souhaitEtudiant.id_entreprise = p_entreprise AND souhaitEtudiant.id_Utilisateur;
+    DELETE FROM souhaitEtudiant WHERE souhaitEtudiant.id_Intervenant = p_entreprise AND souhaitEtudiant.id_Utilisateur;
     COMMIT;
 END//
 DELIMITER ;
@@ -418,13 +426,13 @@ CREATE PROCEDURE EditEntreprise(
 )
 BEGIN
     DECLARE entrepriseExistante INT(15);
-    DECLARE lieuxExistant INT(15);
-    DECLARE idlieu INT(15);
+    DECLARE lieuxDifferent INT(15);
 
     SELECT COUNT(*) INTO entrepriseExistante 
-    FROM Entreprise
-    WHERE Entreprise.id = p_id;
+    FROM entreprise
+    WHERE entreprise.id = p_id;
 
+    
     SELECT COUNT(*) INTO lieuxExistant 
     FROM lieu 
     WHERE ville = p_ville
@@ -434,21 +442,18 @@ BEGIN
 
     IF entrepriseExistante = 1 THEN 
         UPDATE Entreprise
-        SET Entreprise.Designation = p_designation,activity_sector = p_activity_sector,logo = p_logo,presentation = p_presentation WHERE Entreprise.id = p_id;
-        SELECT id INTO entrepriseExistante FROM Entreprise 
-        WHERE entreprise.id = p_id;
-        UPDATE lieuEntreprise SET id_entreprise = entrepriseExistante WHERE id_entreprise = p_id; 
+        SET designation = p_designation 
+        SET activity_sector = p_activity_sector
+        SET logo = p_logo
+        SET presentation = p_presentation
     END IF;
 
     IF lieuxExistant = 1 THEN 
-        SELECT id INTO idlieu 
-        FROM lieu 
-        WHERE ville = p_ville
-        AND cp = p_cp
-        AND adresse = p_adresse;
-        UPDATE Lieu 
-        SET Entreprise.Designation = p_designation,activity_sector = p_activity_sector,logo = p_logo,presentation = p_presentation WHERE id = idlieu;
-        UPDATE lieuEntreprise SET id_entreprise = entrepriseExistante WHERE id_lieu = idlieu;
+        UPDATE Lieu
+        SET designation = p_designation 
+        SET activity_sector = p_activity_sector
+        SET logo = p_logo
+        SET presentation = p_presentation
     END IF;
 
     
@@ -464,8 +469,6 @@ BEGIN
     START TRANSACTION;
     DELETE FROM Entreprise 
     WHERE entreprise.id = p_id; 
-    DELETE FROM lieuEntreprise 
-    WHERE id_entreprise = p_id;
     COMMIT;
 END//
 DELIMITER ;
@@ -501,20 +504,28 @@ BEGIN
 END//
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS DisplayUser;
+DELIMITER //
+CREATE PROCEDURE DisplayUser()
+BEGIN
+    SELECT * FROM Utilisateur LIMIT 20;
+END//
+DELIMITER ;
+
 DROP PROCEDURE IF EXISTS displayEntrepriseByid;
 DELIMITER //
 CREATE PROCEDURE displayEntrepriseByid(
     IN p_id INT(15) 
 )
 BEGIN
-    SELECT * FROM Entreprise WHERE id = p_id;
+    SELECT 
 END//
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS EditIntervenant;
 DELIMITER //
 CREATE PROCEDURE EditIntervenant(
-    IN p_id INT,
+    IN p_id INT 
     IN p_name VARCHAR(25),
     IN p_id_entreprise INT,
     IN p_date_limite DateTime   
@@ -522,7 +533,9 @@ CREATE PROCEDURE EditIntervenant(
 BEGIN
     START TRANSACTION;
     UPDATE Forum 
-    SET date = p_date,duree_par_default = p_duree_par_default,date_debut = p_date_debut;
+    SET date = p_date 
+    SET duree_par_default = p_duree_par_default
+    SET date_debut = p_date_debut;
     COMMIT;
 END//
 DELIMITER ;
@@ -563,88 +576,28 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS getIntervenantPaticipant;
 DELIMITER //
 CREATE PROCEDURE getIntervenantPaticipant(
-    IN p_duree_crenaux INT,
-    IN p_type_generation INT
+    IN p_id_intervenant INT
 )
 BEGIN
-    DECLARE nbSouhait INT(2) DEFAULT 0;
-    DECLARE idIntervenant INT(15); 
-    DECLARE idSouhait INT(15);
-    DECLARE idEtudiant INT(15);
-    DECLARE cursorSouhait CURSOR FOR SELECT id FROM souhaitEtudiant;
-    DECLARE cursorIntervenant CURSOR FOR SELECT id FROM Intervenants;
-    DECLARE cursorEtudiant CURSOR FOR SELECT id FROM Utilisateur WHERE id_role = 3;
-    DECLARE duree_forum_seconde INT(8);
-    DECLARE index_temps_seconde INT(8) DEFAULT 0;
-    DECLARE heure_deb_crenaux INT(8);
-    DECLARE heure_fin_forum_seconde INT(8)
-    OPEN cursorIntervenant;
-    BEGIN
-        SELECT TIME_TO_SEC(heure_debut) INTO heure_debut_forum_seconde FROM Forum 
-        SELECT TIME_TO_SEC(TIMEDIFF(heure_fin, heure_debut))  
-        INTO duree_forum_seconde FROM FORUM;
-        WHILE @@FETCH_STATUS = 0 
-            FETCH FROM cursorIntervenant INTO idIntervenant;
-            SELECT COUNT(*) INTO nbSouhait FROM souhaitEtudiant
-            JOIN entreprise
-            ON souhaitEtudiant.id_Utilisateur = Entreprise.id
-            JOIN Intervenant
-            ON Intervenants.id_entreprise = Entreprise.id
-            WHERE Intervenants.id = idIntervenant;
-            IF nbSouhait * p_duree_crenaux * 60 <= duree_forum_seconde THEN  
-                UPDATE Intervenants SET est_disponible = 1 WHERE id = idIntervenant;
-                IF p_type_generation = 0 THEN
-                    OPEN cursorsouhait;
-                    WHILE @@FETCH_STATUS = 0
-                        FETCH FROM cursorsouhait INTO idSouhait;
-                        SELECT id INTO idSouhait FROM souhaitEtudiant
-                        WHERE id_intervenant = idIntervenant
-                        AND id = idSouhait;
-                        IF idSouhait IS NOT NULL THEN 
-                            SET heure_deb_crenaux = SEC_TO_TIME(index_temps_seconde);
-                            SET index_temps_seconde = index_temps_seconde + p_duree_crenaux; 
-                            SET heure_fin_crenaux = SEC_TO_TIME(index_temps_seconde);        
-                            START TRANSACTION;
-                            INSERT INTO RDV(Heure_debut,Heure_fin,id_souhait)
-                            VALUES(heure_deb_crenaux,heure_fin_crenaux,idSouhait);
-                            COMMIT;                           
-                        END IF;
-                    END;
-                    CLOSE cursorsouhait;
-                END;
-            ELSE 
-                UPDATE Intervenants SET est_disponible = 0 WHERE id = idIntervenant; 
-            END IF;
-        END; 
-    END;
-    CLOSE cursorIntervenant;
-    IF p_type_generation = 1 THEN 
-        OPEN cursorEtudiant;
-        WHILE @@FETCH_STATUS = 0
-            FETCH FROM cursorEtudiant INTO idEtudiant; 
-            OPEN cursorsouhait;
-            WHILE @@FETCH_STATUS = 0
-            FETCH FROM cursorsouhait INTO idSouhait;
-                SELECT id INTO idSouhait FROM souhaitEtudiant
-                JOIN Intervenants 
-                ON id_intervenant = Intervenants.id
-                WHERE id_Utilisateur = idEtudiant
-                AND id = idSouhait
-                AND Intervenants.est_disponible = 1;
-                IF idSouhait IS NOT NULL THEN 
-                    SET heure_deb_crenaux = SEC_TO_TIME(index_temps_seconde);
-                    SET index_temps_seconde = index_temps_seconde + p_duree_crenaux; 
-                    SET heure_fin_crenaux = SEC_TO_TIME(index_temps_seconde);        
-                    START TRANSACTION;
-                    INSERT INTO RDV(Heure_debut,Heure_fin,id_souhait)
-                    VALUES(heure_deb_crenaux,heure_fin_crenaux,idSouhait);
-                    COMMIT;                           
-                END IF; 
-            END;
-            CLOSE cursorEtudiant;
-        END;
-    END IF;
+    DECLARE nbSouhait INT(2) DEFAULT 0; 
+    DECLARE priorite INT(3); 
+    SELECT COUNT(*) INTO nbSouhait FROM souhaitEtudiant
+    WHERE souhaitEtudiant.id_intervenant = p_id_intervenant;
+    SELECT priorite(nbSouhait) INTO priorite;
+    IF priorite != -1 THEN  
+        START TRANSACTION;
+        UPDATE Intervenants SET est_disponible = priorite WHERE id = p_id_intervenant;
+        COMMIT;
+    ELSE 
+        START TRANSACTION;
+        UPDATE Intervenants SET est_disponible = -1 WHERE id = p_id_intervenant; 
+        COMMIT;
+    END IF; 
+    select * FROM intervenants WHERE id = p_id_intervenant ORDER BY priorite;
 END//
 DELIMITER ;
+
+
+
 
 
