@@ -1,0 +1,708 @@
+SET FOREIGN_KEY_CHECKS=0;
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Hôte : localhost
+-- Généré le : sam. 13 jan. 2024 à 15:48
+-- Version du serveur : 5.7.11
+-- Version de PHP : 7.2.7
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Base de données : `eureka`
+--
+DROP DATABASE eureka2;
+CREATE DATABASE IF NOT EXISTS `eureka2` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `eureka2`;
+
+DELIMITER $$
+--
+-- Procédures
+--
+DROP PROCEDURE IF EXISTS `AjoutEntreprise`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AjoutEntreprise` (IN `p_designation` VARCHAR(100), IN `p_activity_sector` VARCHAR(100), IN `p_logo` TEXT, IN `p_presentation` TEXT, IN `p_ville` VARCHAR(25), IN `p_cp` INT(5), IN `p_adresse` VARCHAR(50))   BEGIN
+    DECLARE entreprise_existante INT;
+    DECLARE lieu_existant INT;
+    DECLARE lieuid INT(15);
+    DECLARE EntrepriseId INT(15);
+
+    SELECT COUNT(*) INTO lieu_existant
+    FROM lieu
+    WHERE p_ville = lieu.ville AND p_cp = lieu.cp AND p_adresse = lieu.adresse;
+    SELECT COUNT(*) INTO entreprise_existante
+    FROM Entreprise
+    WHERE p_designation = Designation AND logo = p_logo AND presentation = p_presentation;
+    
+    START TRANSACTION;   
+    IF entreprise_existante < 1 THEN 
+        INSERT INTO Entreprise(Designation,activity_sector,logo,presentation) Value(p_designation,p_activity_sector,p_logo,p_presentation);
+        SELECT TRUE;
+        IF lieu_existant < 1 THEN            
+            INSERT INTO Lieu(ville,cp,adresse) Value(p_ville,p_cp,p_adresse);
+        END IF; 
+        SELECT MAX(id) INTO EntrepriseId FROM entreprise;
+        SELECT id INTO lieuid FROM lieu WHERE p_ville = lieu.ville AND p_cp = lieu.cp AND p_adresse = lieu.adresse;
+        INSERT INTO lieuEntreprise(id_entreprise,id_lieu)
+        VALUES(EntrepriseId,lieuid);        
+    ELSE 
+        SELECT FALSE;
+    END IF;
+    COMMIT;
+END$$
+
+DROP PROCEDURE IF EXISTS `connexion`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `connexion` (IN `p_nom_Utilisateur` VARCHAR(25), IN `p_mot_de_passe` TEXT)   BEGIN
+    DECLARE compte_existant INT;
+    START TRANSACTION;   
+    SELECT COUNT(*) INTO compte_existant
+    FROM Utilisateur
+    WHERE Username = p_nom_Utilisateur AND password = p_mot_de_passe;
+
+    IF compte_existant < 1 THEN 
+        SELECT FALSE AS est_Utilisateur;
+    ELSE 
+        SELECT id,id_role FROM Utilisateur WHERE BINARY Username = p_nom_Utilisateur AND BINARY password = p_mot_de_passe;
+    END IF;
+    COMMIT;
+END$$
+
+DROP PROCEDURE IF EXISTS `CreateIntervenant`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CreateIntervenant` (IN `p_date` DATETIME, IN `p_duree_par_default` TIME, IN `p_date_limite` DATETIME)   BEGIN
+
+    START TRANSACTION;
+    INSERT INTO Intervenants(date,duree_par_default,date_limite)
+    VALUES (p_date,p_duree_par_default,p_date_limite);
+    COMMIT;
+END$$
+
+DROP PROCEDURE IF EXISTS `CreateUser`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CreateUser` (IN `p_Username` VARCHAR(30), IN `p_nom` VARCHAR(40), IN `p_prenom` VARCHAR(25), IN `p_mot_de_passe` TEXT, IN `p_role` INT(15), IN `p_filiere` INT(15))   BEGIN
+    DECLARE log_identique INT;      
+    SELECT COUNT(*) INTO log_identique
+    FROM Utilisateur
+    WHERE Username = p_Username AND password = p_mot_de_passe;
+    
+    START TRANSACTION; 
+    IF log_identique < 1 THEN 
+        INSERT INTO Utilisateur(Username,nom,prenom,password,id_role,id_filiere) 
+        VALUES (p_Username,p_nom,p_prenom,p_mot_de_passe,p_role,p_filiere);
+        SELECT TRUE;
+    ELSE 
+        SELECT FALSE;
+    END IF;
+
+    COMMIT;
+END$$
+
+DROP PROCEDURE IF EXISTS `DeleteEntreprise`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DeleteEntreprise` (IN `p_id` INT(15))   BEGIN
+    START TRANSACTION;
+    DELETE FROM Entreprise 
+    WHERE entreprise.id = p_id; 
+    DELETE FROM lieuEntreprise 
+    WHERE id_entreprise = p_id;
+    COMMIT;
+END$$
+
+DROP PROCEDURE IF EXISTS `DeleteIntervenant`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DeleteIntervenant` (IN `p_id` INT)   BEGIN
+    START TRANSACTION;
+    DELETE FROM Intervenants WHERE id = p_id;
+    COMMIT;
+END$$
+
+DROP PROCEDURE IF EXISTS `deleteSouhait`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteSouhait` (IN `p_intervenant` INT(15), IN `p_Utilisateur` INT(15))   BEGIN
+   START TRANSACTION;
+    DELETE FROM souhaitEtudiant WHERE souhaitEtudiant.id_Intervenant = p_intervenant AND souhaitEtudiant.id_Utilisateur;
+    COMMIT;
+END$$
+
+DROP PROCEDURE IF EXISTS `DeleteUser`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DeleteUser` (IN `p_id` INT)   BEGIN
+    DECLARE compte_existant INT;
+    -- Vérification de l'existence de l'étudiant
+    SELECT COUNT(*) INTO compte_existant
+    FROM Utilisateur
+    WHERE Utilisateur.id = p_id;
+
+    START TRANSACTION;   
+    DELETE FROM Utilisateur WHERE Utilisateur.id = p_id;
+    COMMIT;
+END$$
+
+DROP PROCEDURE IF EXISTS `displayAllFiliere`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `displayAllFiliere` ()   BEGIN
+    SELECT DISTINCT field FROM filiere ;
+END$$
+
+DROP PROCEDURE IF EXISTS `displayAllRole`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `displayAllRole` ()   BEGIN
+    SELECT DISTINCT * FROM role ;
+END$$
+
+DROP PROCEDURE IF EXISTS `displayEntrepriseByDesignationByFiliere`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `displayEntrepriseByDesignationByFiliere` (IN `p_designation` VARCHAR(50), IN `p_Filiere` VARCHAR(20))   BEGIN
+     IF p_Filiere != 'Toutes' THEN
+        SELECT intervenants.id as interId, Entreprise.id, Entreprise.Designation, Entreprise.activity_sector, Entreprise.logo, Entreprise.presentation, Filiere.field as Filiere
+        FROM Entreprise 
+        JOIN Intervenants ON Entreprise.id = Intervenants.id_entreprise 
+        JOIN FiliereInterventions ON Intervenants.id = FiliereInterventions.id_intervenant
+        JOIN Filiere ON Filiere.id = FiliereInterventions.id_filiere
+        WHERE Designation LIKE CONCAT('%', p_designation, '%')  AND Filiere.field = p_Filiere
+        ORDER BY Designation ASC;
+   
+    ELSE
+     SELECT Entreprise.id, Entreprise.Designation, Entreprise.activity_sector, Entreprise.logo, Entreprise.presentation
+        FROM Entreprise 
+        WHERE Designation LIKE CONCAT('%', p_designation, '%')
+        ORDER BY Designation ASC;
+    END IF;
+END$$
+
+DROP PROCEDURE IF EXISTS `displayEntrepriseByid`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `displayEntrepriseByid` (IN `p_id` INT(15))   BEGIN
+    SELECT * FROM Entreprise WHERE id = p_id;
+END$$
+
+DROP PROCEDURE IF EXISTS `displayEtudiantEtSouhait`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `displayEtudiantEtSouhait` ()   BEGIN
+    SELECT Utilisateur.id,nom,prenom,Entreprise.Designation,filiere.field 
+    FROM Utilisateur 
+    JOIN souhaitEtudiant 
+    ON souhaitEtudiant.id_Utilisateur = Utilisateur.id 
+    JOIN Intervenant
+    ON souhaitEtudiant.id_intervenant = Intervenant.id
+    JOIN Entreprise
+    ON Intervenant.id_entreprise = Entreprise.id
+    JOIN filiere 
+    ON filiere.id = Utilisateur.id_Filiere 
+    WHERE Utilisateur.id_role = 3
+    ORDER BY nom ASC;
+END$$
+
+DROP PROCEDURE IF EXISTS `DisplayFiliereOfStudent`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DisplayFiliereOfStudent` (IN `p_id_etudiant` INT)   BEGIN
+    SELECT filiere.year FROM Utilisateur 
+    JOIN filiere 
+    ON Utilisateur.id_filiere = filiere.id 
+    WHERE id_role = p_id_etudiant;
+END$$
+
+DROP PROCEDURE IF EXISTS `DisplayForum`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DisplayForum` ()   BEGIN
+    SELECT duree_par_default,date_limite,date_debut FROM Forum;
+END$$
+
+DROP PROCEDURE IF EXISTS `DisplayUser`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DisplayUser` ()   BEGIN
+    SELECT * FROM Utilisateur LIMIT 20;
+END$$
+
+DROP PROCEDURE IF EXISTS `EditEntreprise`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `EditEntreprise` (IN `p_id` INT(15), IN `p_designation` VARCHAR(100), IN `p_activity_sector` VARCHAR(100), IN `p_logo` TEXT, IN `p_presentation` TEXT, IN `p_ville` VARCHAR(25), IN `p_cp` INT(5), IN `p_adresse` VARCHAR(50))   BEGIN
+    DECLARE entrepriseExistante INT(15);
+    DECLARE lieuxExistant INT(15);
+    DECLARE idlieu INT(15);
+
+    SELECT COUNT(*) INTO entrepriseExistante 
+    FROM Entreprise
+    WHERE Entreprise.id = p_id;
+
+    SELECT COUNT(*) INTO lieuxExistant 
+    FROM lieu 
+    WHERE ville = p_ville
+    AND cp = p_cp
+    AND adresse = p_adresse;
+   
+
+    IF entrepriseExistante = 1 THEN 
+        UPDATE Entreprise
+        SET Entreprise.Designation = p_designation,activity_sector = p_activity_sector,logo = p_logo,presentation = p_presentation WHERE Entreprise.id = p_id;
+        SELECT id INTO entrepriseExistante FROM Entreprise 
+        WHERE entreprise.id = p_id;
+        UPDATE lieuEntreprise SET id_entreprise = entrepriseExistante WHERE id_entreprise = p_id; 
+    END IF;
+
+    IF lieuxExistant = 1 THEN 
+        SELECT id INTO idlieu 
+        FROM lieu 
+        WHERE ville = p_ville
+        AND cp = p_cp
+        AND adresse = p_adresse;
+        UPDATE Lieu 
+        SET Entreprise.Designation = p_designation,activity_sector = p_activity_sector,logo = p_logo,presentation = p_presentation WHERE id = idlieu;
+        UPDATE lieuEntreprise SET id_entreprise = entrepriseExistante WHERE id_lieu = idlieu;
+    END IF;
+
+    
+END$$
+
+DROP PROCEDURE IF EXISTS `EditForum`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `EditForum` (IN `p_date` DATETIME, IN `p_duree_par_default` TIME, IN `p_date_limite` DATETIME)   BEGIN
+    START TRANSACTION;
+    UPDATE Forum 
+    SET date = p_date,duree_par_default = p_duree_par_default,date_debut = p_date_debut;
+    COMMIT;
+END$$
+
+DROP PROCEDURE IF EXISTS `EditIntervenant`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `EditIntervenant` (IN `p_id` INT, IN `p_name` VARCHAR(25), IN `p_id_entreprise` INT, IN `p_date_limite` DATETIME)   BEGIN
+    START TRANSACTION;
+    UPDATE Forum 
+    SET date = p_date,duree_par_default = p_duree_par_default,date_debut = p_date_debut;
+    COMMIT;
+END$$
+
+DROP PROCEDURE IF EXISTS `EditPasswordUser`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `EditPasswordUser` (IN `p_id_etudiant` INT, IN `p_new_Password` INT)   BEGIN
+    DECLARE etudiant_existant INT;
+
+    -- Vérification de l'existence de l'étudiant
+    SELECT COUNT(*) INTO etudiant_existant
+    FROM Utilisateur
+    WHERE Utilisateur.id = p_id_etudiant
+    AND Utilisateur.id_role = (SELECT role.id FROM role WHERE designation = 'Etudiant');
+
+    START TRANSACTION;   
+    IF etudiant_existant > 0 THEN
+        UPDATE Utilisateur
+        SET password = p_new_Password
+        WHERE Utilisateur.id = p_id_etudiant;
+        SELECT TRUE;
+    ELSE 
+        SELECT FALSE;
+    END IF;
+    COMMIT;
+END$$
+
+DROP PROCEDURE IF EXISTS `getIntervenantPaticipant`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getIntervenantPaticipant` (IN `p_id_intervenant` INT)   BEGIN
+    DECLARE nbSouhait INT(2) DEFAULT 0; 
+    DECLARE priorite INT(3); 
+    SELECT COUNT(*) INTO nbSouhait FROM souhaitEtudiant
+    WHERE souhaitEtudiant.id_intervenant = p_id_intervenant;
+    SELECT priorite(nbSouhait) INTO priorite;
+    IF priorite != -1 THEN  
+        START TRANSACTION;
+        UPDATE Intervenants SET est_disponible = priorite WHERE id = p_id_intervenant;
+        COMMIT;
+    ELSE 
+        START TRANSACTION;
+        UPDATE Intervenants SET est_disponible = -1 WHERE id = p_id_intervenant; 
+        COMMIT;
+    END IF; 
+    select * FROM intervenants WHERE id = p_id_intervenant ORDER BY  est_disponible ASC;
+END$$
+
+DROP PROCEDURE IF EXISTS `getSouhait`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getSouhait` (IN `p_Utilisateur` INT(15))   BEGIN
+    SELECT DISTINCT intervenants.id_entreprise FROM Utilisateur 
+    JOIN souhaitEtudiant ON souhaitEtudiant.id_Utilisateur = p_Utilisateur
+    JOIN intervenants ON souhaitetudiant.id_intervenant = intervenants.id;
+END$$
+
+DROP PROCEDURE IF EXISTS `nombreEtudiantSansSouhait`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `nombreEtudiantSansSouhait` ()   BEGIN
+    SELECT * FROM Utilisateur WHERE id != (SELECT id_Utilisateur FROM souhaitEtudiant ) 	
+    AND id_role = (SELECT id FROM role WHERE Designation = 'Etudiant');
+END$$
+
+DROP PROCEDURE IF EXISTS `setSouhait`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `setSouhait` (IN `p_intervenant` INT(15), IN `p_Utilisateur` INT(15))   BEGIN
+    START TRANSACTION;
+    INSERT INTO souhaitEtudiant (id_intervenant,id_Utilisateur) VALUES (p_intervenant,p_Utilisateur);
+    COMMIT;
+END$$
+
+--
+-- Fonctions
+--
+DROP FUNCTION IF EXISTS `priorite`$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `priorite` (`p_nbSouhait` DOUBLE) RETURNS INT(11)  BEGIN
+    DECLARE dureeForum INT;
+    DECLARE dureeRendezVous INT;
+    DECLARE minutes DOUBLE;
+    DECLARE rendezVous DOUBLE;
+    DECLARE priorite DOUBLE;
+	
+    SELECT p_duree_par_default INTO dureeRendezVous FROM Forum;
+    SET rendezVous = HOUR(dureeRendezVous) *60 + MINUTE(dureeRendezVous);
+    SELECT TIMEDIFF(heure_Fin,heure_debut)INTO dureeForum FROM Forum  ;
+    
+    SET minutes = HOUR(dureeForum) *60 + MINUTE(dureeForum);
+    SET priorite = Round(((p_nbSouhait + p_nbSouhait *rendezVous) / minutes)+0,49);
+    IF priorite >1 THEN 
+        RETURN -1;
+    END IF;
+    IF  priorite = 0  THEN
+    	RETURN -1;
+    ELSE 
+        RETURN priorite *100;
+    END IF ;
+    
+    
+    
+    
+END$$
+
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `entreprise`
+--
+
+DROP TABLE IF EXISTS `entreprise`;
+CREATE TABLE IF NOT EXISTS `entreprise` (
+  `id` int(15) NOT NULL AUTO_INCREMENT,
+  `Designation` varchar(100) DEFAULT NULL,
+  `activity_sector` varchar(100) DEFAULT NULL,
+  `logo` text,
+  `presentation` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `entreprise`
+--
+
+INSERT INTO `entreprise` (`id`, `Designation`, `activity_sector`, `logo`, `presentation`) VALUES
+(1, 'VERBUS', 'Transport', 'verbus_logo.jpg', 'Fournisseur de services de transport de haute qualité'),
+(3, 'Doxio (Edokial)', 'Technologie', 'edokial_logo.jpg', 'Développeur de solutions logicielles innovantes'),
+(4, 'UNICOR', 'Finance', 'unicor_logo.jpg', 'Société de gestion financière et d\'investissement'),
+(5, 'NEXTEAM GROUP', 'Consulting', 'nexteam_logo.jpg', 'Cabinet de conseil en stratégie d\'entreprise'),
+(6, 'Laboratoire Haut Ségala', 'Santé et bien-être', 'haut_segala_logo.jpg', 'Fabricant de produits de soins naturels'),
+(9, 'EDF Une rivière, Un territoire', 'Énergie', 'edf_logo.jpg', 'Fournisseur d\'énergie et services associés'),
+(11, 'GROUPE 2B', 'Industrie', 'groupe2b_logo.jpg', 'Groupe industriel diversifié'),
+(12, 'DOULS ASSOCIES', 'Services juridiques', 'douls_associes_logo.jpg', 'Cabinet d\'avocats spécialisé en droit fiscal'),
+(13, 'Fiducial', 'Finance', 'fiducial_logo.jpg', 'Services financiers et comptables'),
+(15, 'Sébastien Saint-Martin', 'Consulting', 'sebastien_saint_martin_logo.jpg', 'Consultant en gestion et stratégie d\'entreprise'),
+(17, 'OGEA 12', 'Services environnementaux', 'ogea_12_logo.jpg', 'Société de gestion environnementale'),
+(18, 'Préfecture Aveyron', 'Administration publique', 'prefecture_aveyron_logo.jpg', 'Administration publique départementale'),
+(20, 'En', 'Technologie', 'a', 'Développeur de solutions logicielle'),
+(21, 'Immo de France', 'Immobilier', 'immo_de_france_logo.jpg', 'Agence immobilière'),
+(22, 'Crédit Agricole', 'Finance', 'credit_agricole_logo.jpg', 'Institution financière'),
+(23, 'Lactalis', 'Agroalimentaire', 'lactalis_logo.jpg', 'Groupe agroalimentaire'),
+(25, 'Demain Eco-Concept - Offre 2', 'Écologie', 'demain_eco_concept_logo.jpg', 'Entreprise œuvrant pour un avenir durable'),
+(26, 'SUPER U', 'Distribution', 'super_u_logo.jpg', 'Chaîne de supermarchés'),
+(27, 'EDF Agence Une rivière Un Territoire', 'Énergie', 'edf_agence_logo.jpg', 'Agence locale d\'EDF'),
+(29, 'FINDIS ART DE LA CUISINE', 'Commerce de détail', 'findis_art_cuisine_logo.jpg', 'Spécialiste des arts de la cuisine'),
+(30, 'Demain Eco-Concept - Offre 1', 'Écologie', 'demain_eco_concept_logo.jpg', 'Entreprise œuvrant pour un avenir durable'),
+(31, 'SGCD - secrétariat général commun départemental, Préfecture de l\'Aveyron', 'Administration publique', 'sgcd_logo.jpg', 'Secrétariat général commun départemental'),
+(32, 'Fondation OPTEO', 'Organisation à but non lucratif', 'opteo_logo.jpg', 'Fondation œuvrant pour la promotion de l\'éducation'),
+(37, 'Entreprise', 'info', '../images/doxio.jpg', 'qssq'),
+(38, 'Entreprise', 'info', '../images/doxio.jpg', 'qssq'),
+(39, 'Entreprise', 'info', '../images/doxio.jpg', 'qssq'),
+(40, 'Entreprise a', 'zaazza', '../images/doxio.jpg', 'zazaa'),
+(41, 'Entreprise aaa', 'aaa', '../images/doxio.jpg', 'zzazaz'),
+(42, 'Entreprise aaa', 'aaa', '../images/doxio.jpg', 'zzazaz'),
+(43, 'Entreprise aaa', 'aaa', '../images/doxio.jpg', 'zzazaz'),
+(44, 'Entreprise aaa', 'aaa', '../images/doxio.jpg', 'zzazaz'),
+(45, 'Entreprise aaa', 'aaa', '../images/doxio.jpg', 'zzazaz'),
+(46, 'Entreprise aaa', 'aaa', '../images/doxio.jpg', 'zzazaz'),
+(47, 'Entreprise aaa', 'aaa', '../images/doxio.jpg', 'zzazaz'),
+(48, 'Entreprise aaa', 'aaa', '../images/doxio.jpg', 'zzazaz'),
+(49, 'Entreprise aaa', 'aaa', '../images/doxio.jpg', 'zzazaz'),
+(50, 'En', 'Test', '../images/doxio.jpg', 't');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `filiere`
+--
+
+DROP TABLE IF EXISTS `filiere`;
+CREATE TABLE IF NOT EXISTS `filiere` (
+  `id` int(15) NOT NULL AUTO_INCREMENT,
+  `year` int(1) DEFAULT NULL,
+  `field` varchar(25) DEFAULT NULL,
+  `abreviation` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `filiere`
+--
+
+INSERT INTO `filiere` (`id`, `year`, `field`, `abreviation`) VALUES
+(1, 1, 'Informatique', 'BUTINFO1'),
+(2, 1, 'GEA', 'BUTGEA1'),
+(3, 1, 'QLIO', 'BUTQLIO1'),
+(4, 1, 'Infocom', 'BUTINFOC1'),
+(5, 1, 'Carrieres Juridique', 'BUTCAR1'),
+(6, 2, 'Informatique', 'BUTINFO2'),
+(7, 2, 'GEA', 'BUTGEA2'),
+(8, 2, 'QLIO', 'BUTQLIO2'),
+(9, 2, 'Infocom', 'BUTINFOC2'),
+(10, 2, 'Carrieres Juridique', 'BUTCAR2'),
+(11, 3, 'Informatique', 'BUTINFO3'),
+(12, 3, 'GEA', 'BUTGEA3'),
+(13, 3, 'QLIO', 'BUTQLIO3'),
+(14, 3, 'Infocom', 'BUTINFOC3'),
+(15, 3, 'Carrieres Juridique', 'BUTCAR3'),
+(16, 1, 'Economie', 'BUTEco'),
+(17, 1, 'Economie', 'BUTEco'),
+(18, 1, 'Economie', 'BUTEc'),
+(19, 1, 'Test', 'BUTTEST');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `filiereinterventions`
+--
+
+DROP TABLE IF EXISTS `filiereinterventions`;
+CREATE TABLE IF NOT EXISTS `filiereinterventions` (
+  `id` int(15) NOT NULL AUTO_INCREMENT,
+  `id_filiere` int(15) DEFAULT NULL,
+  `id_intervenant` int(15) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_filiere` (`id_filiere`),
+  KEY `id_intervenant` (`id_intervenant`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `filiereinterventions`
+--
+
+INSERT INTO `filiereinterventions` (`id`, `id_filiere`, `id_intervenant`) VALUES
+(1, 11, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `forum`
+--
+
+DROP TABLE IF EXISTS `forum`;
+CREATE TABLE IF NOT EXISTS `forum` (
+  `id` int(15) NOT NULL,
+  `p_duree_par_default` time DEFAULT NULL,
+  `date_limite` datetime DEFAULT NULL,
+  `date_debut` datetime DEFAULT NULL,
+  `heure_debut` datetime DEFAULT NULL,
+  `heure_Fin` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `forum`
+--
+
+INSERT INTO `forum` (`id`, `p_duree_par_default`, `date_limite`, `date_debut`, `heure_debut`, `heure_Fin`) VALUES
+(1, '00:15:00', '0000-00-00 08:00:00', '0000-00-00 08:00:00', '0000-00-00 07:00:00', '0000-00-00 12:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `intervenants`
+--
+
+DROP TABLE IF EXISTS `intervenants`;
+CREATE TABLE IF NOT EXISTS `intervenants` (
+  `id` int(15) NOT NULL AUTO_INCREMENT,
+  `name` varchar(25) DEFAULT NULL,
+  `id_entreprise` int(15) DEFAULT NULL,
+  `id_filiere` int(15) DEFAULT NULL,
+  `est_disponible` int(3) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_entreprise` (`id_entreprise`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `intervenants`
+--
+
+INSERT INTO `intervenants` (`id`, `name`, `id_entreprise`, `id_filiere`, `est_disponible`) VALUES
+(1, 'en', 1, 1, -1),
+(2, 'ENZO', 50, 1, 5);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `lieu`
+--
+
+DROP TABLE IF EXISTS `lieu`;
+CREATE TABLE IF NOT EXISTS `lieu` (
+  `id` int(15) NOT NULL AUTO_INCREMENT,
+  `ville` varchar(25) DEFAULT NULL,
+  `cp` int(5) DEFAULT NULL,
+  `adresse` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `lieu`
+--
+
+INSERT INTO `lieu` (`id`, `ville`, `cp`, `adresse`) VALUES
+(5, 'Ville ', 12100, 'Rue Princip'),
+(6, 'zaza', 12101, 'zaezea'),
+(7, 'Rod', 12100, 'Rue Principal'),
+(16, 'Paris', 10000, 'A'),
+(18, 'Paris', 10000, 'A'),
+(19, 'R', 12000, 'A');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `lieuentreprise`
+--
+
+DROP TABLE IF EXISTS `lieuentreprise`;
+CREATE TABLE IF NOT EXISTS `lieuentreprise` (
+  `id` int(15) NOT NULL AUTO_INCREMENT,
+  `id_entreprise` int(15) DEFAULT NULL,
+  `id_lieu` int(15) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_entreprise` (`id_entreprise`),
+  KEY `id_lieu` (`id_lieu`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `lieuentreprise`
+--
+
+INSERT INTO `lieuentreprise` (`id`, `id_entreprise`, `id_lieu`) VALUES
+(1, 50, 19),
+(2, 20, 19);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `role`
+--
+
+DROP TABLE IF EXISTS `role`;
+CREATE TABLE IF NOT EXISTS `role` (
+  `id` int(15) NOT NULL AUTO_INCREMENT,
+  `designation` varchar(25) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `CT_designation` (`designation`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `role`
+--
+
+INSERT INTO `role` (`id`, `designation`) VALUES
+(1, 'Administrateur'),
+(3, 'Étudiant'),
+(2, 'Gestionnaire');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `souhaitetudiant`
+--
+
+DROP TABLE IF EXISTS `souhaitetudiant`;
+CREATE TABLE IF NOT EXISTS `souhaitetudiant` (
+  `id` int(15) NOT NULL AUTO_INCREMENT,
+  `id_intervenant` int(15) DEFAULT NULL,
+  `id_Utilisateur` int(15) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_intervenant` (`id_intervenant`),
+  KEY `id_Utilisateur` (`id_Utilisateur`)
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `souhaitetudiant`
+--
+
+INSERT INTO `souhaitetudiant` (`id`, `id_intervenant`, `id_Utilisateur`) VALUES
+(36, 2, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `utilisateur`
+--
+
+DROP TABLE IF EXISTS `utilisateur`;
+CREATE TABLE IF NOT EXISTS `utilisateur` (
+  `id` int(15) NOT NULL AUTO_INCREMENT,
+  `Username` varchar(30) DEFAULT NULL,
+  `nom` varchar(40) DEFAULT NULL,
+  `prenom` varchar(25) DEFAULT NULL,
+  `password` text,
+  `id_role` int(15) DEFAULT NULL,
+  `id_filiere` int(15) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_role` (`id_role`),
+  KEY `id_filiere` (`id_filiere`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `utilisateur`
+--
+
+INSERT INTO `utilisateur` (`id`, `Username`, `nom`, `prenom`, `password`, `id_role`, `id_filiere`) VALUES
+(2, 'BODominique', 'BO', 'Dominique', 'motdepasse2', 3, 1),
+(6, 'COCélia', 'CO', 'Célia', 'motdepasse6', 3, 1),
+(7, 'COThibault', 'CO', 'Thibault', 'motdepasse7', 3, 1),
+(8, 'ENMathis', 'EN', 'Mathis', 'motdepasse8', 3, 1),
+(9, 'GEFlorian', 'GE', 'Florian', 'motdepasse9', 3, 1),
+(10, 'IDAyoub', 'ID', 'Ayoub', 'motdepasse10', 3, 1),
+(11, 'MAMatheo', 'MA', 'Matheo', 'motdepasse11', 3, 1),
+(12, 'A', 'A', 'A', 'A', 1, NULL),
+(13, 'a@a.a', 'a', 'a', 'aaaaaaaa', 1, 1),
+(14, 'MarcTa@mail.com', 'marc', 'ta', '12345678', 3, 5);
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `filiereinterventions`
+--
+ALTER TABLE `filiereinterventions`
+  ADD CONSTRAINT `filiereinterventions_ibfk_1` FOREIGN KEY (`id_filiere`) REFERENCES `filiere` (`id`),
+  ADD CONSTRAINT `filiereinterventions_ibfk_2` FOREIGN KEY (`id_intervenant`) REFERENCES `intervenants` (`id`);
+
+--
+-- Contraintes pour la table `intervenants`
+--
+ALTER TABLE `intervenants`
+  ADD CONSTRAINT `intervenants_ibfk_1` FOREIGN KEY (`id_entreprise`) REFERENCES `entreprise` (`id`);
+
+--
+-- Contraintes pour la table `lieuentreprise`
+--
+ALTER TABLE `lieuentreprise`
+  ADD CONSTRAINT `lieuentreprise_ibfk_1` FOREIGN KEY (`id_entreprise`) REFERENCES `entreprise` (`id`),
+  ADD CONSTRAINT `lieuentreprise_ibfk_2` FOREIGN KEY (`id_lieu`) REFERENCES `lieu` (`id`);
+
+--
+-- Contraintes pour la table `souhaitetudiant`
+--
+ALTER TABLE `souhaitetudiant`
+  ADD CONSTRAINT `souhaitetudiant_ibfk_1` FOREIGN KEY (`id_intervenant`) REFERENCES `intervenants` (`id`),
+  ADD CONSTRAINT `souhaitetudiant_ibfk_2` FOREIGN KEY (`id_Utilisateur`) REFERENCES `utilisateur` (`id`);
+
+--
+-- Contraintes pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  ADD CONSTRAINT `utilisateur_ibfk_1` FOREIGN KEY (`id_role`) REFERENCES `role` (`id`),
+  ADD CONSTRAINT `utilisateur_ibfk_2` FOREIGN KEY (`id_filiere`) REFERENCES `filiere` (`id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+SET FOREIGN_KEY_CHECKS=1;
