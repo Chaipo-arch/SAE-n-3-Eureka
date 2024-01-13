@@ -597,7 +597,35 @@ BEGIN
 END//
 DELIMITER ;
 
-
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` FUNCTION `priorite`(`p_nbSouhait` DOUBLE) RETURNS int(11)
+BEGIN
+    DECLARE dureeForum INT;
+    DECLARE dureeRendezVous INT;
+    DECLARE minutes DOUBLE;
+    DECLARE rendezVous DOUBLE;
+    DECLARE priorite DOUBLE;
+	
+    SELECT p_duree_par_default INTO dureeRendezVous FROM Forum;
+    SET rendezVous = HOUR(dureeRendezVous) *60 + MINUTE(dureeRendezVous);
+    SELECT TIMEDIFF(heure_Fin,heure_debut)INTO dureeForum FROM Forum  ;
+    
+    SET minutes = HOUR(dureeForum) *60 + MINUTE(dureeForum);
+    SET priorite = Round(((p_nbSouhait + p_nbSouhait *rendezVous) / minutes)+0,49);
+    IF priorite >1 THEN 
+        RETURN -1;
+    END IF;
+    IF  priorite = 0  THEN
+    	RETURN -1;
+    ELSE 
+        RETURN priorite *100;
+    END IF ;
+    
+    
+    
+    
+END$$
+DELIMITER ;
 
 
 
