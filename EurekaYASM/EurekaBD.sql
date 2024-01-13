@@ -367,9 +367,9 @@ CREATE PROCEDURE getSouhait(
 	IN p_Utilisateur INT(15)
 )
 BEGIN
-    SELECT DISTINCT souhaitEtudiant.id_entreprise FROM Utilisateur 
+    SELECT DISTINCT souhaitEtudiant.id_intervenant FROM Utilisateur 
     JOIN souhaitEtudiant ON souhaitEtudiant.id_Utilisateur = p_Utilisateur;
-END//
+END
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS setSouhait;
@@ -380,7 +380,7 @@ CREATE PROCEDURE setSouhait(
 )
 BEGIN
     START TRANSACTION;
-    INSERT INTO souhaitEtudiant (id_intervenant,id_Utilisateur) VALUES (p_entreprise,p_Utilisateur);
+    INSERT INTO souhaitEtudiant (id_intervenant,id_Utilisateur) VALUES  (p_intervenant,p_Utilisateur);
     COMMIT;
 END//
 DELIMITER ;
