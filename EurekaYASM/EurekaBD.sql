@@ -297,11 +297,8 @@ BEGIN
         ORDER BY Designation ASC;
    
     ELSE
-     SELECT Entreprise.id, Entreprise.Designation, Entreprise.activity_sector, Entreprise.logo, Entreprise.presentation, Filiere.field as Filiere 
+     SELECT Entreprise.id, Entreprise.Designation, Entreprise.activity_sector, Entreprise.logo, Entreprise.presentation
         FROM Entreprise 
-        JOIN Intervenants ON Entreprise.id = Intervenants.id_entreprise 
-        JOIN FiliereInterventions ON Intervenants.id = FiliereInterventions.id_intervenant
-        JOIN Filiere ON Filiere.id = FiliereInterventions.id_filiere
         WHERE Designation LIKE CONCAT('%', p_designation, '%')
         ORDER BY Designation ASC;
     END IF;
