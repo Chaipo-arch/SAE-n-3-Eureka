@@ -6,7 +6,7 @@
 		header('Location: ../index.php');
 		exit();
 	}
-	
+	include("../services/FiliereService.php");
 	// Intégration des fonctions qui seront utilisées pour les acces à la BD
 	require('../fonctions/gestionBD.php');
 	
@@ -40,7 +40,7 @@
     $roleId = getRoleId(getPDO(),$role);
     
     $filiere=htmlspecialchars($_POST['filiere']);
-    include("../services/FiliereService.php");
+
     
     
     $mdpValide = preg_match('/^\S{8,30}$/',$mdp);
@@ -55,7 +55,7 @@
           }
     }
   }
-  include("../services/FiliereService.php");
+
 
   /* $nomEntreprise="";
 
