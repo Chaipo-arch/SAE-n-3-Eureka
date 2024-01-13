@@ -121,6 +121,17 @@ CREATE Table FiliereInterventions(
     FOREIGN KEY(id_filiere) REFERENCES filiere(id),
     FOREIGN KEY(id_intervenant) REFERENCES Intervenants(id)
 );
+
+Drop Table if EXISTs souhaitEntreprise;
+CREATE Table souhaitEntreprise(
+   
+    DesignationDuPoste Varchar(50),
+    id_entreprise int(15),
+    id_filiere int(15),
+    FOREIGN KEY (id_entreprise) REFERENCES Entreprise(id),
+    FOREIGN KEY (id_filiere) REFERENCES filiere(id),
+    PRIMARY Key(id_entreprise,id_filiere)
+);
 -- Fin de la création des table
 
 SET GLOBAL FOREIGN_KEY_CHECKS=0;
@@ -148,9 +159,6 @@ BEGIN
     COMMIT;
 END//
 DELIMITER ;
-
-CALL connexion('assssqsa','asa');
-
 
 DROP PROCEDURE IF EXISTS CreateUser;
 -- Renvoie un boolean correspondant au succés de l'ajout d'un Utilisateur
