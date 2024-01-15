@@ -1,0 +1,114 @@
+.entrepriseCase {
+	min-height: 100px;
+	background-color: #f7f7f7;
+
+}
+.separation{
+	top : 100px;
+	position:relative;
+}
+.case {
+	min-height: 100px;
+	display: flex;
+  align-items: center;
+  justify-content: center;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.centre {
+	text-align: center;
+	align-items: center;
+}
+.pageActu{
+	background-color: #888;
+	color: #fff;
+}
+
+.div-box-entreprise {
+    background-color: #ffffff; /* Couleur de fond */
+    border-radius: 10px; /* Rayon des coins arrondis */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Effet d'ombre */
+    padding: 20px; /* Espace intérieur (ajustez selon vos besoins) */
+  }
+
+
+ 
+
+  .padding-entrerpiseAjouter{
+    margin-top: 20px;
+	margin-bottom: 20px;
+  }
+
+
+  
+
+
+
+  /* Style par défaut sans marge */
+  .marge-header {
+	/* Vos styles par défaut ici */
+  }
+
+
+  /* Format moyen */
+  @media (max-width: 840px) {
+	.marge-header {
+	  margin-top: 0px; /* Vous pouvez ajuster la valeur selon vos besoins */
+	}
+  }
+
+
+  /* Format petit */
+  /* Ajout de marge pour les écrans de 768 pixels de largeur et plus */
+  @media (max-width: 540px) {
+	.marge-header {
+	  margin-top: 30px; 
+	}
+  }
+
+  /* /* @media (max-width: 350px) {
+	.marge-header {
+	  margin-top: 600px; 
+	}
+  } */
+
+  @media (max-width: 430px) {
+	.marge-header {
+	  margin-top: 100px; 
+	}
+  } 
+
+  @media (max-width: 305px) {
+	.marge-header {
+	  margin-top: 150px; 
+	}
+  } 
+
+
+  .div-box-Forum {
+    background-color: #b3b3b3; /* Couleur de fond */
+    border-radius: 10px; /* Rayon des coins arrondis */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Effet d'ombre */
+    padding: 20px; /* Espace intérieur (ajustez selon vos besoins) */
+  }
+
+
+  .padding-top{
+    margin-top: 20px;
+  }
+
+  .imageEntreprise{
+	max-width: 25%;
+	/* width: 25%;
+	height: 100%; */
+	background-size: cover; /* Optionnel : ajuste la taille pour couvrir complètement le conteneur, sans déformer l'image. */
+	background-position: center; /* Optionnel : centre l'image dans le conteneur. */
+  }
+
+
+  @media (max-width: 770px) {
+	.imageEntreprise {
+	  display: none; 
+	}
+  } 
