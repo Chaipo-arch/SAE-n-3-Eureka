@@ -3,7 +3,7 @@ include("services/UserService.php");
 
 if (isset($_SESSION['connecte']) && $_SESSION['connecte']) {
     
-    //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+    //On est déja connecté
     header('Location: index.php?controller='.$_SESSION['nomPage']);
     exit();
 }
@@ -34,6 +34,8 @@ if (isset($_POST['identifiant'] && isset($_POST['pwd']))){
 </head>
 
 <body>
+
+
 
 <div class="login-box">
     <h2>Login</h2>

@@ -22,7 +22,7 @@
 
     function getEntreprise($connexion,$idSouhait) {
         $tableauRetourF = array();
-        $maRequete = $connexion->prepare("SELECT * FROM entreprise WHERE ID = :idEn");
+        $maRequete = $connexion->prepare("SELECT entreprise.id, entreprise.Designation, entreprise.activity_sector, entreprise.logo, entreprise.presentation, intervenants.id as interId FROM entreprise JOIN intervenants ON entreprise.id=intervenants.id_entreprise WHERE entreprise.ID = :idEn");
         $maRequete->bindParam(':idEn', $idSouhait);
         if ($maRequete->execute()) {
             $tableauRetourF = $maRequete->fetchAll();

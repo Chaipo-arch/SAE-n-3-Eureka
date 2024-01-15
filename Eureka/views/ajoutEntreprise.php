@@ -24,8 +24,6 @@
   if (isset($_POST['nomEntreprise']) && isset($_POST['secteurActivite']) && isset($_POST['presentation'])
   && isset($_POST['ville']) && isset($_POST['adresse']) && isset($_POST['cp'])){
 
-    //echo "Test debug";
-    //htmlspecialchars($identifiantSaisi);
 
     $nom=htmlspecialchars($_POST['nomEntreprise']);
     echo $_POST['nomEntreprise'];
@@ -53,18 +51,6 @@
       echo " l'ajout n'a pas était effectué";
     }
   }
-
-
-  /* $nomEntreprise="";
-
-
-	if (isset($_POST['nomEntreprise'])) {
-		$nomEntreprise = htmlspecialchars($_POST['nomEntreprise']);
-	} */
-
-
-
-  /* value="<?php echo htmlspecialchars($nomEntreprise);?>" */
 
   $imageTest="";
   
@@ -137,8 +123,6 @@
               </div>
               
             </div>
-            <!-- <label for="image">Importer une image :</label><br>
-            <input type="file" name="image"><br><br>    -->
           </div>
           
 
@@ -152,9 +136,6 @@
               
             </div>
           </div>
-          <!-- <input type="submit" name="submitButton" value="Ajouter l'Entreprise"> -->
-          <!-- <input type="reset" value="Reset all info" tabindex="-1"> -->
-
         </fieldset>
       </form>
     </div>

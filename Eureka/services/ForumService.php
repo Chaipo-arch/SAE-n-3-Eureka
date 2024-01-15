@@ -9,7 +9,7 @@
             $caracteristiques['dateLimite'] = $ligne['date_limite'];
             $caracteristiques['duree'] = $ligne['p_duree_par_default'];
             $caracteristiques['Heure_debut'] = $ligne['heure_debut'];
-            $caracteristiques['Heure_fin'] = $ligne['heure_fin'];
+            $caracteristiques['Heure_fin'] = $ligne['heure_Fin'];
         }
         return $caracteristiques;
     }

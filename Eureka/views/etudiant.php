@@ -1,27 +1,17 @@
 <?php
 session_start();
-var_dump($_SESSION);
-var_dump($_SESSION);
-
-var_dump($_SESSION);
-var_dump($_SESSION);
-var_dump($_SESSION);
-var_dump($_SESSION);
-var_dump($_SESSION);
-var_dump($_SESSION);
-var_dump($_SESSION);
 include("../services/AdminService.php");
 include("../services/EtudiantService.php");
 include("../services/FiliereService.php");
 include("../services/UserService.php");
 if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
-    //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+    //On est déja connecté 
     header('Location: ../index.php');
     exit();
 }
 
 if ($_SESSION['role'] == "Etudiant") {
-    //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+    //On est déja connecté 
     header('Location: forum.php');
     exit();
 }
@@ -49,12 +39,12 @@ $filieres = getFilieres($pdo);
 		$_SESSION['filiere'] = $_GET['filiere'];
 	 }
 	 if(!isset($_GET['recherche'])) {
-		$etudiants = getStudentWithsouhaits($pdo); // TODO ajout avec la filiere
+		$etudiants = getStudentWithsouhaits($pdo); 
 	} else {
-		$etudiants = getStudentWithsouhaits($pdo); // TODO la recherche particuliere 
+		$etudiants = getStudentWithsouhaits($pdo);  
 		$saisies = $_GET['recherche'];
 	}
-	//$etudiants = getStudentWithsouhaits($pdo);
+	
 	
 ?>
 <!DOCTYPE html>
@@ -77,7 +67,6 @@ $filieres = getFilieres($pdo);
 	<body>
 	<?php 
 	include("../fonctions/viewHelper.php");
-	//headerHelper();
     ?>
 	</br>
 	</br>
@@ -153,11 +142,7 @@ $filieres = getFilieres($pdo);
 								<input name="controller" type="hidden" value="Etudiant">
 								<input  name="action" type="hidden" value="afficherSouhait">
 								<input type="hidden" name="idUserS" value="<?php echo $etudiant['id'] ;?>">
-								<?php 
-								/*$i = 0;
-								foreach($etudiant['souhait'] as $souhait) {?>
-									<input type="hidden" name="souhait<?php echo $i ;?>" value="<?php echo $souhait;?>">
-								<?php $i = $i+1;} */?>
+								<?php ?>
 								
 								<input type="submit" value="Voir souhaits">
 							</form>

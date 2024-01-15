@@ -8,7 +8,8 @@
      function ModifierForumCaracteristiques($pdo,$date,$dateLimite,$duree,$debut, $fin) {
         try {
         //$maRequete = $pdo->prepare("CALL editForum(:date,:duree,:dateLimite)");
-        $maRequete = $pdo->prepare("UPDATE forum SET heure_debut = :debut ,  heure_Fin = :fin ,p_duree_par_default = :duree, date_limite = :dateLimite");
+        $maRequete = $pdo->prepare("UPDATE forum SET date_debut=:date , heure_debut = :debut ,  heure_Fin = :fin ,p_duree_par_default = :duree, date_limite = :dateLimite");
+        $maRequete->bindParam(':date', $date);
         $maRequete->bindParam(':debut', $debut);
         $maRequete->bindParam(':fin', $fin);
         $maRequete->bindParam(':duree', $duree);
@@ -38,19 +39,19 @@
     
 
     function deleteEntreprise($pdo,$idE) {
-        $maRequete = $pdo->prepare("DELETE souhaitetudiant FROM souhaitetudiant WHERE souhaitetudiant.id_entreprise = :idE");
+        $maRequete = $pdo->prepare("DELETE souhaitetudiant FROM souhaitetudiant JOIN intervenants ON souhaitetudiant.id_intervenant=intervenants.id WHERE intervenants.id_entreprise = :idE");
         $maRequete->bindParam(':idE', $idE);
         $maRequete->execute();
         
-        $maRequete = $pdo->prepare("DELETE souhaitentreprise FROM souhaitentreprise WHERE souhaitentreprise.id_entreprise = :idE");
+        /* $maRequete = $pdo->prepare("DELETE souhaitentreprise FROM souhaitentreprise WHERE souhaitentreprise.id_entreprise = :idE");
         $maRequete->bindParam(':idE', $idE);
-        $maRequete->execute();
+        $maRequete->execute(); */
         
         $maRequete = $pdo->prepare("DELETE filiereinterventions FROM filiereinterventions JOIN intervenants ON filiereinterventions.id_intervenant = intervenants.id WHERE intervenants.id_entreprise = :idE");
         $maRequete->bindParam(':idE', $idE);
         $maRequete->execute();
         
-        $maRequete = $pdo->prepare("DELETE FROM lieu WHERE lieu.id_entreprise = :idE");
+        $maRequete = $pdo->prepare("DELETE FROM lieuentreprise WHERE lieuentreprise.id_entreprise = :idE");
         $maRequete->bindParam(':idE', $idE);
         $maRequete->execute();
 

@@ -1,5 +1,4 @@
 <?php
-var_dump($_POST);
 	session_start();
 	// test si on est bien passé par la page de login sinon on retourne sur index.php
 	if (!isset($_SESSION['connecte'])) {
@@ -8,7 +7,6 @@ var_dump($_POST);
 		exit();
 	}
 	if ($_SESSION['role'] != "Admin") {
-    //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
     header('Location: forum.php');
     exit();
 }
@@ -24,9 +22,6 @@ var_dump($_POST);
 
   if (isset($_POST['nomEtudiant']) && isset($_POST['prenomEtudiant']) && isset($_POST['username'])
   && isset($_POST['mdp']) && isset($_POST['role']) && isset($_POST['filiere'])){
-
-    //echo "Test debug";
-    //htmlspecialchars($identifiantSaisi);
 
     $nom=htmlspecialchars($_POST['nomEtudiant']);
 
@@ -49,31 +44,16 @@ var_dump($_POST);
     $filiere = getIdFiliere(getPDO(),$filiere);
     
     
-    var_dump($role);
     if($role != null) {
         if(AjoutUtilisateur($connexion,$nom,$prenom,$username,$mdp,$role,$filiere)){
             header('Location: Forum.php');
           } else {
-            var_dump($role);
             echo " l'ajout n'a pas était effectué";
           }
     }
   }
 
-
-  /* $nomEntreprise="";
-
-
-	if (isset($_POST['nomEntreprise'])) {
-		$nomEntreprise = htmlspecialchars($_POST['nomEntreprise']);
-	} */
-
-
-
-  /* value="<?php echo htmlspecialchars($nomEntreprise);?>" */
-
   $imageTest="";
-  
 ?>
 
 <!DOCTYPE html>
@@ -132,8 +112,6 @@ var_dump($_POST);
             <label for="first-name">Filiere (Si etudiant)*</label>
             <input type="text" name="filiere" required>
             <br/>
-            <!-- <label for="image">Importer une image :</label><br>
-            <input type="file" name="image"><br><br>    -->
           </div>
           
 
@@ -147,9 +125,6 @@ var_dump($_POST);
               
             </div>
           </div>
-          <!-- <input type="submit" name="submitButton" value="Ajouter l'Entreprise"> -->
-          <!-- <input type="reset" value="Reset all info" tabindex="-1"> -->
-
         </fieldset>
       </form>
     </div>

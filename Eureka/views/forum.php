@@ -3,7 +3,7 @@ session_start();
 include("../services/UserService.php");
 include("../services/ForumService.php");
 if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
-  //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+  //On est déja connecté
   header('Location: ../index.php');
   exit();
 }
@@ -34,7 +34,7 @@ if($_SESSION['role'] == 'Etudiant')  {
 </head>	
 <body>
 <?php 
-    include("../fonctions/viewHelper.php");
+   include("../fonctions/viewHelper.php");
    headerHelper();
   ?>
   

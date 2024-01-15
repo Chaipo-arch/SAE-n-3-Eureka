@@ -30,19 +30,19 @@
 		$username = $_POST['username'];
 		$mdp = $_POST['mdp'];
 		$role = $_POST['role'];
-		$idRole = getIdRole(getPDO(),$role);
-		//$_SESSION['idEntrepriseAModifier'] = $entreprise_id;
-		if($idRole != null) {
-			modifUtilisateur(getPDO(),$nom,$prenom,$username,$mdp, $idRole, $userId);
+		
+		if($role != null) {
+			modifUtilisateur(getPDO(),$nom,$prenom,$username,$mdp, $role, $userId);
 		}
 
 	}
 	if (isset($_POST['idEtudiant'])) {
 		$userId = $_POST['idEtudiant'];
 		include("../services/ForumService.php");
-		//$intervenants = getIntervenants();
 		$utilisateur = getInfoEtudiant(getPdo(),$userId);
 		$role = getRole(getPDO(),$utilisateur['id_role']);
+		$filiere = $utilisateur["id_filiere"];
+
 	}
 ?>
 
@@ -72,9 +72,6 @@
       
 
         <div class="row caseCentrer">
-          <!-- <div class=" col-md-4 col-sm-3">
-            <img  src="../images/Eureka.png">
-          </div> -->
           <div class=" col-md-8 col-sm-9 titreCentrer">
             <h2 class="h2center">Modifier Utilisateur</h2>
           </div>
@@ -85,10 +82,10 @@
 					<fieldset>
 						<div>
 							
-							<label for="first-name">Nom de L'etudiant*</label>
+							<label for="first-name">Nom de L'utilisateur*</label>
 							<input type="text" name="nom" value="<?php echo $utilisateur['nom'] ;?>" required >
 							<br/>
-							<label for="first-name">Prenom de L'etudiant*</label>
+							<label for="first-name">Prenom de L'utilisateur*</label>
 							<input type="text" name="prenom" value="<?php echo $utilisateur['prenom'] ;?>" required>
 							<br/>
 
@@ -100,46 +97,35 @@
 							<input type="text" name="mdp" value="<?php echo $utilisateur['password'] ;?>" required>
 							<br/>
 							<label for="first-name">Role*</label>
-							<select name="role"  class="form-control">
+							<select name="role" id="role" class="form-control">
 								<!-- option-->
 								<?php 
 									$roles = displayAllRole();							
 									foreach($roles as $roleUti) { ?>
 										<option
-										<?php if(isset($role ) && $role == $roleUti['designation']) {  echo " selected ";}?>
+										<?php echo 'value="'.$roleUti["id"].'"'; if(isset($role ) && $role == $roleUti['designation']) {  echo " selected ";}?>
 										> 
-										<?php  echo $roleUti['designation'] ; ?>
+										<?php  echo $roleUti['designation'] ;  ?>
 										</option>
 									<?php }  ?>
 							</select>
-							
+							<br>
+							<label for="first-name" id="filiere2" hidden >Filiere</label>
+							<select type="text"class="form-control" id="filiere" name="filiere" hidden>
+							<?php $filieres = displayAllFiliere();
+							foreach($filieres as $fil){
+							echo '<option value="'.$fil["id"].'">'.$fil["field"].'</option>';
+							}
+							?></select>
+							<input type="hidden" name="fil" id="filiere3" <?php echo 'value="'.$filiere.'"';?>>
 							<br/>
-							<!--<label for="first-name">Filiere</label>
-							<select name="filiere" type="submit">-->
-								
 								<?php 
-								/*
-									$filieres = displayAllFiliere();										
-									foreach($filieres as $filiere) { ?>
-										<option
-										<?php if(isset($_POST['filiere']) && $_POST['filiere'] == $filiere['field']) {  echo " selected ";}?>
-										> 
-										<?php  echo $filiere['field'] ; ?>
-										</option>
-									<?php }  */?>
-							<!--</select>
-							<br/>-->
-							
-
-							
-							
-							
-							<!-- <label for="image">Importer une image :</label><br>
-							<input type="file" name="image"><br><br>    -->
+								?>
 						</div>
 						
 
 						<div class="row caseCentrer">
+							
 							<div class=" col-md-8 col-sm-9 col-9 boutonDroite">
 							
 								<input name="action" type="hidden" value="modification">
@@ -150,8 +136,6 @@
 						</div>
 					</fieldset>
 				</form>
-			<!-- <input type="submit" name="submitButton" value="Ajouter l'Entreprise"> -->
-			<!-- <input type="reset" value="Reset all info" tabindex="-1"> -->
 			</details>
 			<div class=" col-md-4 col-sm-3 col-3">
 				<a href="GestionUtilisateur.php" class="btn btn-outline-primary tailleMoyenne">Retour</a>
@@ -160,9 +144,7 @@
 			
     </div>
 
-	
-
-
+	<script src="../js/modifUser.js" ></script>
 
     </body>
 </html>

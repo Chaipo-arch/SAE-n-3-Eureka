@@ -1,5 +1,54 @@
 
+/*
+=========================
+Planning
+=========================
+*/
+.noir {
+  color: #333
+}
+/* Style de la boîte */
+.my-styled-box {
+  background-color: #f8f9fa; /* Couleur de fond */
+  border: 1px solid #d3d3d3; /* Bordure avec une couleur */
+  border-radius: 8px; /* Coins arrondis */
+  padding: 20px; /* Espace intérieur */
+  /* margin: 20px 0; */ /* Marge extérieure en haut et en bas */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre douce */
+}
 
+/* Style du texte à l'intérieur de la boîte */
+.my-styled-box p {
+  color: #333; /* Couleur du texte */
+  font-size: 16px; /* Taille de la police */
+  line-height: 1.5; /* Hauteur de ligne */
+}
+
+.btn-planning{
+  margin: 20px 0;
+  
+}
+
+
+
+/* =================================================================== */
+.padding-top{
+  margin-top: 20px;
+}
+
+
+.padding-top-btn{
+  margin-top: 20px;
+}
+
+.ImageFond {
+  width: 100%;
+  height: 100%;
+  background-size: cover; /* Optionnel : ajuste la taille pour couvrir complètement le conteneur, sans déformer l'image. */
+  background-position: center; /* Optionnel : centre l'image dans le conteneur. */
+  /* Autres styles personnalisés si nécessaire */
+  /* background-image: url('images/connexion.jpg'); */
+}
 
 /* 
 ============================================================================================
@@ -43,13 +92,13 @@ body {
   margin:0;
   padding:0;
   font-family: sans-serif;
- /*  background: linear-gradient(#141e30, #243b55); */
+  /* background: linear-gradient(#545f74, #3a4654); */
   height: 100vh;
 }
 
 h1 {
 	/* D�finition des titres (des pages) */
-	color:#3900EC;		/* Couleur police */
+	color:#ffffff;		/* Couleur police */
 	font-size: 2em; 	/* Double de la police normale */
 	font-weight:bold;	/* En gras */
 }
@@ -57,7 +106,7 @@ h1 {
 
 h2 {
 	/* D�finition des titres de niveau 2 */
-	color:white;		/* Couleur police */
+	color:black;		/* Couleur police */
 	font-size: 1.8em; 	/* 1,8 fois la police normale */
 }
 
@@ -362,45 +411,3 @@ textarea {
   border-radius: 4px;
 }
 
-/* input[type="file"] {
-  margin-bottom: 15px;
-} */
-
-/* input[type="submit"] {
-  background-color: #4caf50;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-} */
-
-/* input[type="submit"]:hover {
-  background-color: #45a049;
-} */
-
-/* Pour rendre le champ de fichier plus stylisé */
-/* input[type="file"] {
-  position: relative;
-  overflow: hidden;
-} */
-
-/* input[type="file"]:before {
-  content: 'Choisir un fichier';
-  display: inline-block;
-  background: #4caf50;
-  color: white;
-  padding: 8px 20px;
-  outline: none;
-  white-space: nowrap;
-  cursor: pointer;
-  border-radius: 4px;
-} */
-
-/* input[type="file"]:hover:before {
-  background: #45a049;
-} */
-
-/* input[type="file"]::-webkit-file-upload-button {
-  visibility: hidden;
-} */

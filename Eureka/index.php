@@ -11,7 +11,6 @@ if (!connecteBD($erreur)) {
 
 include("services/UserService.php");
 if (isset($_SESSION['connecte']) && $_SESSION['connecte'] && !$problemeDonnees) {
-    //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
     header('Location: views/forum.php');
     exit();
 }
@@ -48,10 +47,10 @@ if(isset($_SESSION['connecte']) && $_SESSION['connecte'] && !$problemeDonnees)  
     <link href="fontawesome-free-6.2.1-web/css/all.css" rel="stylesheet"> <!--load all styles -->
 </head>
 
-<body>
+<body >
 
 <div class="login-box">
-    <h2>Login</h2>
+    <h2>Connexion - Eureka</h2>
     <?php 
         if ($problemeDonnees) {
     ?>
@@ -88,7 +87,7 @@ if(isset($_SESSION['connecte']) && $_SESSION['connecte'] && !$problemeDonnees)  
         </div>
         
         <div class="col-12">
-            <input class="btn btn-info" type="submit" value="Me connecter">
+            <input class="btn btn-info d-flex justify-content-center ml-auto" type="submit" value="Me connecter">
         </div>
     </form>
 

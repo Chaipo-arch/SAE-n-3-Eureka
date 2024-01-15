@@ -8,6 +8,8 @@
 	}
 	
 	// Intégration des fonctions qui seront utilisées pour les acces à la BD
+
+  include('../services/FiliereService.php');
 	require('../fonctions/gestionBD.php');
 	
 	// Connexion à la BD
@@ -19,8 +21,6 @@
   if (isset($_POST['nomEtudiant']) && isset($_POST['prenomEtudiant']) && isset($_POST['username'])
   && isset($_POST['mdp']) && isset($_POST['role']) ){
 
-    //echo "Test debug";
-    //htmlspecialchars($identifiantSaisi);
 
     $nom=htmlspecialchars($_POST['nomEtudiant']);
 
@@ -38,8 +38,13 @@
     include("../services/AdminService.php");
     $roleId = getRoleId(getPDO(),$role);
     
-    $filiere=htmlspecialchars($_POST['filiere']);
-    include("../services/FiliereService.php");
+    if (isset($_POST['filiere'])){
+      $filiere=htmlspecialchars($_POST['filiere']);
+    }else{
+      $filiere=null;
+    }
+    
+  
     
     
     $mdpValide = preg_match('/^\S{8,30}$/',$mdp);
@@ -54,18 +59,6 @@
           }
     }
   }
-
-
-  /* $nomEntreprise="";
-
-
-	if (isset($_POST['nomEntreprise'])) {
-		$nomEntreprise = htmlspecialchars($_POST['nomEntreprise']);
-	} */
-
-
-
-  /* value="<?php echo htmlspecialchars($nomEntreprise);?>" */
 
   $imageTest="";
   
@@ -109,10 +102,10 @@
 
 
           <div>
-            <label for="first-name">Nom de L'etudiant* (en minuscule) <?php if(isset($nom) && !$nomValide){ echo '<div class="messErreur">le nom ne doit contenir aucune majuscule</div>';}?></label></label>
+            <label for="first-name">Nom de L'utilisateur* (en minuscule) <?php if(isset($nom) && !$nomValide){ echo '<div class="messErreur">le nom ne doit contenir aucune majuscule</div>';}?></label></label>
             <input type="text" name="nomEtudiant" <?php if(isset($nom)){echo 'value="'.$nom.'"';} if(isset($nom) && (!$nomValide)){echo 'class="erreur"';} ?> required >
             <br/>
-            <label for="first-name">Prenom de L'etudiant* (en minuscule) <?php if(isset($prenom) && !$prenomValide){ echo '<div class="messErreur">le prenom ne doit contenir aucune majuscule</div>';}?></label>
+            <label for="first-name">Prenom de L'utilisateur* (en minuscule) <?php if(isset($prenom) && !$prenomValide){ echo '<div class="messErreur">le prenom ne doit contenir aucune majuscule</div>';}?></label>
             <input type="text" name="prenomEtudiant" <?php 
             if(isset($prenom) && (!$prenomValide)){echo 'class="erreur"';} 
             if(isset($prenom)){echo 'value="'.$prenom.'"';}?> required>
@@ -152,7 +145,7 @@
             <br>
             <label for="first-name" id="filiere" hidden>Filiere (Si etudiant)*</label>
             <select type="text" id="filiere2" name="filiere" hidden>
-            <?php $filieres = displayAllFiliere();
+            <?php $filieres = getFilieres(getPDO());
             foreach($filieres as $fil){
               echo '<option value="'.$fil["id"].'">'.$fil["field"].'</option>';
             }
@@ -160,8 +153,6 @@
             </select>
             <br>
             <br/>
-            <!-- <label for="image">Importer une image :</label><br>
-            <input type="file" name="image"><br><br>    -->
           </div>
           
 
@@ -175,9 +166,6 @@
               
             </div>
           </div>
-          <!-- <input type="submit" name="submitButton" value="Ajouter l'Entreprise"> -->
-          <!-- <input type="reset" value="Reset all info" tabindex="-1"> -->
-
         </fieldset>
       </form>
     </div>

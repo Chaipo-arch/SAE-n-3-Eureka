@@ -3,30 +3,26 @@ session_start();
 include("../services/EntrepriseService.php");
 include("../services/UserService.php");
 if (!isset($_SESSION['connecte']) || !$_SESSION['connecte']) {
-    //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
-    header('Location: ../index.php?action=renvoi');
+    //On est déja connecté
+    header('Location: ../index.php');
     exit();
 }
-if ($_SESSION['role'] == "Gestionnaire" | $_SESSION['role'] == "Admin" ) {
-    //On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+
+if ($_SESSION['role'] != "Etudiant") {
+    //On est déja connecté
     header('Location: forum.php');
     exit();
 }
-$host = 'localhost';
-$port = '3306';
-$db = 'eureka';
-$user = 'root';
-$pass = 'root';
-$charset = 'utf8mb4';
-$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
-    $options = [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false,
-        PDO::ATTR_PERSISTENT => true
-    ];
-
-$pdo = new PDO($dsn, $user, $pass, $options);
+require('../fonctions/gestionBD.php');
+	
+	// Connexion à la BD
+	if (!connecteBD($erreur)) {
+		// Pas de connexion à la BD, renvoie vers l'index
+		header('Location: ../index.php');
+		exit();
+	} 
+$pdo = getPDO();
+$dateLDeppasse = dateLimiteDepassee($pdo);
 if(isset($_GET['action'])&& $_GET['action'] = "deleteSouhaitEtudiant") {
 	$idE = $_GET['idEntreprise'];
 	deleteSouhait($pdo, $idE, $_SESSION['IdUser']);
@@ -74,18 +70,14 @@ foreach($_SESSION['souhait'] as $souhait ) {
 					<p>
 					<div class="col-12">
 						<div class="card mb-4 shadow-sm d-flex flex-row">
-							<img src="<?php echo $entreprise['logo'] ; ?>">
 							<div class="card-body d-flex flex-column justify-content-between">
 								<p class="card-text">
 								<?php echo $entreprise['Designation'] ;?>
 								</p>
 								<?php echo $entreprise['presentation'] ;?>
 								<div class="btn-group mt-2">
-									<button type="button" class="btn btn-sm btn-outline-secondary">
-										Nous Découvrir
-									</button>
 									
-									<?php if($_SESSION['role'] == "Etudiant"  ) { 
+									<?php if($_SESSION['role'] == "Etudiant"  && $dateLDeppasse) { 
 										$passage = false;
 										foreach($_SESSION['souhait'] as $souhait) {
 											if($souhait == $entreprise['id']) {
@@ -93,10 +85,10 @@ foreach($_SESSION['souhait'] as $souhait ) {
 									
 												<form action ="souhait.php" methode="get">
 													<input name="action" type="hidden" value="deleteSouhaitEtudiant">
-													<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['id'] ; ?>">
+													<input name="idEntreprise" type="hidden" value="<?php echo $entreprise['interId'] ; ?>">
 													<input name="controller" type="hidden" value="Souhait">
 													<button type="button submit" class="btn btn-sm btn-outline-secondary ml-1">
-														Annuler Rendez Vous
+														Annuler le souhait
 													</button>
 												</form>
 												  

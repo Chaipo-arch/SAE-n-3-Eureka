@@ -7,10 +7,12 @@
 		exit();
 	}
 	if ($_SESSION['role'] != "Admin") {
-		//On est déja connecté (ouverture dans une autre page par exemple, on renvoie vers la liste des comptes
+		//On est déja connecté
 		header('Location: forum.php');
 		exit();
 	}
+
+	include("../services/FiliereService.php");
 	// Intégration des fonctions qui seront utilisées pour les acces à la BD
 	require('../fonctions/gestionBD.php');
 	
@@ -25,29 +27,24 @@
 		include("../services/AdminService.php");
 		$idIntervenant= $_POST['idIntervenant'];
 		$idfiliere= $_POST['idFiliere'];
-		include("../services/FiliereService.php");
+		
 		
 			deleteIntervenantFiliere(null,$idfiliere,$idIntervenant);
-		//$_SESSION['idEntrepriseAModifier'] = $entreprise_id;
 
 	}
 	if (isset($_POST['idIntervenant'])) {
 		$intervenantId = $_POST['idIntervenant'];
 		$intervenantsIntervenentions = getIntervenantFiliere(null, $intervenantId);
 		
-		//$_SESSION['idEntrepriseAModifier'] = $entreprise_id;
 
 	}
 	if (isset($_POST['action']) && $_POST['action'] == "ajoutIntervention") {
 		
 		include("../services/AdminService.php");
 		$filiere= $_POST['filiere'];
-		include("../services/FiliereService.php");
 		$id = getIdFiliere(getPDO(),$filiere);
 		$nonPresent =true;
-		var_dump($id);
 		foreach($intervenantsIntervenentions as $intervention) {
-			var_dump($intervention);
 			if($intervention['id_filiere'] == $id) {
 				$nonPresent = false;
 			}
@@ -57,7 +54,6 @@
 			ajoutFiliereIntervenant(null,$id,$_POST['idIntervenant']);
 		}
 		$intervenantsIntervenentions = getIntervenantFiliere(null, $intervenantId);
-		//$_SESSION['idEntrepriseAModifier'] = $entreprise_id;
 
 	}
 	
@@ -95,20 +91,38 @@
       
 
         <div class="row caseCentrer">
-          <!-- <div class=" col-md-4 col-sm-3">
-            <img  src="../images/Eureka.png">
-          </div> -->
           <div class=" col-md-8 col-sm-9 titreCentrer">
-            <h2 class="h2center">Modifier Entreprise</h2>
+            <h2 class="h2center">Modification Intervenant</h2>
           </div>
         </div>
 
 			
 
-			<details>
-			<summary>Gérer les interventions</summary>
+						<form action="modifierFiliereDemande.php" method="post">
+							<fieldset>
+							<div>
+							<label for="first-name">Filiere demandé par l'intervenant</label>
+							<select name="filiere" class="form-control">
+								<?php 
+									$filieres = getFilieres(getPDO());					
+									foreach($filieres as $filiere) { ?>
+										<option
+										<?php if(isset($_POST['filiere'] ) && $_POST['filiere'] == $filiere['field']) {  echo " selected ";}?>
+										> 
+										<?php  echo $filiere['field'] ; ?>
+										</option>
+									<?php }  ?>
+							</select>
+							<br/>
+							<input name="action" type="hidden" value="ajoutIntervention">
+							<input name="idIntervenant" type="hidden" value="<?php echo $intervenantId; ?>">
+							<input type="submit" class="btn btn-outline-primary" name="bouttonAjout" value="Ajouter">
+							
+							<br/>
+						</form>
+						<br/>
 				<details>
-					<summary>Supprimer les Interventions</summary>
+					<summary>Voir / Supprimer les filliéres</summary>
 					<?php 
 					foreach($intervenantsIntervenentions as $intervention) { ?>
 						<form action="modifierFiliereDemande.php" method="post">
@@ -122,7 +136,7 @@
 							<input name="action" type="hidden" value="deleteIntervention">
 							<input name="idIntervenant" type="hidden" value="<?php echo $intervenantId; ?>">
 							<input name="idFiliere" type="hidden" value="<?php echo $intervention['id_filiere']; ?>">
-							<input type="submit" class="btn btn-outline-primary tailleMoyenne "  value="supprimer">
+							<input type="submit" class="btn btn-outline-danger"  value="supprimer">
 							
 							<br/>
 						</form>
@@ -130,36 +144,12 @@
 				?>
 				</details>
 
-				<details>
-					<summary>Ajouter une intervention</summary>
-						<form action="modifierFiliereDemande.php" method="post">
-							<fieldset>
-							<div>
-							<label for="first-name">Filiere demandé</label>
-							<select name="filiere" class="form-control">
-								<!-- option-->
-								<?php 
-									$filieres = displayAllFiliere();					
-									foreach($filieres as $filiere) { ?>
-										<option
-										<?php if(isset($_POST['filiere'] ) && $_POST['filiere'] == $filiere['field']) {  echo " selected ";}?>
-										> 
-										<?php  echo $filiere['field'] ; ?>
-										</option>
-									<?php }  ?>
-							</select>
-							<br/>
-							<input name="action" type="hidden" value="ajoutIntervention">
-							<input name="idIntervenant" type="hidden" value="<?php echo $intervenantId; ?>">
-							<input type="submit" class="btn btn-outline-primary tailleMoyenne " name="bouttonAjout" value="Ajouter">
-							
-							<br/>
-						</form>
-				</details>
+
+					
+
 				
-			</details>
 			<div class=" col-md-4 col-sm-3 col-3">
-				<a href="Entreprise.php?retour=true" class="btn btn-outline-primary tailleMoyenne">Retour</a>
+				<a href="Entreprise.php?retour=true" class="btn btn-outline-primary">Retour</a>
 			</div>
 			
 			

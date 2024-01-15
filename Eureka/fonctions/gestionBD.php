@@ -85,7 +85,7 @@ $connexion;
 	function getIntervenantEntreprise($connexion,$idE) {
 		global $connexion;
 		
-		$maRequete = $connexion->prepare("SELECT * FROM intervenants JOIN filiere ON intervenants.id_filiere = filiere.id WHERE id_entreprise = :idE");
+		$maRequete = $connexion->prepare("SELECT * FROM intervenants WHERE id_entreprise = :idE");
 		$maRequete->bindParam(':idE', $idE);
 		$tableauRetourF = array();
 		if ($maRequete->execute()) {
@@ -171,12 +171,10 @@ $connexion;
 		global $connexion;
 		/* $maRequeteInsertion = $connexion->prepare("CALL AjoutEntreprise(a,a,a,
 		a,a,12345,a)"); */
-		$filiere= 1;
-		$maRequeteInsertion = $connexion->prepare("INSERT INTO intervenants (name,id_entreprise,id_filiere) VALUES (:nom , :entreprise, :filiere)");
+		$maRequeteInsertion = $connexion->prepare("INSERT INTO intervenants (name,id_entreprise) VALUES (:nom , :entreprise)");
 
 		$maRequeteInsertion->bindParam(':nom', $nom);
 		$maRequeteInsertion->bindParam(':entreprise', $entreprise);
-		$maRequeteInsertion->bindParam(':filiere', $filiere);
 		if($maRequeteInsertion->execute()){
 			return true;
 		} else {
@@ -524,4 +522,41 @@ $connexion;
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////
 
+	function ajoutFiliere($connexion,$designation,$annee,$abrev) {
+		global $connexion;
+		$maRequete = $connexion->prepare("INSERT INTO filiere (filiere.year, filiere.field , filiere.abreviation) VALUES(:annee, :desi, :abrev)");
+		$maRequete->bindParam(':annee', $annee);
+		$maRequete->bindParam(':abrev', $abrev);
+		$maRequete->bindParam(':desi', $designation);
+		$tableauRetourF = array();
+		if ($maRequete->execute()) {
+            $tableauRetourF = $maRequete->fetchAll();	
+		}
+        return $tableauRetourF;
+	}
+
+	function dateLimiteDepassee($connexion) {
+		global $connexion;
+		$maRequete = $connexion->prepare("CALL DateDuJourPasser()");
+		$tableauRetourF = array();
+		if ($maRequete->execute()) {
+			if($maRequete->fetch()['Result'] == 1) {
+				return true;
+			} else {
+				return false;
+			}
+
+		}
+	}
+
+	function suppressionDonnees($connexion) {
+		global $connexion;
+		$maRequete = $connexion->prepare("CALL ResetDonnee()");
+		$tableauRetourF = array();
+		if ($maRequete->execute()) {
+			return true;
+
+		}
+		return false;
+	}
 ?>

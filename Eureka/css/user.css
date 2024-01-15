@@ -1,3 +1,8 @@
+
+.active-link {
+  border-bottom: 2px solid red; /* Remplacez "yourColor" par la couleur que vous souhaitez */
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -141,7 +146,36 @@
     margin-top: 20px;
   }
 
+  .padding-top-souhait{
+    margin-top: 10px;
+  }
+
+
 /* =================================== */
 
 
 
+.ligne-verticale {
+  border-left: 1px solid #000; /* Couleur et épaisseur de la ligne */
+  height: 100px; /* Hauteur de la ligne, ajustez selon vos besoins */
+  margin-left: 60px; /* Marge à gauche de la ligne, ajustez selon vos besoins */
+  
+}
+
+.conteneur {
+  padding-left: 20px; /* Ajustez selon vos besoins */
+}
+
+
+/* Masquer la ligne verticale lorsque la largeur de la fenêtre est inférieure à 768 pixels */
+@media (max-width: 630px) {
+  .ligne-verticale {
+    display: none;
+  }
+}
+
+@media (max-width: 740px) {
+  .ligne-verticale {
+    margin-left: 30px;
+  }
+}

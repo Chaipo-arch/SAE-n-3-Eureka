@@ -49,6 +49,7 @@
 	<link href="../bootstrap-4.6.2-dist/css/bootstrap.css" rel="stylesheet">
     <link href="../css/HeaderCss.css" rel="stylesheet">
     <link href="../css/EntrepriseCss.css" rel="stylesheet">
+    
 
 
 	<!-- Lien vers mon CSS -->
@@ -65,7 +66,7 @@
 		?>
 	</br>
 		
-	<div class="container-fluid separation ">
+	<div class="container-fluid separation marge-header"> ‎ </p>
     <div>
 		<div class="col-md-12">
             <form action="GestionUtilisateur.php" method="post">
@@ -107,10 +108,10 @@
                             ?>
                         </select>
                     </div>
-                    <div class="col-md-6 centre">
-                        <input type="text submit" class = "form-control" name="recherche" <?php if(isset($_POST['recherche'])) { echo 'value="'.$_POST['recherche'].'"'; } ?>>
+                    <div class="col-md-6 centre padding-top">
+                        <input type="text submit" class = "form-control" name="recherche" placeholder="Search" aria-label="Search" <?php if(isset($_POST['recherche'])) { echo 'value="'.$_POST['recherche'].'"'; } ?>>
                     </div>
-                    <div class="col-md-2 centre">
+                    <div class="col-md-2 centre padding-top">
                         <input class="btn btn-outline-dark btn-block" type="submit" value="Rechercher">
                     </div>
                 </div>
@@ -121,166 +122,120 @@
             
            <?php  if($_SESSION['role'] == 'Admin' ){ ?>
             <div class="container-fluid ">
-            <div class="row div-box padding-top">
-                <div class="col-md-5 col-sm-5 col-12 d-flex align-items-center justify-content-center">
-                    <form class="form my-1 my-lg-1" action="ajoutUtilisateur.php" method="post">
-                        <input class="btn btn-outline-dark btn-block" type="submit" value="+ Ajouter un utilisateur">
-                        </br>
-                    </form>
-                </div>
-        
-                <div class="col-md-7 col-sm-7 col-12 center-input">
-                    <form action="GestionUtilisateur.php" method="post" enctype="multipart/form-data">
-                        <div>
+                <div class="row div-box padding-top">
+                    <div class="  col-md-5 col-sm-5 col-12 d-flex align-items-center justify-content-center">
+                        <form class="form my-1 my-lg-1" action="ajoutUtilisateur.php" method="post">
+                            <input class="btn btn-outline-dark btn-block" type="submit" value="+ Ajouter un utilisateur">
+                            </br>
+                        </form>
+                        <div class="ligne-verticale "></div>
+                    </div>
+
+                    
+            
+                    <div class="col-md-7 col-sm-7 col-12 ">
+                        <form action="GestionUtilisateur.php" method="post" enctype="multipart/form-data">
                             <div>
-                                <label for="fichier_csv">Importer des utilisateurs par CSV :</label>
-                                <input type="file"  name="fichier_csv" accept=".csv">
-                                </br></br>
+                                <div>
+                                    <label for="fichier_csv">Importer des utilisateurs par CSV :</label>
+                                    <input type="file"  name="fichier_csv" accept=".csv">
+                                    </br></br>
+                                </div>
+                                <div>
+                                    <input class="btn btn-outline-dark btn-block" type="submit" value="Valider Importation">
+                                </div>
                             </div>
-                            <div>
-                                <input class="btn btn-outline-dark btn-block" type="submit" value="Importer">
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
-            </div>
             </div>
     
             <?php } ?>
         </div>
         
         <?php  if($_SESSION['role'] == 'Admin' ){ ?>
-        <!-- <div class="row"> -->
         <?php 
         
-        /* $filiere = array(); */
         $filiere = getFilieres(getPDO());
-        //var_dump($filiere);
 
 
 
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (!empty($_FILES["fichier_csv"]["tmp_name"])) {
-            $ErreurFormat = False;
-            try {
-                $nomficTypes = $_FILES['fichier_csv']['tmp_name'];
-                $indexLigne = -1;
-                // Lecture du contenu du fichier CSV
-                $tabAjout = file($nomficTypes, FILE_IGNORE_NEW_LINES);
-                //var_dump($tabAjout);
-                /* echo $tabAjout[0]; */
-                foreach ($tabAjout as $ligne) {
-                    // Divise la ligne en utilisant le séparateur ";"
-                    $data = explode(';', $ligne);
-                    $indexLigne += 1;
-                    //ON VERIFIE LA VALIDIT2 DU FORMAT DES CASE DU FICHIER
+                $ErreurFormat = False;
+                try {
+                    $nomficTypes = $_FILES['fichier_csv']['tmp_name'];
+                    $indexLigne = -1;
+                    // Lecture du contenu du fichier CSV
+                    $tabAjout = file($nomficTypes, FILE_IGNORE_NEW_LINES);
+                    foreach ($tabAjout as $ligne) {
+                        // Divise la ligne en utilisant le séparateur ";"
+                        $data = explode(';', $ligne);
+                        $indexLigne += 1;
+                        //ON VERIFIE LA VALIDIT2 DU FORMAT DES CASE DU FICHIER
 
-                    if (filter_var($data[0], FILTER_VALIDATE_EMAIL)) {
-                        //echo "L'adresse email est valide / ";
-                        if (preg_match('/^[a-zA-ZéèêàâiïIAÉÈÊÀÂ]+$/', $data[1]) && !preg_match('/\s/', $data[1])){
-                            //echo "succes nom / ";
-                            if (preg_match('/^[a-zA-ZéèêàâiïIAÉÈÊÀÂ]+$/', $data[2]) && !preg_match('/\s/', $data[1])){
-                                //echo "succes prenom / ";
-
-                                /* $estDifferent = true;
-                                
-                                foreach ($filiere as $element) {
-                                    if ($estDifferent){
-                                        if ($data[3] == $element) {
-                                            $estDifferent = false;
+                        if (filter_var($data[0], FILTER_VALIDATE_EMAIL)) {
+                            //echo "L'adresse email est valide / ";
+                            if (preg_match('/^[a-zA-ZéèêàâiïIAÉÈÊÀÂ]+$/', $data[1]) && !preg_match('/\s/', $data[1])){
+                                //echo "succes nom / ";
+                                if (preg_match('/^[a-zA-ZéèêàâiïIAÉÈÊÀÂ]+$/', $data[2]) && !preg_match('/\s/', $data[1])){
+                                    //echo "succes prenom / ";
+                                    if (preg_match('/^[1-5]+$/', $data[3])){
+                                        //echo "succes filiere / ";
+                                        if(preg_match('/^\S{8,30}$/', $data[4])){
+                                            //echo "succes mdp";
+                                        }else{
+                                            //echo "Erreur mdp";
+                                            $ErreurFormat = True;
+                                            break;
                                         }
-                                    }   
-                                } */
-
-                                //TODO condition a modifier si il est possible de rajouter des filliéres (prendre la taille de la bd)
-                                if (preg_match('/^[1-5]+$/', $data[3])){
-                                    //echo "succes filiere / ";
-                                    if(preg_match('/^\S{8,30}$/', $data[4])){
-                                        //echo "succes mdp";
                                     }else{
-                                        //echo "Erreur mdp";
+                                        //echo "Erreur filiere";
                                         $ErreurFormat = True;
                                         break;
                                     }
+
                                 }else{
-                                    //echo "Erreur filiere";
                                     $ErreurFormat = True;
+                                    //echo "Erreur prenom";
                                     break;
                                 }
-
-                                /* if ($estDifferent) {
-                                    echo "Erreur filiere";
-                                    $ErreurFormat = True;
-                                    break;
-                                } else {
-                                    echo "succes filiere / ";
-                                    if(preg_match('/^\S{8,30}$/', $data[4])){
-                                        echo "succes mdp";
-                                    }else{
-                                        echo "Erreur mdp";
-                                        $ErreurFormat = True;
-                                        break;
-                                    }
-                                } */
-
                             }else{
                                 $ErreurFormat = True;
-                                //echo "Erreur prenom";
+                                //echo "Erreur Nom";
                                 break;
                             }
-                        }else{
+                        } else {
                             $ErreurFormat = True;
-                            //echo "Erreur Nom";
+                            
                             break;
                         }
-                    } else {
-                        $ErreurFormat = True;
-                        
-                        break;
                     }
 
-                    //echo "<br>"; // Ajoute un saut de ligne pour chaque ligne du fichier CSV
-                }
-
-                //var_dump($ErreurFormat);
-                
-                if ($ErreurFormat==False){
-                    //var_dump(getPDO());
-                    //var_dump($data);
-                    echo "insertion possible !";
                     
-                    foreach ($tabAjout as $ligne) { 
-                        $data = explode(';', $ligne);
-                        AjoutUtilisateurCSV(getPDO(),$data[1],$data[2], $data[0],$data[4],3,$data[3]);
+                    if ($ErreurFormat==False){
+                        echo "insertion possible !";
+                        
+                        foreach ($tabAjout as $ligne) { 
+                            $data = explode(';', $ligne);
+                            AjoutUtilisateurCSV(getPDO(),$data[1],$data[2], $data[0],$data[4],3,$data[3]);
+                        }
+                        echo "toto";
+                        $_SERVER["REQUEST_METHOD"] = NULL;
+                    }else{
+                        echo "Le format Incorect";
+                        echo "erreur à la ligne :".$indexLigne;
                     }
-                    echo "toto";
-                    $_SERVER["REQUEST_METHOD"] = NULL;
-                    //$_FILES["fichier_csv"] = NULL;
-                    //$_FILES["fichier_csv"]["tmp_name"]=NULL;
-                    /* $_FILES = NULL;
-                    unset($_FILES);
-                    $fichier_tmp = "";
-                    $is_post_request = false; */
-                }else{
-                    echo "Le format Incorect";
-                    echo "erreur à la ligne :".$indexLigne;
-                }
-        
-
-            } catch (Exception $e) {
-                echo "Erreur : " . $e->getMessage();
-            }
-        } else {
-            echo "Erreur : Aucun fichier n'a été sélectionné.";
-        }
-        }
-        
-		?>
-
-        
             
 
-        <!-- </div> -->
+                } catch (Exception $e) {
+                    echo "Erreur : " . $e->getMessage();
+                }
+        } else {
+            //echo "Erreur : Aucun fichier n'a été sélectionné.";
+        }
+
+        
+		?>
         <?php } ?>
     <br>
 <?php
@@ -444,24 +399,14 @@
                                 echo '<option value='.$role["id"].'>'.$role["designation"].'</option>';
                             }
                         }
-                        echo'</select> ';/*<select disabled name="filiere" id="filiere'.$uses["id_filiere"].'" value="'.$uses["id_filiere"].'">';
-                        
-                       /*foreach($allFiliere as $filiere){
-                            if($filiere["id"] == $uses["id_filiere"]){
-                                echo '<option selected value='.$filiere["id"].'>'.$filiere["field"].'</option>';
-                            }else{
-                                echo '<option value='.$filiere["id"].'>'.$filiere["field"].'</option>';
-                            }
-                            
-                        }
-                         echo'</select>*/
+                        echo'</select> ';
                         if($_SESSION['role'] == 'Admin' ){
-                        echo' <button type="button submit" value="modifier" id="modif'.$uses["id"].'"><i class="fa-solid fa-pen"></i></button>
+                        echo' <button type="button submit" class="btn btn-sm btn-outline-secondary padding-top-souhait" value="modifier" id="modif'.$uses["id"].'">Modifier Utilisateur</button>
                         <input type="submit" id="valideLaModif'.$uses["id"].'" value="modif" name="modif" hidden>';
                         
                    
                         }
-                         echo '</form>';?>
+                    echo '</form>';?>
           
 
 
@@ -472,13 +417,20 @@
 				<input type="hidden" name="idUserS" value="<?php echo $uses['id'] ;?>">
                 <input type="hidden" name="nomUser" value="<?php echo $uses['nom'] ;?>">
                 <input type="hidden" name="prenomUser" value="<?php echo $uses['prenom'] ;?>">
-				<input type="submit" value="Voir souhaits">
+				<input class="btn btn-sm btn-outline-secondary padding-top-souhait" type="submit" value="Voir souhaits">
 			</form>
+            <form action="Planning.php" method="post">
+				<input name="idEtudiant" type="hidden" value="<?php echo $uses['id'] ; ?>">
+				<input name="action" type="hidden" value="voirEtudiant">
+				<button type="button submit" class="btn btn-sm btn-outline-secondary padding-top-souhait">
+					Voir planning
+				</button>
+            </form>			
             <?php } 
             if($_SESSION['role'] == 'Admin' ){?>
             
             <div class="btn-group mt-2 col-md-12">
-                <button type="button" <?php echo'id="supprimerUtilisateur'.$i.'"'?> class="btn btn-sm btn-outline-secondary">
+                <button type="button" <?php echo'id="supprimerUtilisateur'.$i.'"'?> class="btn btn-sm btn-outline-danger">
                         Supprimer utilisateur
                     </button>
             </div>
