@@ -3,7 +3,12 @@ Project:
 SAE-3.01-Eureka
 --Description--
 
-Ce projet a pour objectif de réaliser un site web permettant pour les étudiants de reserver des créneaux de RDV avec les différents intervenants du forum Eureka //TODO completer la description
+Le projet consiste à réaliser un site web accessible par les étudiants participants au forum
+Eureka à l’IUT de Rodez. Ce site permet la prise de RDV entre les étudiants et les entreprises
+participantes au forum. Ce site permet d’optimiser et de faciliter la prise de RDV. Mais aussi
+de réduire le temps perdu lors de l’attente des entreprises trop demandées. Les étudiants
+pourront donc augmenter leur périmètre de recherche d’alternance grâce à l’optimisation
+permise par le site.
 
 --Equipe Projet--
 
@@ -33,8 +38,13 @@ Ahmed Bribach:
 
 --Board Agile Git-Hub--
 
-https://github.com/users/Chaipo-arch/projects/3
+
+[https://github.com/users/Chaipo-arch/projects/3](https://github.com/users/Chaipo-arch/projects/4)
 
 --Google Drive Projet--
 
 https://drive.google.com/drive/folders/0AJDjIDH6Hy7YUk9PVA
+
+--Adresse d'hergement du site sur 000webhost--
+
+https://eurekahahah.000webhostapp.com/
